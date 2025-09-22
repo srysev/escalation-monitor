@@ -4,11 +4,11 @@ from typing import List, Dict, Any
 import httpx
 
 try:
-    from .feeds import BundeswehrFeed
+    from .feeds import BundeswehrFeed, NatoFeed, AuswaertigesAmtFeed
     from .feeds.base import to_iso_utc
 except ImportError:
     # For direct execution
-    from feeds import BundeswehrFeed
+    from feeds import BundeswehrFeed, NatoFeed, AuswaertigesAmtFeed
     from feeds.base import to_iso_utc
 
 
@@ -38,7 +38,7 @@ def format_feed_results_as_markdown(results: List[Dict[str, Any]]) -> str:
                 markdown_lines.append("**Articles:**")
                 for i, item in enumerate(items):  # Show all items
                     date = item["date"]
-                    text = item["text"][:100] + "..." if len(item["text"]) > 100 else item["text"]
+                    text = item["text"]
                     url = item["url"]
 
                     markdown_lines.append(f"{i+1}. **{date}** - {text}")
@@ -67,10 +67,19 @@ async def process_all_feeds() -> List[Dict[str, Any]]:
     # List of all available feed sources
     feeds = [
         BundeswehrFeed(),
+        NatoFeed(),
+        AuswaertigesAmtFeed(),
         # Add more feeds here as they become available
     ]
 
-    async with httpx.AsyncClient() as client:
+    # Custom headers for sites that require browser-like requests
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Accept': 'application/rss+xml, application/xml, text/xml',
+        'Accept-Language': 'en-US,en;q=0.9',
+    }
+
+    async with httpx.AsyncClient(headers=headers) as client:
         # Process all feeds in parallel
         tasks = [feed.fetch(client) for feed in feeds]
         results = await asyncio.gather(*tasks, return_exceptions=True)

@@ -72,3 +72,8 @@ vercel env add CRON_SECRET
 - This project may integrate with Agno agents for advanced AI functionality
 - Agno provides Agent, Memory, Storage, and SQLite/PostgreSQL integration capabilities
 - Reference the Agno documentation when implementing AI agent features or persistent memory systems
+
+## Important Development Rules
+- **NEVER automatically truncate or shorten text content** - Always show full text for analysis
+- Only truncate text when explicitly instructed by the user
+- Feed processing and markdown output must preserve complete article content
