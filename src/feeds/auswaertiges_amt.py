@@ -4,6 +4,7 @@ import datetime as dt
 import re
 from typing import Any, Dict, Optional, List
 from email.utils import parsedate_tz, mktime_tz
+from datetime import timedelta
 
 try:
     from .base import FeedSource, FeedItem
@@ -89,10 +90,17 @@ class AuswaertigesAmtFeed(FeedSource):
         )
 
     def filter(self, items: List[FeedItem]) -> List[FeedItem]:
-        """Filter items based on relevance criteria. Default: no filtering."""
-        # Default implementation: return all items
-        # Child classes can override for specific filtering logic
-        return items
+        """Filter items to only include those from the last 3 months."""
+        # Calculate cutoff date (3 months = 90 days ago)
+        cutoff_date = dt.datetime.now(dt.timezone.utc) - timedelta(days=90)
+
+        # Filter items by date
+        filtered_items = [
+            item for item in items
+            if item.date >= cutoff_date
+        ]
+
+        return filtered_items
 
 
 async def main():
