@@ -2,7 +2,8 @@
 from __future__ import annotations
 import datetime as dt
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, List
+from dataclasses import dataclass
 import httpx
 import feedparser
 
@@ -16,6 +17,13 @@ def to_iso_utc(d: Optional[dt.datetime]) -> str:
         d = d.replace(tzinfo=dt.timezone.utc)
     return d.astimezone(dt.timezone.utc).strftime(ISO_FORMAT)
 
+@dataclass
+class FeedItem:
+    """Standardized feed item with type-safe fields."""
+    date: dt.datetime  # UTC datetime object
+    text: str
+    url: str
+
 class FeedSource(ABC):
     """Abstract base class for RSS/Atom feed sources."""
 
@@ -24,10 +32,18 @@ class FeedSource(ABC):
         self.feed_url = feed_url
 
     @abstractmethod
-    def map_entry(self, entry: Dict[str, Any]) -> Dict[str, Any]:
+    def map_entry(self, entry: Dict[str, Any]) -> Optional[FeedItem]:
         """
-        Map a feedparser entry to standardized format.
-        Must return: {"date": "ISO-string", "text": "...", "url": "..."}
+        Map a feedparser entry to standardized FeedItem.
+        Returns None to skip the entry.
+        """
+        pass
+
+    @abstractmethod
+    def filter(self, items: List[FeedItem]) -> List[FeedItem]:
+        """
+        Filter items based on relevance criteria.
+        Child classes should implement their own filtering logic.
         """
         pass
 
@@ -53,18 +69,21 @@ class FeedSource(ABC):
             items = []
             for entry in parsed.entries:
                 try:
-                    mapped_entry = self.map_entry(entry)
-                    if mapped_entry:  # Allow child classes to filter by returning None
-                        items.append(mapped_entry)
+                    mapped_item = self.map_entry(entry)
+                    if mapped_item:  # Allow child classes to filter by returning None
+                        items.append(mapped_item)
                 except Exception:
                     # Skip individual entry errors
                     continue
+
+            # Apply filtering
+            filtered_items = self.filter(items)
 
             return {
                 "source_name": self.source_name,
                 "date": to_iso_utc(None),
                 "result": "ok",
-                "items": items
+                "items": filtered_items
             }
 
         except Exception as e:

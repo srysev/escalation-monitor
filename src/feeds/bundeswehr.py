@@ -2,14 +2,14 @@
 from __future__ import annotations
 import datetime as dt
 import re
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, List
 from email.utils import parsedate_tz, mktime_tz
 
 try:
-    from .base import FeedSource, to_iso_utc
+    from .base import FeedSource, FeedItem, to_iso_utc
 except ImportError:
     # For direct execution
-    from base import FeedSource, to_iso_utc
+    from base import FeedSource, FeedItem, to_iso_utc
 
 
 class BundeswehrFeed(FeedSource):
@@ -46,8 +46,8 @@ class BundeswehrFeed(FeedSource):
 
         return clean_text
 
-    def map_entry(self, entry: Dict[str, Any]) -> Dict[str, Any]:
-        """Map feedparser entry to standardized format."""
+    def map_entry(self, entry: Dict[str, Any]) -> Optional[FeedItem]:
+        """Map feedparser entry to standardized FeedItem."""
         # Extract basic fields
         title = entry.get("title", "").strip()
         link = entry.get("link", "")
@@ -56,7 +56,8 @@ class BundeswehrFeed(FeedSource):
 
         # Parse publication date
         pub_datetime = self._parse_pubdate(pubdate_str)
-        date_iso = to_iso_utc(pub_datetime)
+        if not pub_datetime:
+            return None  # Skip entries without valid dates
 
         # Extract and combine text
         description_text = self._extract_text(description)
@@ -71,11 +72,20 @@ class BundeswehrFeed(FeedSource):
         else:
             text = ""
 
-        return {
-            "date": date_iso,
-            "text": text,
-            "url": link
-        }
+        if not text.strip():
+            return None  # Skip entries without content
+
+        return FeedItem(
+            date=pub_datetime,
+            text=text,
+            url=link
+        )
+
+    def filter(self, items: List[FeedItem]) -> List[FeedItem]:
+        """Filter items based on relevance criteria. Default: no filtering."""
+        # Default implementation: return all items
+        # Child classes can override for specific filtering logic
+        return items
 
 
 async def main():
@@ -99,9 +109,9 @@ async def main():
             # Show first few items as examples
             for i, item in enumerate(result['items'][:3]):
                 print(f"\n--- Item {i+1} ---")
-                print(f"Date: {item['date']}")
-                print(f"Text: {item['text'][:200]}...")
-                print(f"URL: {item['url']}")
+                print(f"Date: {item.date.strftime('%Y-%m-%d %H:%M UTC')}")
+                print(f"Text: {item.text[:200]}...")
+                print(f"URL: {item.url}")
 
 
 if __name__ == "__main__":

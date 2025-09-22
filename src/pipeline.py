@@ -5,11 +5,11 @@ import httpx
 
 try:
     from .feeds import BundeswehrFeed, NatoFeed, AuswaertigesAmtFeed
-    from .feeds.base import to_iso_utc
+    from .feeds.base import FeedItem, to_iso_utc
 except ImportError:
     # For direct execution
     from feeds import BundeswehrFeed, NatoFeed, AuswaertigesAmtFeed
-    from feeds.base import to_iso_utc
+    from feeds.base import FeedItem, to_iso_utc
 
 
 def format_feed_results_as_markdown(results: List[Dict[str, Any]]) -> str:
@@ -37,11 +37,12 @@ def format_feed_results_as_markdown(results: List[Dict[str, Any]]) -> str:
             if items:
                 markdown_lines.append("**Articles:**")
                 for i, item in enumerate(items):  # Show all items
-                    date = item["date"]
-                    text = item["text"]
-                    url = item["url"]
+                    # Convert datetime to readable format for markdown
+                    date_str = item.date.strftime("%Y-%m-%d %H:%M UTC")
+                    text = item.text
+                    url = item.url
 
-                    markdown_lines.append(f"{i+1}. **{date}** - {text}")
+                    markdown_lines.append(f"{i+1}. **{date_str}** - {text}")
                     markdown_lines.append(f"   - Link: {url}")
 
             markdown_lines.append("")  # Empty line between feeds
