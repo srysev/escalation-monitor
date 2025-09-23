@@ -4,12 +4,12 @@ from typing import List, Dict, Any
 import httpx
 
 try:
-    from .feeds import BundeswehrFeed, NatoFeed, AuswaertigesAmtFeed
+    from .feeds import BundeswehrFeed, NatoFeed, AuswaertigesAmtFeed, AftershockFeed
     from .feeds.base import to_iso_utc
     from .scoring import calculate_escalation_score
 except ImportError:
     # For direct execution
-    from feeds import BundeswehrFeed, NatoFeed, AuswaertigesAmtFeed
+    from feeds import BundeswehrFeed, NatoFeed, AuswaertigesAmtFeed, AftershockFeed
     from feeds.base import to_iso_utc
     from scoring import calculate_escalation_score
 
@@ -72,6 +72,7 @@ async def process_all_feeds() -> List[Dict[str, Any]]:
         BundeswehrFeed(),
         NatoFeed(),
         AuswaertigesAmtFeed(),
+        AftershockFeed(),
         # Add more feeds here as they become available
     ]
 

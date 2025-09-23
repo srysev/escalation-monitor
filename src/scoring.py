@@ -28,8 +28,8 @@ grok = xAI(
 perplexity = Perplexity(id="sonar-deep-research")
 openai = OpenAIResponses(id="o4-mini")
 
-DEFAULT_LLM_MODEL = openai
-TOOLS = [{"type": "web_search_preview"}]
+LLM_MODEL = grok
+TOOLS = None#[{"type": "web_search_preview"}]
 
 class CriticalIndicator(BaseModel):
     category: str  # MILITARY|DIPLOMATIC|CYBER|ECONOMIC|SOCIAL
@@ -234,7 +234,7 @@ def create_escalation_agent_with_data() -> Agent:
     ]
 
     agent = Agent(
-        model=DEFAULT_LLM_MODEL,
+        model=LLM_MODEL,
         description=description,
         instructions=instructions,
         output_schema=EscalationScore,
