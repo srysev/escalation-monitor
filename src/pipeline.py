@@ -5,11 +5,13 @@ import httpx
 
 try:
     from .feeds import BundeswehrFeed, NatoFeed, AuswaertigesAmtFeed
-    from .feeds.base import FeedItem, to_iso_utc
+    from .feeds.base import to_iso_utc
+    from .scoring import calculate_escalation_score
 except ImportError:
     # For direct execution
     from feeds import BundeswehrFeed, NatoFeed, AuswaertigesAmtFeed
-    from feeds.base import FeedItem, to_iso_utc
+    from feeds.base import to_iso_utc
+    from scoring import calculate_escalation_score
 
 
 def format_feed_results_as_markdown(results: List[Dict[str, Any]]) -> str:
@@ -103,21 +105,43 @@ async def process_all_feeds() -> List[Dict[str, Any]]:
         return processed_results
 
 
-def run_daily_pipeline():
-    """Run the daily pipeline and return results."""
-    # TODO: Add scoring calculation and persistence later
-    results = asyncio.run(process_all_feeds())
-    return {"updated": True, "feed_results": results}
+async def run_daily_pipeline():
+    """Run the daily pipeline and return escalation scoring results."""
+    import time
+
+    # Process all feeds
+    print("Processing RSS feeds...")
+    feed_start = time.time()
+    feed_results = await process_all_feeds()
+    feed_duration = time.time() - feed_start
+    print(f"RSS feeds processed in {feed_duration:.2f} seconds")
+
+    # Format feed results as markdown for agent input
+    print("Formatting feed data for escalation analysis...")
+    markdown_data = format_feed_results_as_markdown(feed_results)
+
+    # Calculate escalation score using the markdown data
+    print("Calculating escalation score...")
+    scoring_start = time.time()
+    escalation_result = await calculate_escalation_score(markdown_data)
+    scoring_duration = time.time() - scoring_start
+    print(f"Escalation score calculated in {scoring_duration:.2f} seconds")
+
+    total_duration = feed_duration + scoring_duration
+    print(f"Total pipeline duration: {total_duration:.2f} seconds")
+
+    return escalation_result
 
 
 async def main():
-    """Test the pipeline by processing feeds and outputting Markdown."""
-    print("Processing feeds...\n")
+    """Test the complete pipeline with escalation scoring."""
+    import json
 
-    results = await process_all_feeds()
-    markdown_output = format_feed_results_as_markdown(results)
+    print("Processing feeds and calculating escalation score...\n")
 
-    print(markdown_output)
+    result = await run_daily_pipeline()
+
+    print(json.dumps(result, indent=2, ensure_ascii=False))
 
 
 if __name__ == "__main__":
