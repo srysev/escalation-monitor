@@ -21,7 +21,7 @@ grok = xAI(
     id="grok-4-fast-reasoning-latest",
     search_parameters={
         "mode": "on",
-        "max_search_results": 20,
+        "max_search_results": 29,
         "return_citations": False,
     },
 )
@@ -30,6 +30,21 @@ openai = OpenAIResponses(id="o4-mini")
 
 LLM_MODEL = grok
 TOOLS = None#[{"type": "web_search_preview"}]
+
+ESLALATION_SCALA = """
+ESKALATIONSSKALA (1-10):
+1 = BASELINE: Normale diplomatische Spannungen
+2 = FRICTION: Verschärfte Rhetorik, isolierte Vorfälle  
+3 = TENSION: Militärübungen beider Seiten, erhöhte Cyber-Aktivität
+4 = ALERT: Sanktionsverschärfungen, erste Reiserestriktionen
+5 = ELEVATED: Erhöhte Alarmbereitschaft, KRITIS-Störungen
+6 = HIGH: Systematische Cyber-Angriffe, Grenzschließungen
+7 = SEVERE: Teilmobilisierung, Kapitalkontrollen diskutiert
+8 = CRITICAL: Direkte militärische Kontakte, Bankrun-Gefahr
+9 = EMERGENCY: Offene Feindseligkeiten, Internierungen möglich
+10 = WARTIME: Kriegszustand erklärt oder de facto
+"""
+
 
 class CriticalIndicator(BaseModel):
     category: str  # MILITARY|DIPLOMATIC|CYBER|ECONOMIC|SOCIAL
@@ -86,21 +101,9 @@ def create_escalation_agent_with_data() -> Agent:
     Du nutzt RSS-Feeds als Primärquelle für offizielle Positionen und 
     Web-Suchen zur Verifikation und Kontextualisierung.
     """
-    # Replace placeholder with actual RSS data
+        
     instructions = [
-    """
-    ESKALATIONSSKALA (1-10):
-    1 = BASELINE: Normale diplomatische Spannungen
-    2 = FRICTION: Verschärfte Rhetorik, isolierte Vorfälle  
-    3 = TENSION: Militärübungen beider Seiten, erhöhte Cyber-Aktivität
-    4 = ALERT: Sanktionsverschärfungen, erste Reiserestriktionen
-    5 = ELEVATED: Erhöhte Alarmbereitschaft, KRITIS-Störungen
-    6 = HIGH: Systematische Cyber-Angriffe, Grenzschließungen
-    7 = SEVERE: Teilmobilisierung, Kapitalkontrollen diskutiert
-    8 = CRITICAL: Direkte militärische Kontakte, Bankrun-Gefahr
-    9 = EMERGENCY: Offene Feindseligkeiten, Internierungen möglich
-    10 = WARTIME: Kriegszustand erklärt oder de facto
-    """,
+    ESLALATION_SCALA,
     
     """
     INFORMATIONSQUELLEN-STRATEGIE:
