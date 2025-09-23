@@ -77,3 +77,4 @@ vercel env add CRON_SECRET
 - **NEVER automatically truncate or shorten text content** - Always show full text for analysis
 - Only truncate text when explicitly instructed by the user
 - Feed processing and markdown output must preserve complete article content
+- **For code quality checks**: Always use `mcp__ide__getDiagnostics` instead of `pylint` command for linting and type checking

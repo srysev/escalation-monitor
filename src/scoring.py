@@ -1,7 +1,6 @@
 # src/scoring.py
 from __future__ import annotations
-import datetime as dt
-from typing import List, Literal, Dict, Any, Optional
+from typing import List, Dict, Any
 from pydantic import BaseModel, Field
 import json
 from agno.agent import Agent
@@ -24,21 +23,30 @@ grok = xAI(
 )
 DEFAULT_LLM_MODEL = grok
 
+class CriticalIndicator(BaseModel):
+    category: str  # MILITARY|DIPLOMATIC|CYBER|ECONOMIC|SOCIAL
+    description: str
+    impact: float  # 0.0-2.0 Beitrag zum Score
+    source: str
+    confidence: str  # HIGH|MEDIUM|LOW
 
 class EscalationScore(BaseModel):
     """Pydantic schema for escalation scoring results."""
-    escalation_level: int = Field(..., ge=1, le=10, description="Escalation level on 1-10 scale")
-    reasoning: List[str] = Field(..., max_items=5, description="Evidence signals with date, source, and impact")
-    counter_indicators: List[str] = Field(..., max_items=3, description="Evidence against current assessment")
-    confidence: Literal["low", "medium", "high"] = Field(..., description="Confidence level in assessment")
-    confidence_reason: str = Field(..., description="Brief explanation for confidence level")
-    next_signposts: List[str] = Field(..., max_items=3, description="Key indicators to watch for escalation changes")
+    score: float = Field(..., ge=1.0, le=10.0, description="Eskalationsscore mit 1 Dezimalstelle")
+    level: str = Field(..., description="BASELINE|FRICTION|TENSION|etc.")
+    
+    summary: str = Field(..., max_length=300, description="2-3 Sätze Haupttreiber")
+    
+    critical_indicators: List[CriticalIndicator] = Field(
+        default_factory=list,
+        max_length=5,
+        description="Nur neue kritische Entwicklungen"
+    )
+    
+    trend: str = Field(..., pattern="^(STABLE|ESCALATING|DE-ESCALATING)$")
 
-
-def create_escalation_agent_with_data(rss_markdown: str) -> Optional[Agent]:
+def create_escalation_agent_with_data(rss_markdown: str) -> Agent:
     """Create agent with RSS data inserted into instructions."""
-    if not AGNO_AVAILABLE:
-        raise ImportError(f"Agno library not available: {AGNO_IMPORT_ERROR}. Install with: pip install agno")
 
     role_description = """Du bist der Eskalationsgrad-Scorer für die DE-RU-Lage. Du analysierst aktuelle Ereignisse und ordnest sie auf einer 1-10 Skala ein und begründest sachlich."""
 
@@ -88,7 +96,7 @@ async def calculate_escalation_score(rss_markdown: str) -> Dict[str, Any]:
         agent = create_escalation_agent_with_data(rss_markdown)
 
         # Simple neutral prompt since all instructions are already in the agent
-        response = agent.run(input=None)
+        response = agent.run("")
 
         # Debug: Print raw response
         print(f"DEBUG - Raw response type: {type(response)}")
