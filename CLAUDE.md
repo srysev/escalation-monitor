@@ -73,6 +73,12 @@ vercel env add CRON_SECRET
 - Agno provides Agent, Memory, Storage, and SQLite/PostgreSQL integration capabilities
 - Reference the Agno documentation when implementing AI agent features or persistent memory systems
 
+## UI Framework - Tabler
+- **Tabler Examples**: Find working examples and templates at `../tabler/preview/pages/` directory
+- **UI Prototypes**: User's Tabler prototypes are stored in `~/Downloads/ui-prototype-tabler-*.html`
+- **Current Dashboard**: Uses Jinja2 templates in `templates/dashboard.html` with Tabler CSS framework
+- **Template Structure**: Server-rendered dashboard at `/` route, populated with data from `get_today_report()` and `ESLALATION_SCALA`
+
 ## Important Development Rules
 - **NEVER automatically truncate or shorten text content** - Always show full text for analysis
 - Only truncate text when explicitly instructed by the user
