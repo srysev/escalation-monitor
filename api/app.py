@@ -55,17 +55,3 @@ def dashboard(request: Request):
             "formatted_timestamp": formatted_timestamp
         }
     )
-
-@app.get("/score")
-def score():
-    report = get_today_report()
-    if report and "escalation_result" in report:
-        return {"score": report["escalation_result"].get("score", 1.0)}
-    return {"score": 1.0}
-
-@app.get("/metrics")
-def metrics():
-    report = get_today_report()
-    if report and "escalation_result" in report:
-        return JSONResponse(report["escalation_result"])
-    return JSONResponse({"error": "No data available"})
