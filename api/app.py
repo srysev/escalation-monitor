@@ -3,7 +3,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from src.storage import get_today_report
-from src.scoring import ESLALATION_SCALA
+from src.scoring import ESCALATION_SCALA
 from datetime import datetime, timezone
 
 app = FastAPI(title="Escalation Monitor API")
@@ -16,7 +16,7 @@ def dashboard(request: Request):
     report = get_today_report()
 
     # Skala parsen
-    scale_lines = ESLALATION_SCALA.strip().split('\n')
+    scale_lines = ESCALATION_SCALA.strip().split('\n')
     scale_levels = []
     for line in scale_lines:
         if '=' in line and ':' in line:
