@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Eskalations-Dashboard · Escalation Monitor</title>
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet" />
+  <style>
+    :root{
+      --muted:#64748b;
+      --current-bg:#fff7ed;
+    }
+    body{ background:#f8fafc; }
+    .container-narrow{ max-width: 1024px; }
+
+    /* Kopf */
+    .score-wrap{ display:flex; align-items:flex-start; gap:24px; }
+    .score-big{
+      font: 800 64px/1 "JetBrains Mono", ui-monospace, Menlo, monospace;
+      font-variant-numeric: tabular-nums; white-space:nowrap; letter-spacing:0;
+      color:#111827;
+    }
+    .right-info{ min-width: 220px; }
+    .badge-soft-high{ background:#fee2e2; color:#991b1b; border:1px solid #fecaca; }
+    .badge-soft-critical{ background:#fef2f2; color:#991b1b; border:1px solid #fca5a5; }
+    .badge-soft-severe{ background:#fef2f2; color:#7f1d1d; border:1px solid #f87171; }
+    .badge-soft-elevated{ background:#fef3c7; color:#92400e; border:1px solid #fcd34d; }
+    .badge-soft-alert{ background:#fef3c7; color:#78350f; border:1px solid #f59e0b; }
+    .badge-soft-baseline{ background:#f0fdf4; color:#166534; border:1px solid #bbf7d0; }
+
+    .trend-block{ color:#b91c1c; font-weight:600; }
+    .trend-block label{ display:block; color:var(--muted); font-weight:500; margin-bottom:2px }
+    .trend-block .arrow{ display:inline-block; transform: translateY(2px); }
+
+    /* Kritische Indikatoren */
+    .indicators{
+      max-height: 360px; overflow:auto;
+      scrollbar-gutter: stable;
+    }
+    .list-tight .list-group-item{ padding:.7rem .9rem }
+    .list-group-item .cat{ color:var(--muted); font-weight:600 }
+    .list-group-item .src{ color:var(--muted) }
+
+    /* Skala als Text: jede Stufe = eigene Zeile */
+    .scale-text p{ margin:.35rem 0; }
+    .scale-text .muted{ color:var(--muted); }
+    .scale-text .is-current{ font-weight:800; }
+
+    /* großes Warn-Icon */
+    .warn-ic{ width:28px; height:28px; flex:none; }
+  </style>
+</head>
+<body>
+<div class="page">
+  <div class="container-narrow py-4">
+
+    <!-- Disclaimer -->
+    <div class="card card-md mb-3">
+      <div class="card-body d-flex align-items-center">
+        <!-- gelbes Dreieck mit schwarzem ! -->
+        <svg class="warn-ic me-2" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 3 22 21H2z" fill="#facc15" stroke="#d4af0d" stroke-width="1.5"/>
+          <rect x="11" y="8" width="2" height="7" rx="1" fill="#111827"/>
+          <rect x="11" y="17" width="2" height="2" rx=".8" fill="#111827"/>
+        </svg>
+        <div>
+          <div class="fw-bold">Disclaimer</div>
+          <div class="text-secondary">Dieses Dashboard wird teilweise von KI erzeugt und kann sich irren.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <!-- Links: Score + Indikatoren -->
+      <div class="col-12 col-md-6">
+        <!-- Score/Level/Trend -->
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="score-wrap">
+              <div class="score-big" id="scoreBig">
+                {% if report and report.escalation_result and report.escalation_result.escalation_score %}
+                  {{ report.escalation_result.escalation_score.score|round(1)|replace('.', ',') }}
+                {% else %}
+                  1,0
+                {% endif %}
+              </div>
+
+              <div class="right-info">
+                <div class="mb-1">
+                  <span class="badge badge-soft-{{ (report.escalation_result.escalation_score.level|lower) if report and report.escalation_result and report.escalation_result.escalation_score else 'baseline' }}" id="levelBadge">
+                    {{ report.escalation_result.escalation_score.level if report and report.escalation_result and report.escalation_result.escalation_score else 'BASELINE' }}
+                  </span>
+                </div>
+                <div class="trend-block">
+                  <label>Trend:</label>
+                  <span id="trendText">{{ report.escalation_result.escalation_score.trend if report and report.escalation_result and report.escalation_result.escalation_score else 'STABLE' }}</span>
+                </div>
+                <div class="text-secondary small mt-2" id="metaDate">Stand: {{ formatted_timestamp }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kritische Indikatoren (volle Texte) -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Kritische Indikatoren</h3>
+          </div>
+          <div class="list-group list-group-flush list-tight indicators" id="indicatorsList">
+            {% if report and report.escalation_result and report.escalation_result.escalation_score and report.escalation_result.escalation_score.critical_indicators %}
+              {% for indicator in report.escalation_result.escalation_score.critical_indicators %}
+              <div class="list-group-item">
+                <div class="cat">{{ indicator.category }}</div>
+                <div class="mt-1">{{ indicator.description }}</div>
+                <div class="small src mt-1">Quelle: {{ indicator.source }}</div>
+                <div class="mt-2">
+                  {% if indicator.impact >= 7 %}
+                    <span class="badge bg-red-lt me-1">Impact {{ indicator.impact }}</span>
+                  {% elif indicator.impact >= 5 %}
+                    <span class="badge bg-yellow-lt me-1">Impact {{ indicator.impact }}</span>
+                  {% else %}
+                    <span class="badge bg-green-lt me-1">Impact {{ indicator.impact }}</span>
+                  {% endif %}
+                  <span class="badge bg-secondary-lt">Confidence {{ indicator.confidence }}</span>
+                </div>
+              </div>
+              {% endfor %}
+            {% else %}
+              <div class="list-group-item">
+                <div class="cat">System</div>
+                <div class="mt-1">Keine aktuellen Escalation-Daten verfügbar. Bitte prüfen Sie die Cron-Job Konfiguration.</div>
+                <div class="small src mt-1">Quelle: System Status</div>
+                <div class="mt-2">
+                  <span class="badge bg-green-lt me-1">Impact 1.0</span>
+                  <span class="badge bg-secondary-lt">Confidence High</span>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Rechts: Skala als Text (Zeilen) -->
+      <div class="col-12 col-md-6">
+        <div class="card h-100">
+          <div class="card-header">
+            <h3 class="card-title">Skala</h3>
+          </div>
+          <div class="card-body">
+            <div class="scale-text" id="scaleText">
+              {% for level in scale_levels %}
+              <p {% if report and report.escalation_result and report.escalation_result.escalation_score and level.number == (report.escalation_result.escalation_score.score|round|int) %}class="is-current"{% endif %}>
+                <strong>{{ level.number }} {{ level.label }}</strong><span class="muted"> — {{ level.description }}</span>
+              </p>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
+<script>
+  // Color interpolation für Score-Anzeige
+  function lerpColor(hex1, hex2, t){
+    const a = hex1.match(/\w\w/g).map(x=>parseInt(x,16));
+    const b = hex2.match(/\w\w/g).map(x=>parseInt(x,16));
+    const c = a.map((v,i)=>Math.round(v+(b[i]-v)*t));
+    return '#'+c.map(v=>v.toString(16).padStart(2,'0')).join('');
+  }
+
+  // Score-Farbe berechnen (Grau -> Rot basierend auf Score)
+  {% if report and report.escalation_result and report.escalation_result.escalation_score %}
+  const score = {{ report.escalation_result.escalation_score.score }};
+  const t = (score - 1) / 9;
+  const colorNow = lerpColor('94a3b8', 'dc2626', Math.min(1,Math.max(0,t)));
+
+  // Score-Farbe anwenden
+  document.getElementById("scoreBig").style.color = colorNow;
+
+  // Current level markieren
+  const currentLevel = Math.round(score);
+  const scaleElements = document.querySelectorAll('.scale-text .is-current');
+  scaleElements.forEach(el => el.style.color = colorNow);
+  {% else %}
+  // Fallback: Score 1.0 in grau
+  document.getElementById("scoreBig").style.color = '#94a3b8';
+  {% endif %}
+</script>
+</body>
+</html>

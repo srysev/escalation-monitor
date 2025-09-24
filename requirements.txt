@@ -3,3 +3,5 @@ httpx
 feedparser
 agno
 openai
+jinja2
+python-multipart
