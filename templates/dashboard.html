@@ -38,8 +38,10 @@
       scrollbar-gutter: stable;
     }
     .list-tight .list-group-item{ padding:.7rem .9rem }
-    .list-group-item .cat{ color:var(--muted); font-weight:600 }
     .list-group-item .src{ color:var(--muted) }
+
+    /* Category Badge */
+    .list-group-item .badge{ white-space: nowrap; }
 
     /* Skala als Text: jede Stufe = eigene Zeile */
     .scale-text p{ margin:.35rem 0; color: #6b7280; font-weight: 500; }
@@ -126,19 +128,11 @@
             {% if report and report.escalation_result and report.escalation_result.escalation_score and report.escalation_result.escalation_score.critical_indicators %}
               {% for indicator in report.escalation_result.escalation_score.critical_indicators %}
               <div class="list-group-item">
-                <div class="cat">{{ indicator.category }}</div>
-                <div class="mt-1">{{ indicator.description }}</div>
-                <div class="small src mt-1">Quelle: {{ indicator.source }}</div>
-                <div class="mt-2">
-                  {% if indicator.impact >= 7 %}
-                    <span class="badge bg-red-lt me-1">Impact {{ indicator.impact }}</span>
-                  {% elif indicator.impact >= 5 %}
-                    <span class="badge bg-yellow-lt me-1">Impact {{ indicator.impact }}</span>
-                  {% else %}
-                    <span class="badge bg-green-lt me-1">Impact {{ indicator.impact }}</span>
-                  {% endif %}
-                  <span class="badge bg-secondary-lt">Confidence {{ indicator.confidence }}</span>
+                <div class="text-end mb-2">
+                  <span class="badge bg-secondary-lt">{{ indicator.category }}</span>
                 </div>
+                <div>{{ indicator.description }}</div>
+                <div class="small src mt-1">Quelle: {{ indicator.source }}</div>
               </div>
               {% endfor %}
             {% else %}
