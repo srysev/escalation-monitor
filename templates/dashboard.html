@@ -28,7 +28,7 @@
     .badge-soft-alert{ background:#fef3c7; color:#78350f; border:1px solid #f59e0b; }
     .badge-soft-baseline{ background:#f0fdf4; color:#166534; border:1px solid #bbf7d0; }
 
-    .trend-block{ color:#b91c1c; font-weight:600; }
+    .trend-block{ color: inherit; font-weight:600; }
     .trend-block label{ display:block; color:var(--muted); font-weight:500; margin-bottom:2px }
     .trend-block .arrow{ display:inline-block; transform: translateY(2px); }
 
@@ -42,12 +42,20 @@
     .list-group-item .src{ color:var(--muted) }
 
     /* Skala als Text: jede Stufe = eigene Zeile */
-    .scale-text p{ margin:.35rem 0; }
-    .scale-text .muted{ color:var(--muted); }
+    .scale-text p{ margin:.35rem 0; color: #6b7280; font-weight: 500; }
+    .scale-text .muted{ color: inherit; }
     .scale-text .is-current{ font-weight:800; }
 
     /* großes Warn-Icon */
     .warn-ic{ width:28px; height:28px; flex:none; }
+
+    /* Summary in Score-Karte */
+    .summary-section{ border-color: #e5e7eb; }
+    .summary-title{ font-size: 16px; font-weight: 600; color: #111827; }
+    .summary-text{ color: #374151; font-size: 14px; line-height: 1.4; }
+
+    /* Card-Titel konsistent mit Summary-Styling */
+    .card-title{ font-size: 16px; font-weight: 600; color: #111827; }
   </style>
 </head>
 <body>
@@ -72,7 +80,7 @@
 
     <div class="row g-3">
       <!-- Links: Score + Indikatoren -->
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-md-8">
         <!-- Score/Level/Trend -->
         <div class="card mb-3">
           <div class="card-body">
@@ -98,6 +106,14 @@
                 <div class="text-secondary small mt-2" id="metaDate">Stand: {{ formatted_timestamp }}</div>
               </div>
             </div>
+
+            <!-- Summary -->
+            {% if report and report.escalation_result and report.escalation_result.escalation_score and report.escalation_result.escalation_score.summary %}
+            <div class="summary-section mt-3 pt-3 border-top">
+              <h4 class="summary-title mb-2">Zusammenfassung</h4>
+              <p class="summary-text mb-0">{{ report.escalation_result.escalation_score.summary }}</p>
+            </div>
+            {% endif %}
           </div>
         </div>
 
@@ -141,7 +157,7 @@
       </div>
 
       <!-- Rechts: Skala als Text (Zeilen) -->
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-md-4">
         <div class="card h-100">
           <div class="card-header">
             <h3 class="card-title">Skala</h3>
@@ -150,7 +166,7 @@
             <div class="scale-text" id="scaleText">
               {% for level in scale_levels %}
               <p {% if report and report.escalation_result and report.escalation_result.escalation_score and level.number == (report.escalation_result.escalation_score.score|round|int) %}class="is-current"{% endif %}>
-                <strong>{{ level.number }} {{ level.label }}</strong><span class="muted"> — {{ level.description }}</span>
+                <span class="level-label">{{ level.number }} {{ level.label }}</span><span class="muted"> — {{ level.description }}</span>
               </p>
               {% endfor %}
             </div>
@@ -181,10 +197,39 @@
   // Score-Farbe anwenden
   document.getElementById("scoreBig").style.color = colorNow;
 
-  // Current level markieren
+  // Current level markieren - gesamten Text einfärben
   const currentLevel = Math.round(score);
   const scaleElements = document.querySelectorAll('.scale-text .is-current');
-  scaleElements.forEach(el => el.style.color = colorNow);
+  scaleElements.forEach(el => {
+    el.style.color = colorNow;
+    // Alle child elements (spans) ebenfalls einfärben für einheitliche Darstellung
+    const spans = el.querySelectorAll('span');
+    spans.forEach(span => {
+      span.style.color = colorNow;
+    });
+  });
+
+  // Trend-Farbe basierend auf Trend-Wert setzen
+  const trendElement = document.getElementById("trendText");
+  if (trendElement) {
+    const trendValue = trendElement.textContent.trim().toUpperCase();
+    let trendColor;
+
+    switch(trendValue) {
+      case 'ESCALATING':
+        trendColor = '#dc2626'; // Rot
+        break;
+      case 'DE-ESCALATING':
+        trendColor = '#16a34a'; // Grün
+        break;
+      case 'STABLE':
+      default:
+        trendColor = '#6b7280'; // Grau
+        break;
+    }
+
+    trendElement.style.color = trendColor;
+  }
   {% else %}
   // Fallback: Score 1.0 in grau
   document.getElementById("scoreBig").style.color = '#94a3b8';
