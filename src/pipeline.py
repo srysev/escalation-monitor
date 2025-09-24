@@ -7,11 +7,13 @@ try:
     from .feeds import BundeswehrFeed, NatoFeed, AuswaertigesAmtFeed, AftershockFeed, RussianEmbassyFeed, RBCPoliticsFeed, JungeWeltFeed, FrontexFeed
     from .feeds.base import to_iso_utc
     from .scoring import calculate_escalation_score
+    from .storage import save_escalation_report
 except ImportError:
     # For direct execution
     from feeds import BundeswehrFeed, NatoFeed, AuswaertigesAmtFeed, AftershockFeed, RussianEmbassyFeed, RBCPoliticsFeed, JungeWeltFeed, FrontexFeed
     from feeds.base import to_iso_utc
     from scoring import calculate_escalation_score
+    from storage import save_escalation_report
 
 
 def format_feed_results_as_markdown(results: List[Dict[str, Any]]) -> str:
@@ -131,6 +133,14 @@ async def run_daily_pipeline():
     escalation_result = await calculate_escalation_score(markdown_data)
     scoring_duration = time.time() - scoring_start
     print(f"Escalation score calculated in {scoring_duration:.2f} seconds")
+
+    # Save escalation result to storage
+    print("Saving escalation report...")
+    save_success = save_escalation_report(escalation_result)
+    if save_success:
+        print("Escalation report saved successfully")
+    else:
+        print("Failed to save escalation report")
 
     total_duration = feed_duration + scoring_duration
     print(f"Total pipeline duration: {total_duration:.2f} seconds")

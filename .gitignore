@@ -65,3 +65,6 @@ Thumbs.db
 
 # Vercel
 .vercel
+
+# Local reports (will be migrated to Vercel Blob later)
+src/reports/
