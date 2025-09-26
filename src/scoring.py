@@ -9,6 +9,7 @@ from agno.agent import Agent
 from agno.models.xai import xAI
 from agno.models.perplexity import Perplexity
 from agno.models.openai import OpenAIResponses
+from agno.models.anthropic import Claude
 
 try:
     from .feeds.base import to_iso_utc
@@ -19,6 +20,7 @@ except ImportError:
 # LLM Model Configuration - change this to use a different model/provider
 grok = xAI(
     id="grok-4-fast-reasoning-latest",
+    temperature=0,
     search_parameters={
         "mode": "on",
         "max_search_results": 29,
@@ -27,22 +29,89 @@ grok = xAI(
 )
 perplexity = Perplexity(id="sonar-deep-research")
 openai = OpenAIResponses(id="o4-mini")
+claude = Claude(id="claude-opus-4-1-20250805", temperature=0,
+    max_tokens=8000,
+    thinking={
+        "type": "enabled",
+        "budget_tokens": 6000
+    },)
 
 LLM_MODEL = grok
 TOOLS = None  # [{"type": "web_search_preview"}]
 
 ESCALATION_SCALA = """
 ESKALATIONSSKALA (1-10):
+
 1 = BASELINE: Normale diplomatische Spannungen
-2 = FRICTION: Verschärfte Rhetorik, isolierte Vorfälle  
+   • Militärisch: Routineübungen im normalen Umfang
+   • Diplomatisch: Funktionierende Kommunikationskanäle
+   • Wirtschaftlich: Normale Handelsbeziehungen
+   • Gesellschaftlich: Keine besonderen Vorkommnisse
+   • Für Russen in DE: Keinerlei Einschränkungen
+
+2 = FRICTION: Verschärfte Rhetorik, isolierte Vorfälle
+   • Militärisch: Erhöhte Aufklärungsflüge, verstärkte Patrouillen
+   • Diplomatisch: Verbale Proteste, einzelne Diplomaten-Ausweisungen
+   • Wirtschaftlich: Diskussion über mögliche Sanktionen
+   • Gesellschaftlich: Vereinzelte Medienberichte über Spannungen
+   • Für Russen in DE: Keine offiziellen Maßnahmen, evt. längere Visa-Bearbeitung
+
 3 = TENSION: Militärübungen beider Seiten, erhöhte Cyber-Aktivität
+   • Militärisch: Angekündigte Großübungen (>10.000 Soldaten)
+   • Diplomatisch: Gegenseitige Vorwürfe auf UN/OSZE-Ebene
+   • Wirtschaftlich: Erste sektorale Sanktionen
+   • Gesellschaftlich: Erhöhte Medienaufmerksamkeit
+   • Cyber: Vermehrte DDoS-Angriffe, Phishing-Kampagnen
+   • Für Russen in DE: Verschärfte Visa-Prüfungen
+
 4 = ALERT: Sanktionsverschärfungen, erste Reiserestriktionen
+   • Militärisch: Verlängerte Übungen, Forward Deployments
+   • Diplomatisch: Konsultationen abgebrochen, Botschafter-Recall möglich
+   • Wirtschaftlich: Breite Sanktionen, erste Finanzrestriktionen
+   • Gesellschaftlich: BBK gibt Vorsorge-Empfehlungen
+   • Für Russen in DE: Kontoeröffnungen erschwert, Reisebeschränkungen
+
 5 = ELEVATED: Erhöhte Alarmbereitschaft, KRITIS-Störungen
+   • Militärisch: NATO Enhanced Vigilance Activities, Artikel 4 möglich
+   • Diplomatisch: Mehrere Botschaften schließen Konsularabteilungen
+   • Wirtschaftlich: SWIFT-Einschränkungen, Energie-Lieferstopps drohen
+   • Gesellschaftlich: Warntag-Tests, Hamsterkauf-Empfehlungen
+   • Cyber: Erfolgreiche Angriffe auf KRITIS (Strom/Wasser <24h Ausfall)
+   • Für Russen in DE: Meldepflicht diskutiert, erste Bank-Kündigungen
+
 6 = HIGH: Systematische Cyber-Angriffe, Grenzschließungen
+   • Militärisch: Artikel 4 aktiviert, Truppen an Grenzen verlegt
+   • Diplomatisch: Botschaften reduzieren Personal drastisch
+   • Wirtschaftlich: Umfassende Finanz-Sanktionen, Vermögenseinfrierung
+   • Gesellschaftlich: Sirenen-Tests, Evakuierungspläne veröffentlicht
+   • Cyber: Mehrtägige KRITIS-Ausfälle, Attribution bestätigt
+   • Für Russen in DE: Ausreisesperren möglich, Kontensperrungen
+
 7 = SEVERE: Teilmobilisierung, Kapitalkontrollen diskutiert
+   • Militärisch: Reservisten-Einberufung, NATO Response Force aktiviert
+   • Diplomatisch: Nur noch Notfall-Kommunikation
+   • Wirtschaftlich: Bank-Runs beginnen, Kapitalverkehrskontrollen vorbereitet
+   • Gesellschaftlich: Panik-Käufe, Treibstoff-Rationierung diskutiert
+   • Für Russen in DE: Registrierungspflicht, Bewegungseinschränkungen
+
 8 = CRITICAL: Direkte militärische Kontakte, Bankrun-Gefahr
+   • Militärisch: Erste Schusswechsel/Abschüsse, Artikel 5 vorbereitet
+   • Diplomatisch: Kriegsdrohungen ausgesprochen
+   • Wirtschaftlich: Börsen-Handelsaussetzungen, Bankfeiertage möglich
+   • Gesellschaftlich: Ausgangssperren in Grenzgebieten
+   • Für Russen in DE: Internierungslager vorbereitet, Vermögen eingefroren
+
 9 = EMERGENCY: Offene Feindseligkeiten, Internierungen möglich
+   • Militärisch: Kampfhandlungen begonnen, Artikel 5 ausgelöst
+   • Diplomatisch: Diplomatische Beziehungen abgebrochen
+   • Wirtschaftlich: Wirtschaft auf Kriegsmodus, Rationierung
+   • Gesellschaftlich: Mobilmachung, Zivilschutz-Alarm
+   • Für Russen in DE: Internierungen beginnen, vollständige Vermögenskonfiszierung
+
 10 = WARTIME: Kriegszustand erklärt oder de facto
+   • Vollständiger Krieg zwischen NATO und Russland
+   • Kriegsrecht/Notstandsgesetze in Kraft
+   • Für Russen in DE: Vollständige Internierung als "feindliche Ausländer"
 """
 
 
@@ -386,7 +455,7 @@ Qualität und Neutralität der bestehenden Analyse sicherzustellen.
     ]
 
     agent = Agent(
-        model=LLM_MODEL,
+        model=claude,
         description=description,
         instructions=instructions,
         output_schema=EscalationScore,

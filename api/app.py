@@ -18,8 +18,16 @@ def dashboard(request: Request):
     # Skala parsen
     scale_lines = ESCALATION_SCALA.strip().split('\n')
     scale_levels = []
+    current_level = None
+
     for line in scale_lines:
-        if '=' in line and ':' in line:
+        # Hauptdefinition erkennen: "NUMMER = LABEL: Beschreibung"
+        if '=' in line and ':' in line and not line.startswith(' ') and not line.startswith('\t'):
+            # Vorherige Stufe abschließen, falls vorhanden
+            if current_level:
+                scale_levels.append(current_level)
+
+            # Neue Stufe beginnen
             parts = line.split('=', 1)
             if len(parts) == 2:
                 num = parts[0].strip()
@@ -28,13 +36,20 @@ def dashboard(request: Request):
                     label = rest[0].strip()
                     desc = rest[1].strip()
                     try:
-                        scale_levels.append({
+                        current_level = {
                             "number": int(num),
                             "label": label,
                             "description": desc
-                        })
+                        }
                     except ValueError:
-                        pass
+                        current_level = None
+        elif current_level and line.strip() and (line.startswith('   •') or line.startswith('   ') or line.startswith('\t')):
+            # Detail-Zeile zur aktuellen Stufe hinzufügen
+            current_level["description"] += "\n" + line
+
+    # Letzte Stufe hinzufügen
+    if current_level:
+        scale_levels.append(current_level)
 
     # Timestamp formatieren
     if report and "timestamp" in report:
