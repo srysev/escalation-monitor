@@ -111,6 +111,13 @@ DIREKTE KONFRONTATION:
 - GPS-Jamming Vorfälle
 """,
         """
+QUELLEN-PRIORITÄT:
+1. NATO.int, SHAPE, nationale Verteidigungsministerien
+2. ISW, RUSI, DGAP (Think Tanks)
+3. Reuters, AP (verifizierende Quellen)
+4. OSINT-Analysten (mit Vorsicht)
+""",
+        """
 BEWERTUNGSMETHODIK:
 
 1. Erfasse GESAMTBILD, nicht nur Schlagzeilen
@@ -180,12 +187,26 @@ INTERNATIONALE FOREN:
 - OSZE: Funktionsfähig oder paralysiert?
 - G20/andere: Russland noch dabei?
 
+SANKTIONEN & RESTRIKTIONEN:
+- Neue Sanktionspakete (Umfang, Sektoren)
+- Visa-Regime (Tourist/Business/Diplomatic)
+- Überflugrechte/Transitverbote
+""",
+        """
 RHETORIK-ANALYSE:
+
+KLASSIFIZIERUNG:
 - Normale diplomatische Sprache
 - "Tiefe Besorgnis" / "Inakzeptabel"
 - "Schwerwiegende Konsequenzen" / "Rote Linien"
 - "Militärische Antwort" / "Alle Optionen"
 - Kriegsdrohungen / Nuklear-Rhetorik
+
+QUELLEN FÜR STATEMENTS:
+- Außenministerien (direkte Statements)
+- Präsidenten/Premier-Äußerungen
+- UN-Reden und Sicherheitsrat-Sitzungen
+- Presse-Briefings (State Dept, MFA Russia)
 """,
         """
 GEWICHTUNG:
@@ -250,7 +271,15 @@ ENERGIE-DIMENSION:
 - Preisobergrenzen (funktionieren sie?)
 - Alternative Lieferanten (Norwegen, USA, Katar)
 
+GEGENSANKTIONEN:
+- Russische Gegenlisten
+- Rohstoff-Exportstopps (Titan, Neon, etc.)
+- Rubel-Zahlungsforderungen
+- Nationalisierungen westlicher Assets
+""",
+        """
 WIRTSCHAFTLICHE RESILIENZ:
+
 NATO/EU-SEITE:
 - Energiespeicher-Füllstände
 - Industrieproduktion (Rezession?)
@@ -262,6 +291,19 @@ RUSSLAND:
 - Import-Substitution erfolgreich?
 - Grauimporte über Drittstaaten
 - Kriegswirtschaft-Anteil am BIP
+
+AUSWEICHSTRATEGIEN:
+- Schattenflotte für Öl
+- Krypto für Zahlungen
+- Dreieckshandel über Dubai/Türkei
+- Parallelimporte über Kasachstan
+""",
+        """
+KRITISCHE SCHWELLEN:
+- Öl unter $60/Barrel = Russland unter Druck
+- Gas-Speicher EU unter 30% = Panik
+- Rubel über 120/$ = Finanzstress
+- Inflation über 10% = Sozialer Druck
 """
     ]
 
@@ -322,12 +364,41 @@ GESELLSCHAFTLICHE REAKTIONEN:
 - Auswanderungsberatung: Nachfrage?
 - Waffenschein-Anträge: Anstieg?
 - Goldkäufe: Flucht in Sachwerte?
-
+""",
+        """
 WEHRBEREITSCHAFT:
 - Wehrpflicht-Umfragen (Zustimmung?)
 - Freiwilligen-Meldungen Bundeswehr
 - Reservisten-Übungen (Teilnahme?)
 - Zivilschutz-Kurse (ausgebucht?)
+
+STIMMUNGS-INDIKATOREN:
+- Friedensdemos vs. Aufrüstungsforderungen
+- Putsch-/Umsturz-Gerüchte
+- Prepper-Community-Aktivität
+- Kirchen-Friedensgebete (Zunahme?)
+""",
+        """
+RECHERCHE-ANSÄTZE:
+- "Bundesamt Bevölkerungsschutz" aktuelle Mitteilungen
+- "Hamsterkäufe Deutschland" + aktueller Monat
+- "Wehrpflicht Umfrage" neueste Zahlen
+- "Bunker Deutschland Bestandsaufnahme"
+- "Warntag 2025" Ergebnisse
+- "Blackout Vorbereitung" Stromausfall
+- Lokale Medien in Grenzregionen (Polen-Grenze)
+
+SOCIAL MEDIA MONITORING:
+- Twitter/X: #Kriegsgefahr #WW3 Trends
+- Telegram: Prepper-Gruppen Aktivität
+- Reddit: r/de Stimmung zu Krieg
+- Facebook: Bürgerwehr-Gruppen?
+
+KRITISCHE SCHWELLEN:
+- Hamsterkäufe = Score 5+
+- Wehrpflicht konkret = Score 6+
+- Erste Evakuierungen = Score 7+
+- Bank-Runs = Score 8+
 """
     ]
 
@@ -375,7 +446,22 @@ AUFENTHALTSRECHT:
 - Familiennachzug: Noch erlaubt?
 - Arbeitserlaubnis: Einschränkungen?
 
+MELDEWESEN:
+- Registrierungspflichten (neue Auflagen?)
+- Adressänderungen (Genehmigung nötig?)
+- Ausreise (Erlaubnis erforderlich?)
+- Grenzkontrollen (besondere Prüfung?)
+
+HISTORISCHE PRÄZEDENZFÄLLE:
+- WK1: Ruhleben-Lager (4.273 Briten interniert)
+- WK2: US-Japaner (110.000 interniert)
+- Recherchiere aktuelle Diskussionen dazu
+- "Enemy Alien Act" - Diskutiert in EU?
+""",
+        """
 FINANZIELLE DIMENSION:
+
+BANKING:
 - Kontenkündigungen (welche Banken?)
 - Neue Konten (noch möglich wo?)
 - Überweisungen nach/aus Russland
@@ -383,6 +469,8 @@ FINANZIELLE DIMENSION:
 - Vermögenseinfrierungen (ab welcher Summe?)
 
 DISKRIMINIERUNGS-MONITORING:
+
+DOKUMENTIERTE FÄLLE:
 - Wohnungskündigungen
 - Arbeitgeber-Diskriminierung
 - Schulen/Kitas (Kinder betroffen?)
@@ -449,14 +537,16 @@ REVIEW-PROTOKOLL:
 - Militärische Eskalation → Diplomatische Folgen?
 - Wirtschaftsdruck → Gesellschaftliche Reaktion?
 - Diskriminierung Russen → Diplomatische Spannung?
+- Synergie-Effekte zwischen Dimensionen erkennen
 
 4. GEWICHTUNGS-VALIDIERUNG:
-Mathematische Gewichtung:
+Vorgeschlagene Gewichtung:
 - Militär: 30% (direkte Gefahr)
 - Diplomatie: 20% (Konfliktmanagement)
 - Wirtschaft: 20% (Druckmittel)
 - Gesellschaft: 15% (Mobilisierung)
 - Russen in DE: 15% (Frühwarnsystem)
+Passe bei Bedarf an, wenn eine Dimension kritisch wird.
 """,
         """
 NEUTRALITÄTS-CHECKLISTE:
@@ -465,24 +555,78 @@ SPRACHLICHE NEUTRALITÄT:
 ❌ "Russische Aggression" → ✅ "Russische Militäraktivität"
 ❌ "NATO-Verteidigung" → ✅ "NATO-Truppenverlegung"
 ❌ "Provokation" → ✅ "Von [Seite] als Provokation bezeichnet"
+❌ "Gerechtfertigt" → ✅ "Von [Seite] als gerechtfertigt dargestellt"
 
 PERSPEKTIVEN-BALANCE:
 - Jedes Ereignis: Wie sehen es BEIDE Seiten?
-- NATO sagt X → Russland sagt Y
-- Neutrale Drittparteien einbeziehen
+- NATO sagt X → Russland sagt Y → Realität liegt dazwischen
+- Neutrale Drittparteien einbeziehen (UN, Schweiz, Indien)
 
+FAKTEN VS. INTERPRETATION:
+- Fakt: "10.000 Soldaten verlegt"
+- NATO-Interpretation: "Verteidigungsmaßnahme"
+- Russische Interpretation: "Aggressionsvorbereitung"
+- Deine Darstellung: "Truppenverlegung erfolgt, unterschiedliche Bewertungen"
+""",
+        """
+KRITISCHE SCHWELLENWERTE:
+
+Diese Ereignisse erzwingen Minimum-Scores:
+- Grenze geschlossen: min. 4.0
+- NATO Artikel 4: min. 5.0
+- Massenhafte Cyber-Ausfälle: min. 5.5
+- Reservisten-Einberufung: min. 6.0
+- Diplomatische Beziehungen abgebrochen: min. 7.0
+- Direkter militärischer Kontakt: min. 8.0
+- Artikel 5 ausgelöst: min. 9.0
+
+ABER: Prüfe ob Dimensions-Scores diese Realität widerspiegeln!
+""",
+        """
 SYNTHESE-METHODIK:
+
 1. MATHEMATISCHE BASELINE:
    Overall = (Mil*0.30 + Dip*0.20 + Eco*0.20 + Soc*0.15 + Rus*0.15)
 
 2. REALITÄTS-CHECK:
    - Entspricht das Ergebnis der gefühlten Gesamtlage?
+   - Fehlen kritische Aspekte in den Dimensionen?
+   - Wurden Wechselwirkungen unterschätzt?
+
+3. ANPASSUNGEN (wenn nötig):
    - Maximal ±0.5 Punkte vom mathematischen Wert
    - JEDE Anpassung explizit begründen
+   - Bei größerer Abweichung: Dimensions-Scores hinterfragen
 
-3. FINALER NEUTRALITÄTS-CHECK:
+4. FINALER NEUTRALITÄTS-CHECK:
    - Würden beide Seiten diese Bewertung als fair empfinden?
    - Ist die Sprache frei von Wertungen?
+   - Wurden alle Perspektiven berücksichtigt?
+""",
+        """
+OUTPUT-ANFORDERUNGEN:
+
+SITUATION_SUMMARY:
+- Max. 10 Sätze
+- Absolut neutral formuliert
+- Beide Perspektiven wo relevant
+- Keine Dramatisierung
+
+DIMENSIONS-REVIEW:
+- Für jede Dimension: Score validieren oder anpassen
+- Rationale neutral umformulieren
+- Bias entfernen
+- Wechselwirkungen nennen
+
+OVERALL_SCORE:
+- Mathematische Basis transparent machen
+- Anpassungen begründen
+- Unsicherheiten benennen
+
+KRITISCH:
+- Du bist die letzte Qualitätskontrolle
+- Lieber zu neutral als tendenziös
+- Im Zweifel konservativer bewerten
 """
     ]
 
