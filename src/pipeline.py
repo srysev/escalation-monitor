@@ -6,13 +6,13 @@ import httpx
 try:
     from .feeds import BundeswehrFeed, NatoFeed, AuswaertigesAmtFeed, AftershockFeed, RussianEmbassyFeed, RBCPoliticsFeed, JungeWeltFeed, FrontexFeed
     from .feeds.base import to_iso_utc
-    from .scoring import calculate_escalation_score
+    from .scoring3 import calculate_escalation_score
     from .storage import save_escalation_report
 except ImportError:
     # For direct execution
     from feeds import BundeswehrFeed, NatoFeed, AuswaertigesAmtFeed, AftershockFeed, RussianEmbassyFeed, RBCPoliticsFeed, JungeWeltFeed, FrontexFeed
     from feeds.base import to_iso_utc
-    from scoring import calculate_escalation_score
+    from scoring3 import calculate_escalation_score
     from storage import save_escalation_report
 
 
