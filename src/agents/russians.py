@@ -81,9 +81,12 @@ HISTORISCHE PRÄZEDENZFÄLLE:
 """
 ]
 
-def build_prompt(date: str, rss_data: str) -> str:
+def build_prompt(date: str, research_data: str, rss_data: str) -> str:
     return f"""
 LAGE RUSSISCHER STAATSBÜRGER IN DEUTSCHLAND - {date}
+
+ZENTRALE RESEARCH-ERGEBNISSE:
+{research_data}
 
 RSS-FEEDS (Relevante Meldungen):
 {rss_data}

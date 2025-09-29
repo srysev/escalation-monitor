@@ -8,5 +8,6 @@ from .russian_embassy import RussianEmbassyFeed
 from .rbc_politics import RBCPoliticsFeed
 from .junge_welt import JungeWeltFeed
 from .frontex import FrontexFeed
+from .kommersant import KommersantFeed
 
-__all__ = ["FeedSource", "BundeswehrFeed", "NatoFeed", "AuswaertigesAmtFeed", "AftershockFeed", "RussianEmbassyFeed", "RBCPoliticsFeed", "JungeWeltFeed", "FrontexFeed"]
+__all__ = ["FeedSource", "BundeswehrFeed", "NatoFeed", "AuswaertigesAmtFeed", "AftershockFeed", "RussianEmbassyFeed", "RBCPoliticsFeed", "JungeWeltFeed", "FrontexFeed", "KommersantFeed"]

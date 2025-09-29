@@ -93,9 +93,12 @@ KRITISCHE SCHWELLEN:
 """
 ]
 
-def build_prompt(date: str, rss_data: str) -> str:
+def build_prompt(date: str, research_data: str, rss_data: str) -> str:
     return f"""
 GESELLSCHAFTLICHE LAGEBEURTEILUNG - {date}
+
+ZENTRALE RESEARCH-ERGEBNISSE:
+{research_data}
 
 RSS-FEEDS (Gesellschaftsnachrichten):
 {rss_data}

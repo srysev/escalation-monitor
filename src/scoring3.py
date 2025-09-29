@@ -7,49 +7,17 @@ from datetime import datetime
 try:
     from .feeds.base import to_iso_utc
     from .agents import AGENTS
-    from .agents.review import create_agent as create_review_agent
+    from .agents.review import create_agent as create_review_agent, build_prompt
+    from .agents.research import create_agent as create_research_agent
+    from .agents.research import build_research_prompt
     from .schemas import DimensionScore, OverallAssessment
 except ImportError:
     from feeds.base import to_iso_utc
     from agents import AGENTS
-    from agents.review import create_agent as create_review_agent
+    from agents.review import create_agent as create_review_agent, build_prompt
+    from agents.research import create_agent as create_research_agent
+    from agents.research import build_research_prompt
     from schemas import DimensionScore, OverallAssessment
-
-def review_run_input(date: str, rss_data: str, dim_results: Dict, calculated_score: float) -> str:
-    return f"""
-META-REVIEW ESKALATIONSLAGE - {date}
-
-DIMENSIONS-ERGEBNISSE:
-Militärisch: Score {dim_results['military']['score']:.1f}
-{dim_results['military']['rationale']}
-
-Diplomatisch: Score {dim_results['diplomatic']['score']:.1f}
-{dim_results['diplomatic']['rationale']}
-
-Wirtschaftlich: Score {dim_results['economic']['score']:.1f}
-{dim_results['economic']['rationale']}
-
-Gesellschaftlich: Score {dim_results['societal']['score']:.1f}
-{dim_results['societal']['rationale']}
-
-Russen in DE: Score {dim_results['russians']['score']:.1f}
-{dim_results['russians']['rationale']}
-
-MATHEMATISCH BERECHNETER SCORE: {calculated_score:.2f}
-(Mil*0.30 + Dip*0.20 + Eco*0.20 + Soc*0.15 + Rus*0.15)
-
-ORIGINAL RSS-FEEDS (zur Verifikation):
-{rss_data}
-
-DEIN AUFTRAG:
-1. Prüfe Konsistenz zwischen den Dimensionen
-2. Identifiziere und korrigiere jeglichen Bias
-3. Stelle absolute Neutralität in allen Formulierungen sicher
-4. Validiere oder adjustiere den Gesamtscore (max ±0.5)
-5. Erstelle neutrale Summary und überarbeitete Begründungen
-
-REMEMBER: Du bist die Qualitätssicherung für Objektivität und Ausgewogenheit.
-"""
 
 async def calculate_escalation_score(rss_markdown: str) -> Dict[str, Any]:
     """
@@ -66,11 +34,22 @@ async def calculate_escalation_score(rss_markdown: str) -> Dict[str, Any]:
     try:
         current_date = datetime.now().strftime("%Y-%m-%d")
 
+        # Phase 0: Research over the last news
+        research_agent = create_research_agent()
+        research_run_input = build_research_prompt(date=current_date, rss_markdown=rss_markdown)
+        research_response = research_agent.run(research_run_input)
+
+        # Extract research data content, fallback if failed
+        if hasattr(research_response, 'content') and research_response.content:
+            research_data = research_response.content
+        else:
+            research_data = "Research-Daten nicht verfügbar"
+
         # Phase 1: Create all dimension agents and run in parallel
         dimension_tasks = {}
         for name, agent_module in AGENTS.items():
             agent = agent_module.create_agent()
-            run_input = agent_module.build_prompt(current_date, rss_markdown)
+            run_input = agent_module.build_prompt(current_date, research_data, rss_markdown)
             dimension_tasks[name] = asyncio.create_task(run_agent_async(agent, run_input))
 
         # Wait for all dimension agents to complete
@@ -103,7 +82,7 @@ async def calculate_escalation_score(rss_markdown: str) -> Dict[str, Any]:
 
         # Phase 3: Review agent synthesis
         review_agent = create_review_agent()
-        review_input = review_run_input(current_date, rss_markdown, dimension_results, calculated_score)
+        review_input = build_prompt(current_date, research_data, rss_markdown, dimension_results, calculated_score)
         final_response = await review_agent.arun(review_input)
 
         if hasattr(final_response, 'content') and isinstance(final_response.content, OverallAssessment):

@@ -6,7 +6,7 @@ from agno.models.xai import xAI
 from agno.models.anthropic import Claude
 
 
-def create_research_model() -> xAI:
+def create_research_model(search_results: int = 16) -> xAI:
     """
     Create xAI model for research agents with search capabilities.
 
@@ -23,7 +23,7 @@ def create_research_model() -> xAI:
         temperature=0,
         search_parameters={
             "mode": "on",
-            "max_search_results": 16,
+            "max_search_results": search_results,
             "return_citations": False,
         },
     )

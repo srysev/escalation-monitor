@@ -75,9 +75,12 @@ NEUTRALITÄT:
 """
 ]
 
-def build_prompt(date: str, rss_data: str) -> str:
+def build_prompt(date: str, research_data: str, rss_data: str) -> str:
     return f"""
 MILITÄRISCHE LAGEBEURTEILUNG - {date}
+
+ZENTRALE RESEARCH-ERGEBNISSE:
+{research_data}
 
 RSS-FEEDS (Offizielle Perspektiven und ergänzende Quellen):
 {rss_data}
@@ -118,9 +121,10 @@ def main():
     # Test with empty RSS message
     current_date = datetime.now().strftime("%Y-%m-%d")
     empty_rss_message = "RSS-Feeds konnten nicht geladen werden und werden daher ignoriert."
+    empty_research_message = "Research-Daten nicht verfügbar."
 
     # Build prompt and get response
-    prompt = build_prompt(current_date, empty_rss_message)
+    prompt = build_prompt(current_date, empty_research_message, empty_rss_message)
 
     print(f"Military Agent Test - {current_date}")
     print(f"Testing with empty RSS data...")

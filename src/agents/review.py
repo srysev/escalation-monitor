@@ -1,4 +1,5 @@
 # src/agents/review.py
+from typing import Dict
 from agno.agent import Agent
 
 try:
@@ -153,3 +154,43 @@ def create_agent() -> Agent:
         output_schema=OverallAssessment,
         markdown=False,
     )
+
+
+def build_prompt(date: str, research_data: str, rss_data: str, dim_results: Dict, calculated_score: float) -> str:
+    return f"""
+META-REVIEW ESKALATIONSLAGE - {date}
+
+DIMENSIONS-ERGEBNISSE:
+Militärisch: Score {dim_results['military']['score']:.1f}
+{dim_results['military']['rationale']}
+
+Diplomatisch: Score {dim_results['diplomatic']['score']:.1f}
+{dim_results['diplomatic']['rationale']}
+
+Wirtschaftlich: Score {dim_results['economic']['score']:.1f}
+{dim_results['economic']['rationale']}
+
+Gesellschaftlich: Score {dim_results['societal']['score']:.1f}
+{dim_results['societal']['rationale']}
+
+Russen in DE: Score {dim_results['russians']['score']:.1f}
+{dim_results['russians']['rationale']}
+
+MATHEMATISCH BERECHNETER SCORE: {calculated_score:.2f}
+(Mil*0.30 + Dip*0.20 + Eco*0.20 + Soc*0.15 + Rus*0.15)
+
+ZENTRALE RESEARCH-ERGEBNISSE (überwiegend pro-westlich, Achtung: Bias!):
+{research_data}
+
+ORIGINAL RSS-FEEDS (zur Verifikation und Bias-Korrektur!):
+{rss_data}
+
+DEIN AUFTRAG:
+1. Prüfe Konsistenz zwischen den Dimensionen
+2. Identifiziere und korrigiere jeglichen Bias
+3. Stelle absolute Neutralität in allen Formulierungen sicher
+4. Validiere oder adjustiere den Gesamtscore (max ±0.5)
+5. Erstelle eine ausführliche neutrale Summary über die aktuelle Gesamtlage und die neusten relevanten Ereignisse und überarbeitete Begründungen
+
+REMEMBER: Du bist die Qualitätssicherung für Objektivität und Ausgewogenheit.
+"""
