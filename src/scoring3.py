@@ -840,7 +840,7 @@ async def calculate_escalation_score(rss_markdown: str) -> Dict[str, Any]:
         # Phase 4: Review agent synthesis
         review_agent = create_review_agent()
         review_input = review_run_input(current_date, rss_markdown, dimension_results, calculated_score)
-        final_response = await run_agent_async(review_agent, review_input)
+        final_response = await review_agent.arun(review_input)
 
         if hasattr(final_response, 'content') and isinstance(final_response.content, OverallAssessment):
             assessment_data = final_response.content.model_dump()
@@ -878,7 +878,7 @@ async def calculate_escalation_score(rss_markdown: str) -> Dict[str, Any]:
 
 async def run_agent_async(agent: Agent, input_text: str):
     """Run agent asynchronously"""
-    return agent.run(input_text)
+    return await agent.arun(input_text)
 
 def get_escalation_level(score: float) -> str:
     """Convert numerical score to level name"""
