@@ -1,11 +1,12 @@
 # src/agents/review.py
 from agno.agent import Agent
-from agno.models.anthropic import Claude
 
 try:
     from ..schemas import OverallAssessment
+    from .models import create_review_model
 except ImportError:
     from schemas import OverallAssessment
+    from models import create_review_model
 
 DESCRIPTION = """
 Du bist ein Meta-Analyst für Eskalationsbewertung mit absoluter Neutralitätspflicht.
@@ -143,15 +144,7 @@ KRITISCH:
 ]
 
 def create_agent() -> Agent:
-    model = Claude(
-        id="claude-sonnet-4-20250514",
-        temperature=0,
-        max_tokens=15000,
-        thinking={
-            "type": "enabled",
-            "budget_tokens": 10000
-        }
-    )
+    model = create_review_model()
 
     return Agent(
         model=model,

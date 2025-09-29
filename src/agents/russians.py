@@ -1,11 +1,12 @@
 # src/agents/russians.py
 from agno.agent import Agent
-from agno.models.xai import xAI
 
 try:
     from ..schemas import DimensionScore
+    from .models import create_research_model
 except ImportError:
     from schemas import DimensionScore
+    from models import create_research_model
 
 DESCRIPTION = """
 Du bist ein Spezialist für die Situation russischer Staatsbürger in Deutschland.
@@ -101,16 +102,7 @@ WICHTIG: Sei hier besonders sensibel für frühe Warnzeichen.
 """
 
 def create_agent() -> Agent:
-    model = xAI(
-        id="grok-4-fast-reasoning-latest",
-        temperature=0,
-        search_parameters={
-            "mode": "on",
-            "max_search_results": 29,
-            "return_citations": False,
-        },
-        max_tokens=16000
-    )
+    model = create_research_model()
 
     return Agent(
         model=model,

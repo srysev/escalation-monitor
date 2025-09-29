@@ -1,11 +1,12 @@
 # src/agents/military.py
 from agno.agent import Agent
-from agno.models.xai import xAI
 
 try:
     from ..schemas import DimensionScore
+    from .models import create_research_model
 except ImportError:
     from schemas import DimensionScore
+    from models import create_research_model
 
 DESCRIPTION = """
 Du bist ein militärischer Lageanalyst spezialisiert auf NATO-Russland Militärdynamiken.
@@ -94,15 +95,7 @@ Gib einen Score und eine neutrale Begründung.
 """
 
 def create_agent() -> Agent:
-    model = xAI(
-        id="grok-4-fast-reasoning-latest",
-        temperature=0,
-        search_parameters={
-            "mode": "on",
-            "max_search_results": 16,
-            "return_citations": False,
-        }
-    )
+    model = create_research_model()
 
     return Agent(
         model=model,
