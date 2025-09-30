@@ -31,6 +31,19 @@ class FeedSource(ABC):
         self.source_name = source_name
         self.feed_url = feed_url
 
+    def get_headers(self) -> Dict[str, str]:
+        """
+        Return HTTP headers for this feed source.
+        Child classes can override for feed-specific headers.
+        """
+        return {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'application/rss+xml, application/atom+xml, application/xml, text/xml, */*',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Cache-Control': 'no-cache',
+        }
+
     @abstractmethod
     def map_entry(self, entry: Dict[str, Any]) -> Optional[FeedItem]:
         """

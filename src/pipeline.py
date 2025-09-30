@@ -83,17 +83,18 @@ async def process_all_feeds() -> List[Dict[str, Any]]:
         # Add more feeds here as they become available
     ]
 
-    # Custom headers for sites that require browser-like requests
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-        'Accept': 'application/rss+xml, application/xml, text/xml',
-        'Accept-Language': 'en-US,en;q=0.9',
-    }
+    # Process all feeds in parallel with feed-specific headers
+    tasks = []
+    for feed in feeds:
+        # Create client with feed-specific headers
+        feed_headers = feed.get_headers()
+        client = httpx.AsyncClient(headers=feed_headers)
+        tasks.append((feed, client))
 
-    async with httpx.AsyncClient(headers=headers) as client:
-        # Process all feeds in parallel
-        tasks = [feed.fetch(client) for feed in feeds]
-        results = await asyncio.gather(*tasks, return_exceptions=True)
+    try:
+        # Execute all feed fetches in parallel
+        fetch_tasks = [feed.fetch(client) for feed, client in tasks]
+        results = await asyncio.gather(*fetch_tasks, return_exceptions=True)
 
         # Handle any exceptions that occurred during processing
         processed_results = []
@@ -111,6 +112,11 @@ async def process_all_feeds() -> List[Dict[str, Any]]:
                 processed_results.append(result)
 
         return processed_results
+
+    finally:
+        # Close all httpx clients
+        for _, client in tasks:
+            await client.aclose()
 
 
 async def run_daily_pipeline():

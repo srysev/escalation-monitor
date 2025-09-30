@@ -90,9 +90,8 @@ class AuswaertigesAmtFeed(FeedSource):
         )
 
     def filter(self, items: List[FeedItem]) -> List[FeedItem]:
-        """Filter items to only include those from the last 3 months."""
-        # Calculate cutoff date (3 months = 90 days ago)
-        cutoff_date = dt.datetime.now(dt.timezone.utc) - timedelta(days=90)
+        """Filter items to only include those from the last X days"""
+        cutoff_date = dt.datetime.now(dt.timezone.utc) - timedelta(days=35)
 
         # Filter items by date
         filtered_items = [

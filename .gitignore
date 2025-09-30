@@ -68,3 +68,5 @@ Thumbs.db
 
 # Local reports (will be migrated to Vercel Blob later)
 src/reports/
+rss-markdown.md
+rss-markdown2.md

@@ -20,6 +20,15 @@ class RussianEmbassyFeed(FeedSource):
             feed_url="https://fetchrss.com/feed/aNKhK_-B6U4zaNKXXXURfdVl.rss"
         )
 
+    def get_headers(self) -> Dict[str, str]:
+        """Return Russian Embassy-specific headers."""
+        return {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'application/rss+xml, application/xml, text/xml, */*',
+            'Accept-Language': 'ru-RU,ru;q=0.9,de-DE,de;q=0.8,en;q=0.7',
+            'Accept-Encoding': 'gzip, deflate, br',
+        }
+
     def _parse_rfc822_date(self, date_str: str) -> Optional[dt.datetime]:
         """Parse RFC 822 date format: 'Tue, 23 Sep 2025 13:27:07 GMT'"""
         try:

@@ -20,6 +20,16 @@ class RBCPoliticsFeed(FeedSource):
             feed_url="https://rssexport.rbc.ru/rbcnews/news/30/full.rss"
         )
 
+    def get_headers(self) -> Dict[str, str]:
+        """Return RBC-specific headers."""
+        return {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'application/rss+xml, application/xml, text/xml, */*',
+            'Accept-Language': 'ru-RU,ru;q=0.9,en;q=0.8',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Referer': 'https://www.rbc.ru/',
+        }
+
     def _parse_rbc_date(self, date_str: str) -> Optional[dt.datetime]:
         """Parse RBC date format: 'Tue, 23 Sep 2025 16:47:08 +0300'"""
         try:
