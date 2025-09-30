@@ -1,6 +1,7 @@
 # src/feeds/frontex.py
 from __future__ import annotations
 import datetime as dt
+from datetime import timedelta
 from typing import Any, Dict, Optional, List
 
 try:
@@ -80,10 +81,16 @@ class FrontexFeed(FeedSource):
         )
 
     def filter(self, items: List[FeedItem]) -> List[FeedItem]:
-        """Filter items based on relevance criteria. Default: no filtering."""
-        # Default implementation: return all items
-        # Child classes can override for specific filtering logic
-        return items
+        """Filter items to only include those from the last X days"""
+        cutoff_date = dt.datetime.now(dt.timezone.utc) - timedelta(days=7)
+
+        # Filter items by date
+        filtered_items = [
+            item for item in items
+            if item.date >= cutoff_date
+        ]
+
+        return filtered_items
 
 
 async def main():
