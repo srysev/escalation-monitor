@@ -2,6 +2,7 @@
 from __future__ import annotations
 from typing import Dict, Any
 import asyncio
+import time
 from datetime import datetime
 
 try:
@@ -32,12 +33,17 @@ async def calculate_escalation_score(rss_markdown: str) -> Dict[str, Any]:
         Dict with result, timestamp, and escalation data or error message
     """
     try:
+        start_total = time.perf_counter()
         current_date = datetime.now().strftime("%Y-%m-%d")
 
         # Phase 0: Research over the last news
+        print("\n=== Phase 0: Research Agent ===")
+        start_phase0 = time.perf_counter()
         research_agent = create_research_agent()
         research_run_input = build_research_prompt(date=current_date, rss_markdown=rss_markdown)
         research_response = research_agent.run(research_run_input)
+        duration_phase0 = time.perf_counter() - start_phase0
+        print(f"Phase 0 completed in {duration_phase0:.3f}s")
 
         # Extract research data content, fallback if failed
         if hasattr(research_response, 'content') and research_response.content:
@@ -46,6 +52,8 @@ async def calculate_escalation_score(rss_markdown: str) -> Dict[str, Any]:
             research_data = "Research-Daten nicht verfügbar"
 
         # Phase 1: Create all dimension agents and run in parallel
+        print("\n=== Phase 1: Dimension Agents (Parallel) ===")
+        start_phase1 = time.perf_counter()
         dimension_tasks = {}
         for name, agent_module in AGENTS.items():
             agent = agent_module.create_agent()
@@ -66,7 +74,12 @@ async def calculate_escalation_score(rss_markdown: str) -> Dict[str, Any]:
                 print(f"Error in {name} agent: {str(e)}")
                 dimension_results[name] = {"score": 2.0, "rationale": f"{name} agent failed: {str(e)}"}
 
+        duration_phase1 = time.perf_counter() - start_phase1
+        print(f"Phase 1 completed in {duration_phase1:.3f}s")
+
         # Phase 2: Calculate weighted score
+        print("\n=== Phase 2: Weighted Score Calculation ===")
+        start_phase2 = time.perf_counter()
         weights = {
             'military': 0.30,
             'diplomatic': 0.20,
@@ -80,10 +93,26 @@ async def calculate_escalation_score(rss_markdown: str) -> Dict[str, Any]:
             calculated_score += result['score'] * weights[name]
         calculated_score = round(calculated_score, 1)
 
+        duration_phase2 = time.perf_counter() - start_phase2
+        print(f"Phase 2 completed in {duration_phase2:.3f}s")
+        print(f"Calculated weighted score: {calculated_score}")
+
         # Phase 3: Review agent synthesis
+        print("\n=== Phase 3: Review Agent Synthesis ===")
+        start_phase3 = time.perf_counter()
         review_agent = create_review_agent()
         review_input = build_prompt(current_date, research_data, rss_markdown, dimension_results, calculated_score)
         final_response = await review_agent.arun(review_input)
+
+        duration_phase3 = time.perf_counter() - start_phase3
+        print(f"Phase 3 completed in {duration_phase3:.3f}s")
+
+        duration_total = time.perf_counter() - start_total
+        print(f"\n=== Total Duration: {duration_total:.3f}s ===")
+        print(f"  Phase 0 (Research):        {duration_phase0:7.3f}s ({duration_phase0/duration_total*100:5.1f}%)")
+        print(f"  Phase 1 (Dimensions):      {duration_phase1:7.3f}s ({duration_phase1/duration_total*100:5.1f}%)")
+        print(f"  Phase 2 (Calculation):     {duration_phase2:7.3f}s ({duration_phase2/duration_total*100:5.1f}%)")
+        print(f"  Phase 3 (Review):          {duration_phase3:7.3f}s ({duration_phase3/duration_total*100:5.1f}%)")
 
         if hasattr(final_response, 'content') and isinstance(final_response.content, OverallAssessment):
             assessment_data = final_response.content.model_dump()
