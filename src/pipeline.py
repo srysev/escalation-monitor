@@ -133,6 +133,7 @@ async def run_daily_pipeline():
     # Format feed results as markdown for agent input
     print("Formatting feed data for escalation analysis...")
     markdown_data = format_feed_results_as_markdown(feed_results)
+    print(f"Markdown Data:\n\n{markdown_data}")
 
     # Calculate escalation score using the markdown data
     print("Calculating escalation score...")

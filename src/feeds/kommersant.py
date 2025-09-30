@@ -113,7 +113,7 @@ class KommersantFeed(FeedSource):
     def filter(self, items: List[FeedItem]) -> List[FeedItem]:
         """Filter items based on relevance criteria."""
         # Filter items from the last 7 days (for news feeds, shorter timeframe)
-        cutoff_date = dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=7)
+        cutoff_date = dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=1)
 
         filtered_items = [
             item for item in items

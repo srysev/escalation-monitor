@@ -1,5 +1,6 @@
 # src/agents/diplomatic.py
 from agno.agent import Agent
+from agno.tools.newspaper import NewspaperTools
 
 try:
     from ..schemas import DimensionScore
@@ -112,4 +113,6 @@ def create_agent() -> Agent:
         instructions=INSTRUCTIONS,
         output_schema=DimensionScore,
         markdown=False,
+        tools=[NewspaperTools()],
+        tool_call_limit=5,
     )

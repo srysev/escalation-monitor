@@ -50,6 +50,7 @@ async def calculate_escalation_score(rss_markdown: str) -> Dict[str, Any]:
             research_data = research_response.content
         else:
             research_data = "Research-Daten nicht verfügbar"
+        print(f"Research data:\n\n{research_data}")
 
         # Phase 1: Create all dimension agents and run in parallel
         print("\n=== Phase 1: Dimension Agents (Parallel) ===")

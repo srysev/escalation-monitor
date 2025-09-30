@@ -17,5 +17,5 @@ class DimensionReview(BaseModel):
 class OverallAssessment(BaseModel):
     """Overall escalation assessment with reviewed dimensions"""
     overall_score: float = Field(..., ge=1.0, le=10.0, description="Overall escalation score")
-    situation_summary: str = Field(..., description="Neutral summary of current situation")
+    situation_summary: str = Field(..., description="Neutral summary of current situation  using markdown formatting for structure")
     dimensions: List[DimensionReview] = Field(..., max_length=5, description="Reviewed dimension scores")

@@ -91,7 +91,7 @@ class AuswaertigesAmtFeed(FeedSource):
 
     def filter(self, items: List[FeedItem]) -> List[FeedItem]:
         """Filter items to only include those from the last X days"""
-        cutoff_date = dt.datetime.now(dt.timezone.utc) - timedelta(days=35)
+        cutoff_date = dt.datetime.now(dt.timezone.utc) - timedelta(days=7)
 
         # Filter items by date
         filtered_items = [

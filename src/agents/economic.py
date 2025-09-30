@@ -1,5 +1,6 @@
 # src/agents/economic.py
 from agno.agent import Agent
+from agno.tools.newspaper import NewspaperTools
 
 try:
     from ..schemas import DimensionScore
@@ -36,7 +37,7 @@ WIRTSCHAFTLICHE ESKALATIONSSKALA (1-10):
 SANKTIONS-INDIKATOREN:
 
 UMFANG:
-- Anzahl Sanktionspakete (EU bei #19?, US?)
+- Anzahl Sanktionspakete
 - Personen/Entitäten gelistet (Tausende?)
 - Sektoren betroffen (Energie, Finanz, Tech, etc.)
 - Drittstaaten-Compliance (China, Indien, Türkei?)
@@ -120,4 +121,6 @@ def create_agent() -> Agent:
         instructions=INSTRUCTIONS,
         output_schema=DimensionScore,
         markdown=False,
+        tools=[NewspaperTools()],
+        tool_call_limit=5,
     )

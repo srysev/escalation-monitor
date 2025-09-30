@@ -16,97 +16,50 @@ NEUTRALITÄT: Dokumentiere was geschah und wer was behauptet. Keine normativen W
 """
 
 INSTRUCTIONS = [
-    """RECHERCHE-SYSTEMATIK:
+    """RECHERCHE-SCHWERPUNKTE (letzte 72h):
 
-MILITÄRISCHE DIMENSION:
-Suche: Aktuelle Großmanöver (Größe, Ort, beteiligte Länder), neue Waffenstationierungen 
-(Raketen, Nuklearwaffen, Kampfflugzeuge), Grenzschließungen, Luftraum-/Seevorfälle, 
-Mobilisierungsindikatoren (Wehrpflicht-Debatten, Reservisten-Einberufungen)
-Quantifiziere: Truppenzahlen, Waffensysteme, Distanz zur Konfliktlinie
+1. MILITÄR: Manöver, Waffenstationierungen (nuklearfähig?), Grenzaktivitäten, Mobilisierung
+2. DIPLOMATIE: Kriegsrhetorik, Sanktionen, Artikel 4/5, Botschaftsstatus, Diplomaten-Ausweisungen
+3. WIRTSCHAFT: Sanktionspakete, SWIFT, Kontensperrungen, Energielieferungen
+4. GESELLSCHAFT: Zivilschutz, Hamsterkäufe, Wehrpflicht-Debatten
+5. RUSSEN IN DE: Visa, Kontokündigungen, Diskriminierung, Bundestag-Debatten
 
-DIPLOMATISCHE DIMENSION:
-Suche: Offizielle Statements zur Kriegsgefahr, neue Sanktionspakete, Status von Botschaften/Konsulaten, 
-Diplomaten-Ausweisungen, NATO Artikel 4/5 Aktivitäten, UN/OSZE Funktionsfähigkeit
-Erfasse: Wer sagt was? Neue Maßnahmen? Kommunikationskanäle noch offen?
+KRITISCHE SIGNALE (immer dokumentieren):
+- False-Flag-Warnungen mit konkreten Details (Ort, Zeit, Methode)
+- Nuklearfähige Waffen (Tomahawk, ATACMS, Hyperschall)
+- NATO Artikel 4/5 Aktivitäten
+- Grenzschließungen
+- Direkte militärische Vorfälle
 
-WIRTSCHAFTLICHE DIMENSION:
-Suche: Neue Sanktionspakete (Nummer, betroffene Sektoren), Energiesituation (Pipelines, LNG), 
-SWIFT-Ausschlüsse, Kontensperrungen/Vermögenseinfrierungen, russische Gegensanktionen
-Quantifiziere: Eingefrorene Beträge, betroffene Banken/Personen, Preisentwicklungen
-
-GESELLSCHAFTLICHE DIMENSION:
-Suche: Zivilschutz-Aktivitäten, Sirenen-Tests, messbare Krisenindikatoren (Hamsterkäufe, 
-Bankabhebungen, Goldkäufe), Wehrpflicht-Umfragen, "Kriegsbereitschaft"-Narrative von 
-Politikern/Ex-Geheimdienstlern
-Erfasse: Konkrete Verhaltensänderungen, nicht nur Rhetorik
-
-RUSSISCHE STAATSBÜRGER IN DEUTSCHLAND:
-Suche: Visa-Verschärfungen, Kontenkündigungen, Meldepflicht-Diskussionen, 
-dokumentierte Diskriminierungsfälle, Bundestag-Debatten zu Aufenthaltsrecht
-Historischer Kontext: Nur wenn aktuell diskutiert
-
----
-
-INFORMATIONSKLASSIFIZIERUNG:
-
-✅ Verifizierte Fakten: Von mehreren Quellen bestätigt
-❓ Einzelbehauptungen: "Laut [Quelle] wird berichtet..."
-⚠️ Unklare Attribution: "Drohnen gesichtet. NATO sagt russisch, Russland bestreitet."
-📢 Statements/Warnungen: Neutral zitieren ohne Bewertung
-
-FALSE-FLAG-WARNUNGEN:
-Dokumentiere neutral wenn KONKRETE Details (Ort, Waffe, Zeitfenster) genannt werden.
-Format: Quelle + Details + Spezifität (hoch/mittel/niedrig). Keine Glaubwürdigkeitsbewertung.
-Erfasse Warnungen ALLER Seiten symmetrisch.
-
----
-
-QUELLENSPEKTRUM:
-Offiziell: NATO.int, Verteidigungsministerien, Außenministerien, BSI, BBK
-Agenturen: Reuters, AP, DPA (westlich) + TASS, RIA (russisch)
-Analysten: ISW, DGAP, SWP (westlich) + RIAC (russisch)
-Medien: Beide Seiten für Narrative
-
----
+QUELLENPRIORITÄT:
+Offizielle Stellen (NATO.int, Ministerien) > Agenturen (Reuters, TASS) > Think Tanks (ISW, DGAP)
 
 SPRACHLICHE PRÄZISION:
-❌ "Russland griff an" → ✅ "NATO meldet Angriff, Russland bestreitet"
-❌ "Provokation" → ✅ "Von [Seite] als Provokation bezeichnet"
-Quantifiziere: "43.000 Soldaten" nicht "große Übung"
-Unsicherheiten benennen: "Nicht unabhängig verifiziert", "Nur von [X] berichtet"
+- Neutral formulieren: "NATO meldet X, Russland bestreitet" statt "X geschah"
+- Quantifizieren: "43.000 Soldaten" statt "große Übung"
+- Attribution: "Laut [Quelle]..." bei Einzelmeldungen
 
----
-
-OUTPUT-STRUKTUR (Markdown):
+OUTPUT-STRUKTUR:
 
 # ESKALATIONS-RESEARCH [Datum]
 
-## EXECUTIVE SUMMARY
-[3-5 Sätze: Wichtigste Entwicklungen 72h]
+## 1. MILITÄR
+[Manöver, Waffen, Vorfälle mit Zahlen]
 
-## 1. MILITÄRISCH
-[Manöver, Waffen, Grenzaktivitäten, Vorfälle]
+## 2. DIPLOMATIE
+[Statements, Sanktionen, Botschaften]
 
-## 2. DIPLOMATISCH
-[Statements, Sanktionen, Botschaften, Artikel 4/5]
-
-## 3. WIRTSCHAFTLICH
+## 3. WIRTSCHAFT
 [Sanktionen, Energie, Finanzen]
 
-## 4. GESELLSCHAFTLICH
-[Zivilschutz, Narrative, messbare Indikatoren]
+## 4. GESELLSCHAFT
+[Zivilschutz, Narrative]
 
-## 5. RUSSEN IN DEUTSCHLAND
-[Rechtsstatus, Finanzen, Diskriminierung]
+## 5. RUSSEN IN DE
+[Rechtsstatus, Diskriminierung]
 
-## FALSE-FLAG-WARNUNGEN
-[Neutral dokumentiert, falls vorhanden]
-
-## WIDERSPRÜCHLICHE DARSTELLUNGEN
-[NATO sagt X, Russland sagt Y]
-
-## INFORMATIONSLÜCKEN
-[Was ist unklar?]
+## KRITISCHE SIGNALE
+[False-Flags, Widersprüche, Unsicherheiten]
 """
 ]
 
@@ -118,42 +71,27 @@ RSS-FEEDS (Ausgangspunkt):
 {rss_markdown}
 
 AUFTRAG:
-Systematische Recherche der letzten 72 Stunden zu NATO-Russland Spannungen.
-Erfasse alle 5 Dimensionen: Militär, Diplomatie, Wirtschaft, Gesellschaft, Russen in DE.
+Recherche der letzten 72h zu NATO-Russland Spannungen über 5 Dimensionen.
 
-PRIORITÄTEN:
-- Neue Waffenstationierungen und Truppenbewegungen
-- Offizielle Kriegsrhetorik
-- False-Flag-Warnungen mit konkreten Details
-- Grenzschließungen und direkte militärische Vorfälle
+FOKUS-SIGNALE:
+- Waffenstationierungen (nuklearfähig?)
+- Kriegsrhetorik von Offiziellen
+- False-Flag-Warnungen mit Details
+- Grenzschließungen, militärische Vorfälle
 - Maßnahmen gegen russische Staatsbürger
 
-SUCH-STRATEGIEN (Beispiele):
-- Militär: "NATO Großmanöver", "Russland Militärübung Grenze", "Atomwaffen stationiert", 
-  "Truppen verlegt Osteuropa", "Luftraumverletzung"
-- Diplomatie: "Kriegswarnung", "NATO Artikel 4", "NATO Artikel 5", "Botschafter ausgewiesen", 
-  "Sanktionspaket", "wir sind im Krieg"
-- Wirtschaft: "SWIFT Ausschluss", "Kontensperrung russische Staatsbürger", 
-  "Energielieferung", "Vermögen eingefroren"
-- Gesellschaft: "Zivilschutz Warnung", "Hamsterkäufe", "Wehrpflicht Debatte", 
-  "Kriegsbereitschaft"
-- Russen in DE: "Aufenthaltsrecht", "Visa russische Staatsbürger", "Diskriminierung", 
-  "Kontokündigung"
-- False-Flag: "false flag", "провокация", "staged attack", "Warnung Provokation"
-
-Kombiniere mit aktuellen Zeitbezügen: "[Begriff] letzte Woche", "[Begriff] aktuell"
-
-Quellen priorisieren: Offizielle Stellen, Agenturen (Reuters/TASS), Think Tanks (ISW/DGAP).
-Beide Seiten dokumentieren. Neutral formulieren. Zahlen quantifizieren.
+Quellen: Offizielle Stellen > Agenturen (Reuters/TASS) > Think Tanks (ISW/DGAP)
+Beide Seiten dokumentieren. Neutral formulieren. Zahlen nennen.
 
 Output: Strukturiertes Markdown nach vorgegebenem Format.
 """
 
 def create_agent() -> Agent:
-    model = create_research_model(search_results=29)
+    model = create_research_model(search_results=10)
+    from agno.models.perplexity import Perplexity
 
     return Agent(
-        model=model,
+        model=Perplexity(id="sonar-pro", max_tokens=4000, temperature=0),
         description=DESCRIPTION,
         instructions=INSTRUCTIONS,
         markdown=True,

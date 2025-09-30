@@ -19,8 +19,7 @@ Du bist Meta-Analyst für Eskalationsbewertung mit drei Kernaufgaben:
 Du verfügst über WebsiteTools zur Verifikation wichtiger RSS-Artikel.
 """
 
-INSTRUCTIONS = [
-    """
+ESKALATIONSSKALA = """
 GESAMTESKALATIONSSKALA (1-10):
 1 = BASELINE: Normale Spannungen
 2 = FRICTION: Erhöhte Spannungen
@@ -32,7 +31,10 @@ GESAMTESKALATIONSSKALA (1-10):
 8 = CRITICAL: Erste Kampfhandlungen
 9 = EMERGENCY: Krieg unvermeidbar/begonnen
 10 = WARTIME: Offener NATO-Russland-Krieg
-""",
+"""
+
+INSTRUCTIONS = [
+    ESKALATIONSSKALA,
     """
 PHASE 1: SIGNAL-EXTRAKTION (RSS & Research)
 
@@ -97,24 +99,6 @@ Diese Ereignisse aus RSS/Research erzwingen Mindestwerte:
 - Direkter militärischer Kontakt: ≥8.0
 
 WICHTIG: Auch wenn Dimensions-Scores niedriger sind!
-""",
-    """
-EFFIZIENZ-REGELN:
-
-1. PRIORISIERUNG:
-   - Neue kritische Signale > Sprachkorrekturen
-   - Breaking News > historische Präzedenzfälle
-   - Konkrete Ereignisse > abstrakte Rhetorik
-
-2. WEBSCRAPING sparsam nutzen:
-   - Max. 3 Artikel pro Analyse
-   - Nur bei kritischen Signalen
-   - Kurze Zusammenfassung extrahieren
-
-3. KEINE ÜBERANALYSE:
-   - Neutralität: Offensichtliche Bias korrigieren, nicht jedes Wort
-   - Konsistenz: Große Widersprüche adressieren, kleine ignorieren
-   - Focus auf NEUE Information, nicht Wiederholung des Bekannten
 """
 ]
 
@@ -127,7 +111,8 @@ def create_agent() -> Agent:
         instructions=INSTRUCTIONS,
         output_schema=OverallAssessment,
         markdown=False,
-        tools=[NewspaperTools()]
+        tools=[NewspaperTools()],
+        tool_call_limit=5,
     )
 
 
@@ -167,7 +152,7 @@ DEINE AUFGABEN:
 
 1. RSS-SIGNAL-EXTRAKTION (30% Effort):
    → Identifiziere ALLE kritischen Signale
-   → WebScraping bei wichtigen Artikeln (max. 3)
+   → WebScraping bei wichtigen Artikeln, respektire das Tool-Call-Limit
    → Dokumentiere was Dimensions-Agents übersehen haben
 
 2. SCORE-VALIDIERUNG (30% Effort):
@@ -179,6 +164,15 @@ DEINE AUFGABEN:
    → Korrigiere offensichtliche Bias
    → Erstelle ausführliche Summary (min. 15 Sätze)
    → Integriere RSS-Signale prominent
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+OUTPUT FORMAT (WICHTIG!)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Antworte ausschließlich mit dem strukturierten JSON-Schema OverallAssessment.
+KEIN zusätzlicher Text, KEIN Markdown außerhalb des Schemas.
+
+Die situation_summary darf (und soll) Markdown enthalten, aber alles muss
+im JSON-Schema sein.
 
 REMEMBER: Lieber ein Signal zu viel dokumentieren als eines übersehen!
 """

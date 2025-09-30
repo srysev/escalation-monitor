@@ -6,12 +6,12 @@ from agno.models.xai import xAI
 from agno.models.anthropic import Claude
 
 
-def create_research_model(search_results: int = 16) -> xAI:
+def create_research_model(search_results: int = 5, sources: list[dict] | None = [{"type": "x"}]) -> xAI:
     """
     Create xAI model for research agents with search capabilities.
 
     Args:
-        search_results: Number of search results (default: 29, military uses 16)
+        search_results: Number of search results (default: 5, optimized for speed)
 
     Returns:
         Configured xAI model
@@ -25,6 +25,7 @@ def create_research_model(search_results: int = 16) -> xAI:
             "mode": "on",
             "max_search_results": search_results,
             "return_citations": False,
+            "sources" : sources
         },
     )
 
@@ -36,14 +37,14 @@ def create_review_model() -> Claude:
     Returns:
         Configured Claude model
     """
-    model_id = os.getenv("REVIEW_MODEL_ID", "claude-sonnet-4-20250514")
+    model_id = os.getenv("REVIEW_MODEL_ID", "claude-sonnet-4-5")
 
     return Claude(
         id=model_id,
         temperature=0,
-        max_tokens=15000,
+        max_tokens=10000,
         thinking={
             "type": "enabled",
-            "budget_tokens": 10000
+            "budget_tokens": 6000
         }
     )
