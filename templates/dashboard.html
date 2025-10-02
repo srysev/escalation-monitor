@@ -53,11 +53,64 @@
 
     /* Summary in Score-Karte */
     .summary-section{ border-color: #e5e7eb; }
-    .summary-title{ font-size: 16px; font-weight: 600; color: #111827; }
-    .summary-text{ color: #374151; font-size: 14px; line-height: 1.4; }
+    .summary-title{ font-size: 16px; font-weight: 600; color: #111827; margin-bottom: 12px; }
+    .summary-text{ color: #374151; font-size: 14px; line-height: 1.6; }
+    .summary-text h2 { font-size: 16px; font-weight: 700; margin-top: 20px; margin-bottom: 8px; color: #111827; }
+    .summary-text h3 { font-size: 15px; font-weight: 600; margin-top: 16px; margin-bottom: 6px; color: #374151; }
+    .summary-text p { margin-bottom: 12px; }
+    .summary-text strong { font-weight: 600; color: #111827; }
 
     /* Card-Titel konsistent mit Summary-Styling */
     .card-title{ font-size: 16px; font-weight: 600; color: #111827; }
+
+    /* Dimensions Badges */
+    .dimensions-line{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #e5e7eb;
+      font-size: 14px;
+      color: #374151;
+    }
+    .dimensions-line .dim-item{ white-space: nowrap; }
+
+    /* Dimensions Accordion */
+    .dimensions-accordion{ margin-top: 16px; }
+    .dim-accordion-item{
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+    .dim-accordion-header{
+      padding: 12px 16px;
+      cursor: pointer;
+      background: #f8f9fa;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      color: #374151;
+      user-select: none;
+    }
+    .dim-accordion-header:hover{ background: #e9ecef; }
+    .dim-accordion-body{
+      padding: 16px;
+      background: white;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #374151;
+      display: none;
+    }
+    .dim-accordion-body.active{ display: block; }
+    .dim-accordion-chevron{
+      transition: transform 0.2s;
+      width: 16px;
+      height: 16px;
+    }
+    .dim-accordion-header.active .dim-accordion-chevron{ transform: rotate(180deg); }
   </style>
 </head>
 <body>
@@ -92,8 +145,8 @@
     </div>
 
     <div class="row g-3">
-      <!-- Links: Score + Indikatoren -->
-      <div class="col-12 col-md-8">
+      <!-- Links: Score + Summary -->
+      <div class="col-12 col-lg-8">
         <!-- Score/Level/Trend -->
         <div class="card mb-3">
           <div class="card-body">
@@ -112,58 +165,35 @@
                     {{ report.escalation_result.escalation_score.level if report and report.escalation_result and report.escalation_result.escalation_score else 'BASELINE' }}
                   </span>
                 </div>
-                <div class="trend-block">
-                  <label>Trend:</label>
-                  <span id="trendText">{{ report.escalation_result.escalation_score.trend if report and report.escalation_result and report.escalation_result.escalation_score else 'STABLE' }}</span>
-                </div>
                 <div class="text-secondary small mt-2" id="metaDate">Stand: {{ formatted_timestamp }}</div>
               </div>
             </div>
 
+            <!-- Dimensions Badges -->
+            {% if report and report.escalation_result and report.escalation_result.escalation_score and report.escalation_result.escalation_score.dimensions %}
+            <div class="dimensions-line">
+              {% for dim in report.escalation_result.escalation_score.dimensions %}
+              <span class="dim-item"><strong>{{ dim.name }}</strong> {{ dim.score }}/10</span>
+              {% if not loop.last %}<span>|</span>{% endif %}
+              {% endfor %}
+            </div>
+            {% endif %}
+
             <!-- Summary -->
             {% if report and report.escalation_result and report.escalation_result.escalation_score and report.escalation_result.escalation_score.summary %}
             <div class="summary-section mt-3 pt-3 border-top">
-              <h4 class="summary-title mb-2">Zusammenfassung</h4>
-              <p class="summary-text mb-0">{{ report.escalation_result.escalation_score.summary }}</p>
+              <div class="summary-text" id="summaryContent"></div>
+              <script id="summaryData" type="application/json">{{ report.escalation_result.escalation_score.summary|tojson }}</script>
             </div>
             {% endif %}
           </div>
         </div>
 
-        <!-- Kritische Indikatoren (volle Texte) -->
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">Kritische Indikatoren</h3>
-          </div>
-          <div class="list-group list-group-flush list-tight indicators" id="indicatorsList">
-            {% if report and report.escalation_result and report.escalation_result.escalation_score and report.escalation_result.escalation_score.critical_indicators %}
-              {% for indicator in report.escalation_result.escalation_score.critical_indicators %}
-              <div class="list-group-item">
-                <div class="text-end mb-2">
-                  <span class="badge bg-secondary-lt">{{ indicator.category }}</span>
-                </div>
-                <div>{{ indicator.description }}</div>
-                <div class="small src mt-1">Quelle: {{ indicator.source }}</div>
-              </div>
-              {% endfor %}
-            {% else %}
-              <div class="list-group-item">
-                <div class="cat">System</div>
-                <div class="mt-1">Keine aktuellen Escalation-Daten verfügbar. Bitte prüfen Sie die Cron-Job Konfiguration.</div>
-                <div class="small src mt-1">Quelle: System Status</div>
-                <div class="mt-2">
-                  <span class="badge bg-green-lt me-1">Impact 1.0</span>
-                  <span class="badge bg-secondary-lt">Confidence High</span>
-                </div>
-              </div>
-            {% endif %}
-          </div>
-        </div>
       </div>
 
-      <!-- Rechts: Skala als Text (Zeilen) -->
-      <div class="col-12 col-md-4">
-        <div class="card h-100">
+      <!-- Rechts: Skala + Dimensionen -->
+      <div class="col-12 col-lg-4">
+        <div class="card">
           <div class="card-header">
             <h3 class="card-title">Skala</h3>
           </div>
@@ -176,6 +206,30 @@
               {% endfor %}
             </div>
           </div>
+
+          <!-- Dimensions Accordion in gleicher Card -->
+          {% if report and report.escalation_result and report.escalation_result.escalation_score and report.escalation_result.escalation_score.dimensions %}
+          <div class="card-header border-top">
+            <h3 class="card-title">Dimensionen</h3>
+          </div>
+          <div class="card-body">
+            <div class="dimensions-accordion">
+              {% for dim in report.escalation_result.escalation_score.dimensions %}
+              <div class="dim-accordion-item">
+                <div class="dim-accordion-header" onclick="toggleDimension(this)">
+                  <span>{{ dim.name }} ({{ dim.score }}/10)</span>
+                  <svg class="dim-accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </div>
+                <div class="dim-accordion-body">
+                  {{ dim.rationale }}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -184,7 +238,24 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
 <script>
+  // Dimensions Accordion Toggle
+  function toggleDimension(header) {
+    const body = header.nextElementSibling;
+    const isActive = body.classList.contains('active');
+
+    // Close all
+    document.querySelectorAll('.dim-accordion-body').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.dim-accordion-header').forEach(h => h.classList.remove('active'));
+
+    // Open clicked if was closed
+    if (!isActive) {
+      body.classList.add('active');
+      header.classList.add('active');
+    }
+  }
+
   // Color interpolation für Score-Anzeige
   function lerpColor(hex1, hex2, t){
     const a = hex1.match(/\w\w/g).map(x=>parseInt(x,16));
@@ -214,31 +285,17 @@
     });
   });
 
-  // Trend-Farbe basierend auf Trend-Wert setzen
-  const trendElement = document.getElementById("trendText");
-  if (trendElement) {
-    const trendValue = trendElement.textContent.trim().toUpperCase();
-    let trendColor;
-
-    switch(trendValue) {
-      case 'ESCALATING':
-        trendColor = '#dc2626'; // Rot
-        break;
-      case 'DE-ESCALATING':
-        trendColor = '#16a34a'; // Grün
-        break;
-      case 'STABLE':
-      default:
-        trendColor = '#6b7280'; // Grau
-        break;
-    }
-
-    trendElement.style.color = trendColor;
-  }
   {% else %}
   // Fallback: Score 1.0 in grau
   document.getElementById("scoreBig").style.color = '#94a3b8';
   {% endif %}
+
+  // Render Summary Markdown (nach marked.js geladen ist)
+  const summaryDataEl = document.getElementById('summaryData');
+  if (summaryDataEl) {
+    const summaryMarkdown = JSON.parse(summaryDataEl.textContent);
+    document.getElementById('summaryContent').innerHTML = marked.parse(summaryMarkdown);
+  }
 </script>
 </body>
 </html>
