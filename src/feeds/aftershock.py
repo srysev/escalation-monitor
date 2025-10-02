@@ -7,13 +7,37 @@ from email.utils import parsedate_tz, mktime_tz
 
 try:
     from .base import FeedSource, FeedItem
+    from .llm_filtering import LLMFilterMixin
 except ImportError:
     # For direct execution
     from base import FeedSource, FeedItem
+    from llm_filtering import LLMFilterMixin
 
 
-class AftershockFeed(FeedSource):
+class AftershockFeed(LLMFilterMixin, FeedSource):
     """RSS feed source for Aftershock.news."""
+
+    # LLM filtering configuration
+    time_filter_days = 2
+    llm_filter_threshold = 5
+    filter_criteria = """
+**Keep items about:**
+- Military conflicts, operations, special military operation (SMO)
+- Diplomatic incidents, sanctions, international relations
+- NATO/Russia/China/US geopolitical tensions
+- Ukraine, Middle East, Taiwan, Balkans
+- Arms deals, military industry, defense readiness
+- Political statements on war/peace
+- Russian foreign policy, international security
+- Energy geopolitics (gas, oil, nuclear)
+
+**Exclude:**
+- Pure sports, entertainment, celebrity news
+- Domestic Russian politics without international impact
+- Local crime, accidents
+- Pure cultural events
+- Business news without geopolitical relevance
+"""
 
     def __init__(self):
         super().__init__(
@@ -84,12 +108,6 @@ class AftershockFeed(FeedSource):
             text=text,
             url=link
         )
-
-    def filter(self, items: List[FeedItem]) -> List[FeedItem]:
-        """Filter items based on relevance criteria. Default: no filtering."""
-        # Default implementation: return all items
-        # Child classes can override for specific filtering logic
-        return items
 
 
 async def main():

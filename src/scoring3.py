@@ -9,15 +9,13 @@ try:
     from .feeds.base import to_iso_utc
     from .agents import AGENTS
     from .agents.review import create_agent as create_review_agent, build_prompt
-    from .agents.research import create_agent as create_research_agent
-    from .agents.research import build_research_prompt
+    from .agents.research import run_research
     from .schemas import DimensionScore, OverallAssessment
 except ImportError:
     from feeds.base import to_iso_utc
     from agents import AGENTS
     from agents.review import create_agent as create_review_agent, build_prompt
-    from agents.research import create_agent as create_research_agent
-    from agents.research import build_research_prompt
+    from agents.research import run_research
     from schemas import DimensionScore, OverallAssessment
 
 async def calculate_escalation_score(rss_markdown: str) -> Dict[str, Any]:
@@ -39,17 +37,14 @@ async def calculate_escalation_score(rss_markdown: str) -> Dict[str, Any]:
         # Phase 0: Research over the last news
         print("\n=== Phase 0: Research Agent ===")
         start_phase0 = time.perf_counter()
-        research_agent = create_research_agent()
-        research_run_input = build_research_prompt(date=current_date, rss_markdown=rss_markdown)
-        research_response = research_agent.run(research_run_input)
+        try:
+            research_data = await run_research(date=current_date, rss_markdown=rss_markdown)
+        except Exception as e:
+            print(f"Research agent failed: {e}")
+            research_data = "Research-Daten nicht verfügbar"
+
         duration_phase0 = time.perf_counter() - start_phase0
         print(f"Phase 0 completed in {duration_phase0:.3f}s")
-
-        # Extract research data content, fallback if failed
-        if hasattr(research_response, 'content') and research_response.content:
-            research_data = research_response.content
-        else:
-            research_data = "Research-Daten nicht verfügbar"
         print(f"Research data:\n\n{research_data}")
 
         # Phase 1: Create all dimension agents and run in parallel

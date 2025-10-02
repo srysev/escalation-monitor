@@ -1,10 +1,13 @@
 # src/agents/research.py
-from agno.agent import Agent
+import os
+import logging
 
 try:
-    from .models import create_research_model
+    from .models import call_perplexity_api
 except ImportError:
-    from models import create_research_model
+    from models import call_perplexity_api
+
+logger = logging.getLogger(__name__)
 
 DESCRIPTION = """Du bist Informationssammler für NATO-Russland Eskalationsanalyse.
 
@@ -31,8 +34,9 @@ KRITISCHE SIGNALE (immer dokumentieren):
 - Grenzschließungen
 - Direkte militärische Vorfälle
 
-QUELLENPRIORITÄT:
-Offizielle Stellen (NATO.int, Ministerien) > Agenturen (Reuters, TASS) > Think Tanks (ISW, DGAP)
+RECHERCHE-METHODE:
+Durchsuche offizielle Quellen, Agenturen und Think Tanks systematisch.
+Prüfe BEIDE Seiten: NATO/EU-Perspektive UND russische Perspektive.
 
 SPRACHLICHE PRÄZISION:
 - Neutral formulieren: "NATO meldet X, Russland bestreitet" statt "X geschah"
@@ -67,9 +71,6 @@ def build_research_prompt(date: str, rss_markdown: str) -> str:
     return f"""
 ESKALATIONS-RESEARCH {date}
 
-RSS-FEEDS (Ausgangspunkt):
-{rss_markdown}
-
 AUFTRAG:
 Recherche der letzten 72h zu NATO-Russland Spannungen über 5 Dimensionen.
 
@@ -80,56 +81,109 @@ FOKUS-SIGNALE:
 - Grenzschließungen, militärische Vorfälle
 - Maßnahmen gegen russische Staatsbürger
 
-Quellen: Offizielle Stellen > Agenturen (Reuters/TASS) > Think Tanks (ISW/DGAP)
-Beide Seiten dokumentieren. Neutral formulieren. Zahlen nennen.
+Dokumentiere BEIDE Seiten. Neutral formulieren. Zahlen nennen.
 
 Output: Strukturiertes Markdown nach vorgegebenem Format.
 """
 
-def create_agent() -> Agent:
-    model = create_research_model(search_results=10)
-    from agno.models.perplexity import Perplexity
+async def run_research(date: str, rss_markdown: str) -> str:
+    """
+    Run research agent using direct Perplexity API.
 
-    return Agent(
-        model=Perplexity(id="sonar-pro", max_tokens=4000, temperature=0),
-        description=DESCRIPTION,
-        instructions=INSTRUCTIONS,
-        markdown=True,
-    )
+    Args:
+        date: Current date string
+        rss_markdown: RSS feed data in markdown format
 
-def main():
-    """Test the military agent with empty RSS data."""
+    Returns:
+        Research report in markdown format
+
+    Raises:
+        Exception: On API call failures
+    """
+    # Get domain filter from environment or use defaults
+    domain_filter_str = os.getenv("PERPLEXITY_DOMAIN_FILTER", "")
+    domain_filter = [d.strip() for d in domain_filter_str.split(",")] if domain_filter_str else [
+        # Deutschland
+        "tagesschau.de", "bmvg.de", "dgap.org", "swp-berlin.org",
+        # NATO & International
+        "europa.eu",
+        # US & Think Tanks
+        "rand.org", "understandingwar.org", "iiss.org",
+        # Russland
+        "mil.ru", "svr.gov.ru", "tass.ru",
+        # Polen
+        "mon.gov.pl", "wyborcza.pl",
+        # Estland
+        "kaitseministeerium.ee", "politsei.ee",
+        # Ungarn
+        "kormany.hu",
+        # Baltikum & Nord
+        "mod.gov.lv", "kam.lt", "regjeringen.no",
+        # Agenturen
+        "reuters.com"
+    ]
+
+    # Build messages
+    system_content = DESCRIPTION + "\n\n" + "\n\n".join(INSTRUCTIONS)
+    user_content = build_research_prompt(date, rss_markdown)
+
+    messages = [
+        {"role": "system", "content": system_content},
+        {"role": "user", "content": user_content}
+    ]
+
+    # Call Perplexity API
+    model_id = os.getenv("PERPLEXITY_MODEL_ID", "sonar-pro")
+
+    try:
+        response = await call_perplexity_api(
+            messages=messages,
+            model=model_id,
+            search_domain_filter=domain_filter,
+            temperature=0.2,
+            max_tokens=4000
+        )
+
+        logger.info(f"Perplexity API call successful. Usage: {response.get('usage', {})}")
+        logger.debug(f"Citations: {len(response.get('citations', []))}")
+        logger.debug(f"Search results: {len(response.get('search_results', []))}")
+
+        return response["content"]
+
+    except Exception as e:
+        logger.error(f"Perplexity API call failed: {e}")
+        raise
+
+async def main():
+    """Test the research agent with empty RSS data."""
+    import asyncio
     from datetime import datetime
     import time
-
-    # Create agent
-    agent = create_agent()
 
     # Test with empty RSS message
     current_date = datetime.now().strftime("%Y-%m-%d")
     empty_rss_message = "RSS-Feeds konnten nicht geladen werden und werden daher ignoriert."
 
-    # Build prompt and get response
-    prompt = build_research_prompt(current_date, empty_rss_message)
-
-    print(f"Military Agent Test - {current_date}")
+    print(f"Research Agent Test - {current_date}")
     print(f"Testing with empty RSS data...")
     print("\n" + "="*50)
 
     try:
         # Execute agent and measure time
-        print(f"🚀 Starting agent execution...")
+        print(f"🚀 Starting research agent...")
         start_time = time.time()
-        response = agent.run(prompt)
+        content = await run_research(current_date, empty_rss_message)
         end_time = time.time()
         execution_time = end_time - start_time
 
-        print(f"\n✅ Agent Response:")
+        print(f"\n✅ Research completed:")
         print(f"⏱️ Execution time: {execution_time:.1f} seconds")
-        print(f"Response: {response}")
-        print(f"Content: {response.content}")
+        print(f"\nContent:\n{content}")
     except Exception as e:
         print(f"\n❌ Error: {e}")
+        import traceback
+        traceback.print_exc()
 
 if __name__ == "__main__":
-    main()
+    import asyncio
+    asyncio.run(main())

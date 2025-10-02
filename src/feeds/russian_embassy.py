@@ -6,13 +6,38 @@ import email.utils
 
 try:
     from .base import FeedSource, FeedItem
+    from .llm_filtering import LLMFilterMixin
 except ImportError:
     # For direct execution
     from base import FeedSource, FeedItem
+    from llm_filtering import LLMFilterMixin
 
 
-class RussianEmbassyFeed(FeedSource):
+class RussianEmbassyFeed(LLMFilterMixin, FeedSource):
     """RSS feed source for Russian Embassy in Germany."""
+
+    # LLM filtering configuration
+    time_filter_days = 90
+    llm_filter_threshold = 1
+    filter_criteria = """
+**Keep items about:**
+- Official Russian diplomatic statements on Germany/NATO/EU
+- Bilateral relations Russia-Germany
+- Russian position on international conflicts (Ukraine, Middle East)
+- Military/security issues, arms control
+- Sanctions, economic restrictions
+- Diplomatic incidents, protests, visa issues
+- Official Russian responses to German/NATO actions
+- Cultural diplomacy with geopolitical context
+- Russian citizens' rights in Germany
+
+**Exclude:**
+- Pure cultural events without political context
+- Routine consular announcements (opening hours, etc.)
+- Historical commemorations without current relevance
+- Tourism promotion
+- Generic holiday greetings
+"""
 
     def __init__(self):
         super().__init__(
@@ -103,18 +128,6 @@ class RussianEmbassyFeed(FeedSource):
             text=text,
             url=link
         )
-
-    def filter(self, items: List[FeedItem]) -> List[FeedItem]:
-        """Filter items based on relevance criteria."""
-        # Filter items from the last 3 months (similar to AuswaertigesAmtFeed)
-        cutoff_date = dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=90)
-
-        filtered_items = [
-            item for item in items
-            if item.date >= cutoff_date
-        ]
-
-        return filtered_items
 
 
 async def main():

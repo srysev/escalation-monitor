@@ -7,13 +7,39 @@ from email.utils import parsedate_tz, mktime_tz
 
 try:
     from .base import FeedSource, FeedItem, to_iso_utc
+    from .llm_filtering import LLMFilterMixin
 except ImportError:
     # For direct execution
     from base import FeedSource, FeedItem, to_iso_utc
+    from llm_filtering import LLMFilterMixin
 
 
-class JungeWeltFeed(FeedSource):
+class JungeWeltFeed(LLMFilterMixin, FeedSource):
     """RSS feed source for Junge Welt newsticker."""
+
+    # LLM filtering configuration
+    time_filter_days = 2
+    llm_filter_threshold = 30
+    filter_criteria = """
+**Keep items about:**
+- Military conflicts, NATO operations, arms deliveries to Ukraine
+- Peace movement, anti-war protests, civil disobedience
+- Diplomatic tensions, sanctions policy
+- US/NATO military presence in Europe
+- Ukraine war, Middle East conflicts, Taiwan tensions
+- Nuclear weapons, military infrastructure, defense policy
+- German foreign/defense policy with geopolitical impact
+- International solidarity movements related to war/peace
+- Energy geopolitics affecting military conflicts
+
+**Exclude:**
+- Pure labor/union news without war/peace context
+- Domestic German politics without international relevance
+- Culture, sports, entertainment
+- Local German news (crime, accidents, regional politics)
+- Historical articles without current geopolitical relevance
+- Pure economic news without military/sanctions context
+"""
 
     def __init__(self):
         super().__init__(
@@ -80,12 +106,6 @@ class JungeWeltFeed(FeedSource):
             text=text,
             url=link
         )
-
-    def filter(self, items: List[FeedItem]) -> List[FeedItem]:
-        """Filter items based on relevance criteria. Default: no filtering."""
-        # Default implementation: return all items
-        # Child classes can override for specific filtering logic
-        return items
 
 
 async def main():
