@@ -67,14 +67,23 @@
     .dimensions-line{
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 6px;
       margin-top: 16px;
       padding-top: 16px;
       border-top: 1px solid #e5e7eb;
-      font-size: 14px;
+      font-size: 13px;
+      color: #374151;
+      line-height: 1.6;
+    }
+    .dimensions-line .dim-item{
+      white-space: nowrap;
       color: #374151;
     }
-    .dimensions-line .dim-item{ white-space: nowrap; }
+    .dimensions-line .dim-name{
+      color: #111827;
+      font-weight: 600;
+    }
+    .dimensions-line .sep{ color: #d1d5db; margin: 0 2px; }
 
     /* Dimensions Accordion */
     .dimensions-accordion{ margin-top: 16px; }
@@ -173,8 +182,8 @@
             {% if report and report.escalation_result and report.escalation_result.escalation_score and report.escalation_result.escalation_score.dimensions %}
             <div class="dimensions-line">
               {% for dim in report.escalation_result.escalation_score.dimensions %}
-              <span class="dim-item"><strong>{{ dim.name }}</strong> {{ dim.score }}/10</span>
-              {% if not loop.last %}<span>|</span>{% endif %}
+              {% set short_name = dim.name.replace('Militärisch', 'Militär').replace('Diplomatisch', 'Diplo').replace('Wirtschaftlich', 'Wirtschaft').replace('Gesellschaftlich', 'Gesellschaft') %}
+              <span class="dim-item"><span class="dim-name">{{ short_name }}</span> {{ dim.score }}/10</span>{% if not loop.last %}<span class="sep">|</span>{% endif %}
               {% endfor %}
             </div>
             {% endif %}
