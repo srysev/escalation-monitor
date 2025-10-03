@@ -70,3 +70,5 @@ Thumbs.db
 src/reports/
 rss-markdown.md
 rss-markdown2.md
+.env.local.example
+.env*.local

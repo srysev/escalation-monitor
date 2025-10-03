@@ -65,7 +65,50 @@ vercel env add CRON_SECRET
 - Child classes of `FeedSource` handle source-specific parsing logic
 
 ## Environment Variables
+- `ENVIRONMENT` - Controls storage backend: `local` (default), `dev`, or `prod`
+- `BLOB_READ_WRITE_TOKEN` - Vercel Blob Storage token (auto-provided by Vercel, or via `vercel env pull`)
 - `CRON_SECRET` - Required for cron job authentication (set in Vercel dashboard)
+- `COOKIE_SECRET` - Required for dashboard login (set in Vercel dashboard)
+- `OPENAI_API_KEY` - Required for LLM-based escalation scoring
+
+## Storage System
+
+### Environment-Based Storage
+The application uses different storage backends based on the `ENVIRONMENT` variable:
+
+- **`local` (default)**: Stores reports in `src/reports/` directory
+- **`dev`**: Uses Vercel Blob Storage (requires Blob Store setup)
+- **`prod`**: Uses Vercel Blob Storage (requires Blob Store setup)
+
+### Vercel Blob Storage Setup
+
+**1. Create Blob Stores** (via Vercel Dashboard):
+- Development: `escalation-monitor-dev`
+- Production: `escalation-monitor-prod`
+
+**2. Set Environment Variables** (via Vercel Dashboard):
+```bash
+# For production deployment
+ENVIRONMENT=prod
+
+# For preview/dev branches (optional)
+ENVIRONMENT=dev
+```
+
+**3. Local Development with Vercel Blob**:
+```bash
+# Pull environment variables (includes BLOB_READ_WRITE_TOKEN)
+vercel env pull
+
+# Start local Vercel dev server
+vercel dev
+
+# Or set ENVIRONMENT manually for local testing
+export ENVIRONMENT=dev
+python -m uvicorn api.app:app --reload
+```
+
+**4. Storage Fallback**: If Blob Storage fails, the system automatically falls back to local filesystem storage.
 
 ## Agno Framework Reference
 - **Agno Documentation**: Available at `~/Downloads/Agno-Framework-Anweisung.md`
