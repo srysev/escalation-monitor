@@ -1,13 +1,124 @@
 # api/app.py
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse, HTMLResponse
+import os
+import hashlib
+import secrets
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.responses import JSONResponse, HTMLResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from pydantic import BaseModel
 from src.storage import get_today_report
 from src.agents.review import ESKALATIONSSKALA
 from datetime import datetime, timezone
 
 app = FastAPI(title="Escalation Monitor API")
 templates = Jinja2Templates(directory="templates")
+
+# --- Auth Configuration ---
+EXPECTED_TOKEN = None
+COOKIE_SECRET = None
+
+def get_cookie_secret():
+    global COOKIE_SECRET
+    if COOKIE_SECRET is None:
+        COOKIE_SECRET = os.getenv("COOKIE_SECRET", secrets.token_hex(32))
+    return COOKIE_SECRET
+
+def create_secure_token(password: str) -> str:
+    secret = get_cookie_secret()
+    return hashlib.sha256(f"{password}:{secret}".encode()).hexdigest()
+
+def get_expected_token():
+    global EXPECTED_TOKEN
+    if EXPECTED_TOKEN is None:
+        password = os.getenv("DASHBOARD_PASSWORD")
+        if password:
+            EXPECTED_TOKEN = create_secure_token(password)
+    return EXPECTED_TOKEN
+
+# --- Auth Middleware ---
+@app.middleware("http")
+async def auth_middleware(request: Request, call_next):
+    # Check if authentication is enabled
+    dashboard_password = os.getenv("DASHBOARD_PASSWORD")
+
+    # If no DASHBOARD_PASSWORD is set, skip authentication
+    if not dashboard_password:
+        response = await call_next(request)
+        return response
+
+    # Define public paths that don't require authentication
+    public_paths = ["/login", "/api/login"]
+    public_static_extensions = [".css", ".js", ".png", ".ico", ".svg", ".html"]
+
+    # Check if current path is public
+    path = request.url.path
+    if (path in public_paths or
+        any(path.endswith(ext) for ext in public_static_extensions) or
+        path.startswith("/public/")):
+        response = await call_next(request)
+        return response
+
+    # Check web authentication (cookies)
+    auth_token = request.cookies.get("auth_token")
+    expected_token = get_expected_token()
+    web_auth_valid = auth_token and expected_token and auth_token == expected_token
+
+    if not web_auth_valid:
+        # Redirect to login page with return URL
+        return RedirectResponse(
+            url=f"/login?redirect={request.url.path}",
+            status_code=302
+        )
+
+    # Authentication successful, proceed with request
+    response = await call_next(request)
+    return response
+
+# Mount static files for serving login.html
+app.mount("/public", StaticFiles(directory="public"), name="public")
+
+# --- Login Routes ---
+class LoginRequest(BaseModel):
+    password: str
+    redirect: str = "/"
+
+@app.get("/login")
+async def login_page():
+    """Serve the login HTML page."""
+    from fastapi.responses import FileResponse
+    return FileResponse("public/login.html")
+
+@app.post("/api/login")
+async def login(request: LoginRequest):
+    """Authenticate user and set secure cookie."""
+    dashboard_password = os.getenv("DASHBOARD_PASSWORD")
+
+    if not dashboard_password:
+        raise HTTPException(status_code=503, detail="Authentication not configured")
+
+    if request.password != dashboard_password:
+        raise HTTPException(status_code=401, detail="Invalid password")
+
+    # Create secure token and set cookie
+    secure_token = create_secure_token(dashboard_password)
+
+    response = RedirectResponse(
+        url=request.redirect if request.redirect else "/",
+        status_code=302
+    )
+
+    # Set secure cookie (12 months = 31536000 seconds)
+    response.set_cookie(
+        key="auth_token",
+        value=secure_token,
+        max_age=31536000,  # 12 months
+        httponly=True,
+        secure=False,  # Set to True in production with HTTPS
+        samesite="lax"
+    )
+
+    return response
 
 @app.get("/", response_class=HTMLResponse)
 def dashboard(request: Request):
