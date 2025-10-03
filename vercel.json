@@ -3,7 +3,6 @@
   "regions": ["fra1"],
   "functions": {
     "api/*.py": {
-      "runtime": "python3.12",
       "maxDuration": 300
     }
   },
