@@ -2,6 +2,7 @@
 import os
 import hashlib
 import secrets
+from urllib.parse import quote
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse, HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -84,10 +85,13 @@ class LoginRequest(BaseModel):
     redirect: str = "/"
 
 @app.get("/login")
-async def login_page():
-    """Serve the login HTML page."""
-    from fastapi.responses import FileResponse
-    return FileResponse("public/login.html")
+async def login_page(request: Request):
+    """Redirect to static login page with redirect parameter."""
+    redirect_target = request.query_params.get("redirect")
+    if redirect_target:
+        safe_target = quote(redirect_target, safe="/")
+        return RedirectResponse(f"/login.html?redirect={safe_target}", status_code=307)
+    return RedirectResponse("/login.html", status_code=307)
 
 @app.post("/api/login")
 async def login(request: LoginRequest):
