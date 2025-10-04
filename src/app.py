@@ -49,7 +49,7 @@ async def auth_middleware(request: Request, call_next):
         return response
 
     # Define public paths that don't require authentication
-    public_paths = ["/login", "/api/login"]
+    public_paths = ["/login", "/auth/login"]
     public_static_extensions = [".css", ".js", ".png", ".ico", ".svg", ".html"]
 
     # Check if current path is public
@@ -93,7 +93,7 @@ async def login_page(request: Request):
         return RedirectResponse(f"/login.html?redirect={safe_target}", status_code=307)
     return RedirectResponse("/login.html", status_code=307)
 
-@app.post("/api/login")
+@app.post("/auth/login")
 async def login(request: LoginRequest):
     """Authenticate user and set secure cookie."""
     dashboard_password = os.getenv("DASHBOARD_PASSWORD")
