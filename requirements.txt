@@ -3,6 +3,7 @@ httpx
 feedparser
 agno
 openai
+anthropic
 jinja2
 python-multipart
 newspaper3k
