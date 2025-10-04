@@ -1,4 +1,4 @@
-# api/app.py
+# src/app.py
 import os
 import hashlib
 import secrets
@@ -12,7 +12,7 @@ from src.agents.review import ESKALATIONSSKALA
 from datetime import datetime, timezone
 
 app = FastAPI(title="Escalation Monitor API")
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="src/templates")
 
 # --- Auth Configuration ---
 EXPECTED_TOKEN = None
@@ -75,8 +75,8 @@ async def auth_middleware(request: Request, call_next):
     response = await call_next(request)
     return response
 
-# Mount static files for serving login.html
-app.mount("/public", StaticFiles(directory="public"), name="public")
+# deactivated because Vercel says: app.mount("/public", ...) is not needed and should not be used. ---Mount static files for serving login.html
+#app.mount("/public", StaticFiles(directory="public"), name="public")
 
 # --- Login Routes ---
 class LoginRequest(BaseModel):
