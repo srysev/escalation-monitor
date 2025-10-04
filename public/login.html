@@ -152,10 +152,6 @@
             errorDiv.classList.remove('show');
 
             try {
-                const formData = new FormData();
-                formData.append('password', password);
-                formData.append('redirect', redirectUrl);
-
                 const response = await fetch('/api/login', {
                     method: 'POST',
                     headers: {
@@ -164,17 +160,15 @@
                     body: JSON.stringify({
                         password: password,
                         redirect: redirectUrl
-                    }),
-                    redirect: 'manual'
+                    })
                 });
 
-                if (response.type === 'opaqueredirect' || response.status === 302 || response.status === 0) {
-                    // Redirect successful, navigate to destination
-                    window.location.href = redirectUrl;
-                } else if (response.ok) {
-                    window.location.href = redirectUrl;
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Login successful, redirect to destination
+                    window.location.href = data.redirect || '/';
                 } else {
-                    const data = await response.json();
                     errorDiv.textContent = data.detail || 'Falsches Passwort';
                     errorDiv.classList.add('show');
                 }

@@ -107,10 +107,12 @@ async def login(request: LoginRequest):
     # Create secure token and set cookie
     secure_token = create_secure_token(dashboard_password)
 
-    response = RedirectResponse(
-        url=request.redirect if request.redirect else "/",
-        status_code=302
-    )
+    # Determine if running in production (Vercel)
+    is_production = os.getenv("VERCEL_ENV") == "production"
+
+    # Return JSON response with redirect URL
+    redirect_url = request.redirect if request.redirect else "/"
+    response = JSONResponse({"redirect": redirect_url})
 
     # Set secure cookie (12 months = 31536000 seconds)
     response.set_cookie(
@@ -118,7 +120,7 @@ async def login(request: LoginRequest):
         value=secure_token,
         max_age=31536000,  # 12 months
         httponly=True,
-        secure=False,  # Set to True in production with HTTPS
+        secure=is_production,  # True in production with HTTPS
         samesite="lax"
     )
 
