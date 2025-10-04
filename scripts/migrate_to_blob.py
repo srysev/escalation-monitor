@@ -2,21 +2,21 @@
 """
 Migration script to upload existing reports to Vercel Blob Storage.
 
-This script migrates local JSON reports from src/reports/ to Vercel Blob Storage (dev environment).
+This script migrates local JSON reports from src/reports/ to Vercel Blob Storage.
 It reuses the _save_to_blob() and _get_from_blob() functions from src/storage.py.
 
 Usage:
-    python scripts/migrate_to_blob.py [--dry-run] [--verify] [--start-date YYYY-MM-DD]
+    python scripts/migrate_to_blob.py [--dry-run] [--verify] [--start-date YYYY-MM-DD] [--target-env ENV]
 
 Examples:
-    # Dry-run to see what would be migrated
+    # Dry-run to see what would be migrated to dev
     python scripts/migrate_to_blob.py --dry-run
 
-    # Migrate all reports from 2025-09-30 onwards
-    python scripts/migrate_to_blob.py --start-date 2025-09-30
+    # Migrate all reports from 2025-09-30 onwards to production
+    python scripts/migrate_to_blob.py --start-date 2025-09-30 --target-env prod
 
-    # Migrate with verification
-    python scripts/migrate_to_blob.py --verify
+    # Migrate to dev with verification
+    python scripts/migrate_to_blob.py --verify --target-env dev
 """
 
 import argparse
@@ -125,7 +125,7 @@ def migrate_report(file_path: Path, dry_run: bool = False, verify: bool = False)
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Migrate local reports to Vercel Blob Storage (dev environment)",
+        description="Migrate local reports to Vercel Blob Storage",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=__doc__
     )
@@ -144,6 +144,13 @@ def main():
         type=str,
         default='2025-09-30',
         help='Start date for migration (format: YYYY-MM-DD, default: 2025-09-30)'
+    )
+    parser.add_argument(
+        '--target-env',
+        type=str,
+        choices=['dev', 'prod'],
+        default='dev',
+        help='Target environment for migration (default: dev)'
     )
 
     args = parser.parse_args()
@@ -168,9 +175,11 @@ def main():
         print("  2. Or set manually: export BLOB_READ_WRITE_TOKEN=your_token")
         sys.exit(1)
 
-    # Force dev environment
-    os.environ['ENVIRONMENT'] = 'dev'
-    print(f"\nEnvironment: dev")
+    # Set target environment
+    os.environ['ENVIRONMENT'] = args.target_env
+    print(f"\nTarget environment: {args.target_env}")
+    if args.target_env == 'prod':
+        print("⚠️  WARNING: Migrating to PRODUCTION environment!")
     print(f"Start date: {start_date.strftime('%Y-%m-%d')}")
     print(f"Dry-run mode: {args.dry_run}")
     print(f"Verify uploads: {args.verify}")
