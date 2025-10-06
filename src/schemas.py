@@ -17,5 +17,9 @@ class DimensionReview(BaseModel):
 class OverallAssessment(BaseModel):
     """Overall escalation assessment with reviewed dimensions"""
     overall_score: float = Field(..., ge=1.0, le=10.0, description="Overall escalation score")
-    situation_summary: str = Field(..., description="Neutral summary of current situation  using markdown formatting for structure")
+    situation_summary: str = Field(..., description="Neutral summary of current situation using markdown formatting for structure")
+    trend_assessment: str = Field(..., description="Brief assessment of trend direction (escalating/stable/de-escalating) with evidence")
     dimensions: List[DimensionReview] = Field(..., max_length=5, description="Reviewed dimension scores")
+    blind_spots: List[str] = Field(..., description="List of identified blind spots: missing perspectives, data gaps, or unverified claims")
+    contradictions: List[str] = Field(..., description="List of identified contradictions between dimensions, sources, or within narratives")
+    neutrality_corrections: List[str] = Field(..., description="List of bias corrections made during review (polemical terms removed, attribution added)")
