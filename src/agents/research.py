@@ -47,6 +47,7 @@ Erstelle STATUS-BERICHT statt Ereignis-Chronologie. Frage: Wie ist der Stand JET
    - Sanktions-Status (Was gilt aktuell?)
    - Botschafts-Status (Geöffnet? Eingeschränkt?)
    - Artikel 4/5 Status
+   - Spannungsfall (GG Art. 80a) / Verteidigungsfall (GG Art. 115a) – Status prüfen
 
 3. WIRTSCHAFT:
    - Sanktions-Stand (Aktive Pakete, Umfang)
@@ -71,6 +72,7 @@ BEISPIEL STATUS-FORMAT:
 KRITISCHE SIGNALE (aktueller Stand):
 - Nuklearfähige Waffen-Diskussionen (Status?)
 - NATO Artikel 4/5 (Aktiv? Diskutiert?)
+- Spannungsfall oder Verteidigungsfall (Status?)
 - Grenzschließungen (Welche? Seit wann?)
 - Militärische Vorfälle (Aktuelle Situation)
 """,

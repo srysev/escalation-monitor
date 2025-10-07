@@ -42,9 +42,9 @@ def create_review_model() -> Claude:
     return Claude(
         id=model_id,
         temperature=0,
-        max_tokens=10000,
+        max_tokens=15000,
         thinking={
             "type": "enabled",
-            "budget_tokens": 6000
+            "budget_tokens": 10000
         }
     )

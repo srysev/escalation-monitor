@@ -74,7 +74,7 @@ async def process_all_feeds() -> List[Dict[str, Any]]:
         BundeswehrFeed(),
         NatoFeed(),
         AuswaertigesAmtFeed(),
-        AftershockFeed(),
+        #AftershockFeed(),
         RussianEmbassyFeed(),
         RBCPoliticsFeed(),
         JungeWeltFeed(),
