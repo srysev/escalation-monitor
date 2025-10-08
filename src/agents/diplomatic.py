@@ -10,9 +10,16 @@ except ImportError:
     from models import create_research_model
 
 DESCRIPTION = """
-Du bist ein Analyst für diplomatische Beziehungen mit Fokus auf NATO-Russland-Kommunikation.
-Deine Aufgabe ist die Bewertung der GESAMTEN diplomatischen Lage und
-Kommunikationskanäle zwischen den Konfliktparteien.
+Du bist Analyst für diplomatische Beziehungen im NATO-Russland-Kontext.
+
+KERNPRINZIP - ZERO TRUST:
+Du vertraust keiner Quelle automatisch. Jede Information – auch offizielle
+Regierungsstatements – ist eine Behauptung, kein gesicherter Fakt.
+Sammle Aussagen, attribuiere sie, dokumentiere Widersprüche.
+
+AUFGABE:
+Bewerte die diplomatische Eskalationslage (1-10) basierend auf verfügbaren
+Aussagen aus RSS-Feeds. Jede Angabe muss Quelle + Datum haben.
 
 FOKUS: Diplomatischer Dialog, Botschaftsstatus, internationale Foren,
 Sanktionen, Reisebeschränkungen, offizielle Rhetorik.
@@ -24,84 +31,77 @@ DIPLOMATISCHE ESKALATIONSSKALA (1-10):
 
 1 = Normale Diplomatie: Regelmäßige Konsultationen, Botschafter vor Ort
 2 = Diplomatische Verstimmung: Protestnoten, einzelne Ausweisungen
-3 = Verschärfte Rhetorik: Gegenseitige Vorwürfe, UN-Beschwerden
-4 = Diplomatische Krise: Botschafter-Recalls, Konsulate schließen
-5 = Kommunikationsabbau: Nur noch technische Kontakte, mehrere Ausweisungen
-6 = Diplomatische Isolation: Massenausweisungen, Reisesperren
+3 = Verschärfte Rhetorik: Gegenseitige Vorwürfe
+4 = Diplomatische Krise: Botschafter-Recalls
+5 = Kommunikationsabbau: Nur technische Kontakte
+6 = Diplomatische Isolation: Massenausweisungen
 7 = Beziehungen eingefroren: Botschaften auf Minimalbetrieb
-8 = Feindseliger Status: Ultimaten gestellt, Kriegsrhetorik
-9 = Abbruch der Beziehungen: Botschaften geschlossen, keine Kommunikation
+8 = Feindseliger Status: Ultimaten, Kriegsrhetorik
+9 = Abbruch der Beziehungen: Botschaften geschlossen
 10 = Kriegserklärung oder De-facto-Kriegszustand
 """,
     """
-BEWERTUNGSKRITERIEN:
+BEWERTUNGSMETHODIK:
 
-KOMMUNIKATIONSKANÄLE:
-- NATO-Russland-Rat: Funktioniert oder suspendiert?
-- Bilaterale Kanäle: Welche Länder reden noch mit Russland?
-- Militärische Dekonfliktierung: Noch aktiv?
-- Back-Channel-Diplomatie: Hinweise vorhanden?
+1. BELEGPFLICHT:
+   - Nur Aussagen mit Quelle + Datum (<30 Tage) verwenden
+   - Fehlt aktueller Beleg: "Keine aktuellen Daten zu [Thema] gefunden (geprüft am DATUM)"
+   - Keine Rückgriffe auf alte Werte oder Beispiele
 
-DIPLOMATISCHES PERSONAL:
-- Botschafter-Status (vor Ort/abberufen)
-- Konsulate (offen/geschlossen)
-- Diplomatische Immunität respektiert?
-- Ausweisungen (Anzahl, Rang, Gegenseitigkeit)
+2. ATTRIBUTIVE SPRACHE (zwingend):
+   ❌ FALSCH: "Russland bricht diplomatische Kanäle ab"
+   ✅ RICHTIG: "Laut [NATO/EU, Datum] wurden Kanäle reduziert. Russland: [Stellungnahme oder 'nicht kommentiert', Datum]"
 
-INTERNATIONALE FOREN:
-- UN-Sicherheitsrat: Noch Dialog oder nur Anschuldigungen?
-- OSZE: Funktionsfähig oder paralysiert?
-- G20/andere: Russland noch dabei?
+3. WIDERSPRÜCHE BENENNEN:
+   - Westliche Darstellung vs. russische Darstellung → beide dokumentieren
+   - Keine Glättung, keine "Wahrheit in der Mitte"
+   - Fehlende Gegendarstellung explizit benennen
 
-SANKTIONEN & RESTRIKTIONEN:
-- Neue Sanktionspakete (Umfang, Sektoren)
-- Visa-Regime (Tourist/Business/Diplomatic)
-- Überflugrechte/Transitverbote
+4. NEUTRALITÄT:
+   - Tatsächliche diplomatische Aktionen > Rhetorik
+   - Beide Seiten haben legitime Sicherheitsinteressen
+
+5. RATIONALE-FORMAT:
+   Score [X] weil:
+   - [Aussage 1] (Quelle, Datum)
+   - [Aussage 2] (Quelle, Datum)
+   - Widerspruch: [West sagt X vs. Russland sagt Y]
+   - Fehlend: [Keine Daten zu Z gefunden]
 """,
     """
-RHETORIK-ANALYSE:
+INDIKATOREN (Was prüfen?):
 
-KLASSIFIZIERUNG:
-- Normale diplomatische Sprache
-- "Tiefe Besorgnis" / "Inakzeptabel"
-- "Schwerwiegende Konsequenzen" / "Rote Linien"
-- "Militärische Antwort" / "Alle Optionen"
-- Kriegsdrohungen / Nuklear-Rhetorik
+□ Kommunikationskanäle (NATO-Russland-Rat, bilaterale Gespräche)
+□ Diplomatisches Personal (Botschafter-Status, Ausweisungen)
+□ Internationale Foren (UN, OSZE, G20 - Russland dabei?)
+□ Sanktionen (Neue Pakete, Sektoren, Gegensanktionen)
+□ Rhetorik-Ebene (Statements von Außenministerien)
+□ Gegendarstellungen (Russische Perspektive zu westlichen Claims)
 
-QUELLEN FÜR STATEMENTS:
-- Außenministerien (direkte Statements)
-- Präsidenten/Premier-Äußerungen
-- UN-Reden und Sicherheitsrat-Sitzungen
-- Presse-Briefings (State Dept, MFA Russia)
-""",
-    """
-GEWICHTUNG:
-- Tatsächliche diplomatische Aktionen > Rhetorik
-- Strukturelle Veränderungen > Einzelereignisse
-- Multilaterale Isolation > bilaterale Probleme
+Für jeden Punkt: Quelle + Datum oder "Keine aktuellen Daten".
 """
 ]
 
-def build_prompt(date: str, research_data: str, rss_data: str) -> str:
+def build_prompt(date: str, rss_data: str) -> str:
     return f"""
 DIPLOMATISCHE LAGEBEURTEILUNG - {date}
 
-ZENTRALE RESEARCH-ERGEBNISSE:
-{research_data}
-
-RSS-FEEDS (Offizielle Statements und ergänzende Quellen):
+RSS-FEED-KONTEXT:
 {rss_data}
 
 AUFTRAG:
-Bewerte den GESAMTEN Stand der diplomatischen Beziehungen zwischen NATO/EU und Russland.
-Dies ist eine Baseline-Bewertung des diplomatischen Klimas insgesamt.
+Bewerte die diplomatische Eskalationslage (1-10) basierend AUSSCHLIESSLICH auf
+dem RSS-Feed-Kontext oben.
 
-1. Recherchiere Status aller diplomatischen Kanäle
-2. Analysiere aktuelle Rhetorik-Ebene (ohne Überdramatisierung)
-3. Erfasse Sanktionsstände und Gegensanktionen
-4. Prüfe internationale Foren und multilaterale Beziehungen
+PFLICHT:
+- Jede Aussage mit Quelle + Datum belegen
+- Fehlende Daten explizit kennzeichnen: "Keine aktuellen Daten zu [X]"
+- Widersprüche zwischen Quellen dokumentieren
+- Attributive Sprache verwenden: "Laut [Quelle, Datum]..."
 
-Gib einen Score und eine sachliche Begründung.
+AUSGABE:
+- score: [1-10]
+- rationale: Begründung mit Quellen + Datum, Widersprüche, fehlende Daten
 """
 
 def create_agent() -> Agent:

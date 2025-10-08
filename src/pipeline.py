@@ -4,14 +4,14 @@ from typing import List, Dict, Any
 import httpx
 
 try:
-    from .feeds import BundeswehrFeed, NatoFeed, AuswaertigesAmtFeed, AftershockFeed, RussianEmbassyFeed, RBCPoliticsFeed, JungeWeltFeed, FrontexFeed, KommersantFeed, RajaFeed, TagesschauAuslandFeed, TagesschauInlandFeed, TagesschauWirtschaftFeed, BundestagAktuelleThemenFeed
-    from .feeds.base import to_iso_utc
+    from .feeds import BundeswehrFeed, NatoFeed, AuswaertigesAmtFeed, AftershockFeed, RussianEmbassyFeed, RBCPoliticsFeed, JungeWeltFeed, FrontexFeed, KommersantFeed, RajaFeed, TagesschauAuslandFeed, TagesschauInlandFeed, TagesschauWirtschaftFeed, BundestagAktuelleThemenFeed, IRUFeed
+    from .feeds.base import FeedSource, to_iso_utc
     from .scoring3 import calculate_escalation_score
     from .storage import save_escalation_report
 except ImportError:
     # For direct execution
-    from feeds import BundeswehrFeed, NatoFeed, AuswaertigesAmtFeed, AftershockFeed, RussianEmbassyFeed, RBCPoliticsFeed, JungeWeltFeed, FrontexFeed, KommersantFeed, RajaFeed, TagesschauAuslandFeed, TagesschauInlandFeed, TagesschauWirtschaftFeed, BundestagAktuelleThemenFeed
-    from feeds.base import to_iso_utc
+    from feeds import BundeswehrFeed, NatoFeed, AuswaertigesAmtFeed, AftershockFeed, RussianEmbassyFeed, RBCPoliticsFeed, JungeWeltFeed, FrontexFeed, KommersantFeed, RajaFeed, TagesschauAuslandFeed, TagesschauInlandFeed, TagesschauWirtschaftFeed, BundestagAktuelleThemenFeed, IRUFeed
+    from feeds.base import FeedSource, to_iso_utc
     from scoring3 import calculate_escalation_score
     from storage import save_escalation_report
 
@@ -67,61 +67,56 @@ def format_feed_results_as_markdown(results: List[Dict[str, Any]]) -> str:
     return "\n".join(markdown_lines)
 
 
+CONCURRENCY_LIMIT = 2  # maximal gleichzeitige Feed-Requests
+
+
+async def _run_feed(feed: FeedSource, semaphore: asyncio.Semaphore) -> Dict[str, Any]:
+    async with semaphore:
+        async with httpx.AsyncClient(headers=feed.get_headers()) as client:
+            return await feed.fetch(client)
+
+
 async def process_all_feeds() -> List[Dict[str, Any]]:
     """Process all available feeds in parallel."""
-    # List of all available feed sources
     feeds = [
         BundeswehrFeed(),
         NatoFeed(),
         AuswaertigesAmtFeed(),
-        #AftershockFeed(),
+        # AftershockFeed(),
         RussianEmbassyFeed(),
         RBCPoliticsFeed(),
-        JungeWeltFeed(),
+        # JungeWeltFeed(),    # try to minimize Tokensamount
         FrontexFeed(),
         KommersantFeed(),
-        RajaFeed(), # Finnland border service
+        RajaFeed(),  # Finnland border service
         TagesschauAuslandFeed(),
         TagesschauInlandFeed(),
         TagesschauWirtschaftFeed(),
-        BundestagAktuelleThemenFeed(),
-        # Add more feeds here as they become available
+        # BundestagAktuelleThemenFeed(),  # way too long texts
     ]
 
-    # Process all feeds in parallel with feed-specific headers
-    tasks = []
-    for feed in feeds:
-        # Create client with feed-specific headers
-        feed_headers = feed.get_headers()
-        client = httpx.AsyncClient(headers=feed_headers)
-        tasks.append((feed, client))
+    semaphore = asyncio.Semaphore(CONCURRENCY_LIMIT)
+    fetch_tasks = [asyncio.create_task(_run_feed(feed, semaphore)) for feed in feeds]
+    results = await asyncio.gather(*fetch_tasks, return_exceptions=True)
 
-    try:
-        # Execute all feed fetches in parallel
-        fetch_tasks = [feed.fetch(client) for feed, client in tasks]
-        results = await asyncio.gather(*fetch_tasks, return_exceptions=True)
+    processed_results: List[Dict[str, Any]] = []
+    for feed, result in zip(feeds, results):
+        if isinstance(result, Exception):
+            cause = getattr(result, "__cause__", None)
+            error_message = f"{type(result).__name__}: {result or repr(result)}"
+            if cause:
+                error_message += f" | cause={repr(cause)}"
+            processed_results.append({
+                "source_name": feed.source_name,
+                "date": to_iso_utc(None),
+                "result": "error",
+                "error_message": error_message,
+                "items": [],
+            })
+        else:
+            processed_results.append(result)
 
-        # Handle any exceptions that occurred during processing
-        processed_results = []
-        for i, result in enumerate(results):
-            if isinstance(result, Exception):
-                # Convert exception to error result
-                processed_results.append({
-                    "source_name": feeds[i].source_name,
-                    "date": to_iso_utc(None),
-                    "result": "error",
-                    "error_message": str(result),
-                    "items": []
-                })
-            else:
-                processed_results.append(result)
-
-        return processed_results
-
-    finally:
-        # Close all httpx clients
-        for _, client in tasks:
-            await client.aclose()
+    return processed_results
 
 
 async def run_daily_pipeline():

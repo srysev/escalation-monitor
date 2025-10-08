@@ -9,19 +9,17 @@ try:
     from .feeds.base import to_iso_utc
     from .agents import AGENTS
     from .agents.review import create_agent as create_review_agent, build_prompt
-    from .agents.research import run_research
     from .schemas import DimensionScore, OverallAssessment
 except ImportError:
     from feeds.base import to_iso_utc
     from agents import AGENTS
     from agents.review import create_agent as create_review_agent, build_prompt
-    from agents.research import run_research
     from schemas import DimensionScore, OverallAssessment
 
 async def calculate_escalation_score(rss_markdown: str) -> Dict[str, Any]:
     """
     Calculate escalation score using 6-agent architecture:
-    - 5 parallel dimension agents (Grok)
+    - 5 parallel dimension agents (xAI/Grok)
     - 1 review agent for synthesis (Claude)
 
     Args:
@@ -34,26 +32,13 @@ async def calculate_escalation_score(rss_markdown: str) -> Dict[str, Any]:
         start_total = time.perf_counter()
         current_date = datetime.now().strftime("%Y-%m-%d")
 
-        # Phase 0: Research over the last news
-        print("\n=== Phase 0: Research Agent ===")
-        start_phase0 = time.perf_counter()
-        try:
-            research_data = await run_research(date=current_date, rss_markdown=rss_markdown)
-        except Exception as e:
-            print(f"Research agent failed: {e}")
-            research_data = "Research-Daten nicht verfügbar"
-
-        duration_phase0 = time.perf_counter() - start_phase0
-        print(f"Phase 0 completed in {duration_phase0:.3f}s")
-        print(f"Research data:\n\n{research_data}")
-
         # Phase 1: Create all dimension agents and run in parallel
         print("\n=== Phase 1: Dimension Agents (Parallel) ===")
         start_phase1 = time.perf_counter()
         dimension_tasks = {}
         for name, agent_module in AGENTS.items():
             agent = agent_module.create_agent()
-            run_input = agent_module.build_prompt(current_date, research_data, rss_markdown)
+            run_input = agent_module.build_prompt(current_date, rss_markdown)
             dimension_tasks[name] = asyncio.create_task(run_agent_async(agent, run_input))
 
         # Wait for all dimension agents to complete
@@ -97,7 +82,7 @@ async def calculate_escalation_score(rss_markdown: str) -> Dict[str, Any]:
         print("\n=== Phase 3: Review Agent Synthesis ===")
         start_phase3 = time.perf_counter()
         review_agent = create_review_agent()
-        review_input = build_prompt(current_date, research_data, rss_markdown, dimension_results, calculated_score)
+        review_input = build_prompt(current_date, rss_markdown, dimension_results, calculated_score)
         final_response = await review_agent.arun(review_input)
 
         duration_phase3 = time.perf_counter() - start_phase3
@@ -105,7 +90,6 @@ async def calculate_escalation_score(rss_markdown: str) -> Dict[str, Any]:
 
         duration_total = time.perf_counter() - start_total
         print(f"\n=== Total Duration: {duration_total:.3f}s ===")
-        print(f"  Phase 0 (Research):        {duration_phase0:7.3f}s ({duration_phase0/duration_total*100:5.1f}%)")
         print(f"  Phase 1 (Dimensions):      {duration_phase1:7.3f}s ({duration_phase1/duration_total*100:5.1f}%)")
         print(f"  Phase 2 (Calculation):     {duration_phase2:7.3f}s ({duration_phase2/duration_total*100:5.1f}%)")
         print(f"  Phase 3 (Review):          {duration_phase3:7.3f}s ({duration_phase3/duration_total*100:5.1f}%)")

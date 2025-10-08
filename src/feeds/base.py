@@ -100,10 +100,11 @@ class FeedSource(ABC):
             }
 
         except Exception as e:
+            error_message = f"{type(e).__name__}: {str(e) or repr(e)}"
             return {
                 "source_name": self.source_name,
                 "date": to_iso_utc(None),
                 "result": "error",
-                "error_message": str(e),
+                "error_message": error_message,
                 "items": []
             }
