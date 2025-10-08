@@ -85,21 +85,29 @@ class RBCPoliticsFeed(FeedSource):
         description = entry.get("description", "").strip()
         published_str = entry.get("published", "")
 
+        # Extract full text from custom RBC namespace (feedparser converts rbc_news:full-text to rbc_news_full-text)
+        full_text = entry.get("rbc_news_full-text", "").strip()
+
         # Parse publication date
         pub_datetime = self._parse_rbc_date(published_str)
         if not pub_datetime:
             return None  # Skip entries without valid dates
 
-        # Clean HTML from description
-        clean_description = self._clean_html_content(description)
+        # Determine which text content to use (prefer full text)
+        if full_text:
+            # Use full article text
+            content = self._clean_html_content(full_text)
+        else:
+            # Fallback to description
+            content = self._clean_html_content(description)
 
-        # Combine title and description for full context
-        if title and clean_description:
-            text = f"{title}. {clean_description}"
+        # Combine title and content for full context
+        if title and content:
+            text = f"{title}. {content}"
         elif title:
             text = title
-        elif clean_description:
-            text = clean_description
+        elif content:
+            text = content
         else:
             text = ""
 
