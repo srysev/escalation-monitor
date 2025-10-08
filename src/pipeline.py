@@ -4,13 +4,13 @@ from typing import List, Dict, Any
 import httpx
 
 try:
-    from .feeds import BundeswehrFeed, NatoFeed, AuswaertigesAmtFeed, AftershockFeed, RussianEmbassyFeed, RBCPoliticsFeed, JungeWeltFeed, FrontexFeed, KommersantFeed, RajaFeed, TagesschauAuslandFeed
+    from .feeds import BundeswehrFeed, NatoFeed, AuswaertigesAmtFeed, AftershockFeed, RussianEmbassyFeed, RBCPoliticsFeed, JungeWeltFeed, FrontexFeed, KommersantFeed, RajaFeed, TagesschauAuslandFeed, TagesschauInlandFeed
     from .feeds.base import to_iso_utc
     from .scoring3 import calculate_escalation_score
     from .storage import save_escalation_report
 except ImportError:
     # For direct execution
-    from feeds import BundeswehrFeed, NatoFeed, AuswaertigesAmtFeed, AftershockFeed, RussianEmbassyFeed, RBCPoliticsFeed, JungeWeltFeed, FrontexFeed, KommersantFeed, RajaFeed, TagesschauAuslandFeed
+    from feeds import BundeswehrFeed, NatoFeed, AuswaertigesAmtFeed, AftershockFeed, RussianEmbassyFeed, RBCPoliticsFeed, JungeWeltFeed, FrontexFeed, KommersantFeed, RajaFeed, TagesschauAuslandFeed, TagesschauInlandFeed
     from feeds.base import to_iso_utc
     from scoring3 import calculate_escalation_score
     from storage import save_escalation_report
@@ -80,8 +80,9 @@ async def process_all_feeds() -> List[Dict[str, Any]]:
         JungeWeltFeed(),
         FrontexFeed(),
         KommersantFeed(),
-        RajaFeed(),
+        RajaFeed(), # Finnland border service
         TagesschauAuslandFeed(),
+        TagesschauInlandFeed(),
         # Add more feeds here as they become available
     ]
 
