@@ -11,5 +11,6 @@ from .frontex import FrontexFeed
 from .kommersant import KommersantFeed
 from .iru import IRUFeed
 from .raja import RajaFeed
+from .tagesschau_ausland import TagesschauAuslandFeed
 
-__all__ = ["FeedSource", "BundeswehrFeed", "NatoFeed", "AuswaertigesAmtFeed", "AftershockFeed", "RussianEmbassyFeed", "RBCPoliticsFeed", "JungeWeltFeed", "FrontexFeed", "KommersantFeed", "IRUFeed", "RajaFeed"]
+__all__ = ["FeedSource", "BundeswehrFeed", "NatoFeed", "AuswaertigesAmtFeed", "AftershockFeed", "RussianEmbassyFeed", "RBCPoliticsFeed", "JungeWeltFeed", "FrontexFeed", "KommersantFeed", "IRUFeed", "RajaFeed", "TagesschauAuslandFeed"]
