@@ -14,5 +14,6 @@ from .raja import RajaFeed
 from .tagesschau_ausland import TagesschauAuslandFeed
 from .tagesschau_inland import TagesschauInlandFeed
 from .tagesschau_wirtschaft import TagesschauWirtschaftFeed
+from .bundestag_aktuelle_themen import BundestagAktuelleThemenFeed
 
-__all__ = ["FeedSource", "BundeswehrFeed", "NatoFeed", "AuswaertigesAmtFeed", "AftershockFeed", "RussianEmbassyFeed", "RBCPoliticsFeed", "JungeWeltFeed", "FrontexFeed", "KommersantFeed", "IRUFeed", "RajaFeed", "TagesschauAuslandFeed", "TagesschauInlandFeed", "TagesschauWirtschaftFeed"]
+__all__ = ["FeedSource", "BundeswehrFeed", "NatoFeed", "AuswaertigesAmtFeed", "AftershockFeed", "RussianEmbassyFeed", "RBCPoliticsFeed", "JungeWeltFeed", "FrontexFeed", "KommersantFeed", "IRUFeed", "RajaFeed", "TagesschauAuslandFeed", "TagesschauInlandFeed", "TagesschauWirtschaftFeed", "BundestagAktuelleThemenFeed"]
