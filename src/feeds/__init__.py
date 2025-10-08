@@ -9,5 +9,6 @@ from .rbc_politics import RBCPoliticsFeed
 from .junge_welt import JungeWeltFeed
 from .frontex import FrontexFeed
 from .kommersant import KommersantFeed
+from .iru import IRUFeed
 
-__all__ = ["FeedSource", "BundeswehrFeed", "NatoFeed", "AuswaertigesAmtFeed", "AftershockFeed", "RussianEmbassyFeed", "RBCPoliticsFeed", "JungeWeltFeed", "FrontexFeed", "KommersantFeed"]
+__all__ = ["FeedSource", "BundeswehrFeed", "NatoFeed", "AuswaertigesAmtFeed", "AftershockFeed", "RussianEmbassyFeed", "RBCPoliticsFeed", "JungeWeltFeed", "FrontexFeed", "KommersantFeed", "IRUFeed"]
