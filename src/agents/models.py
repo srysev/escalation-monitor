@@ -6,7 +6,7 @@ from agno.models.xai import xAI
 from agno.models.anthropic import Claude
 
 
-def create_research_model(search_results: int = 5, sources: list[dict] | None = [{"type": "x"}]) -> xAI:
+def create_research_model(search_results: int = 10, sources: list[dict] | None = [{"type": "web"}, {"type": "x"}]) -> xAI:
     """
     Create xAI model for dimension agents with search capabilities.
 

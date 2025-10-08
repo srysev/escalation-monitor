@@ -1,7 +1,6 @@
 # src/agents/review.py
 from typing import Dict
 from agno.agent import Agent
-from agno.tools.newspaper import NewspaperTools
 
 try:
     from ..schemas import OverallAssessment
@@ -169,8 +168,11 @@ def create_agent() -> Agent:
         instructions=INSTRUCTIONS,
         output_schema=OverallAssessment,
         markdown=False,
-        tools=[NewspaperTools()],
-        tool_call_limit=5,
+        tools=[{
+         "type": "web_search_20250305",
+         "name": "web_search",
+         "max_uses": 5
+         }],
     )
 
 
@@ -185,7 +187,7 @@ RSS-FEED-KONTEXT
 ═══════════════════════════════════════════════════════════
 {rss_data}
 
-Webscraping-Option: Nutze NewspaperTools() für max. 3 wichtige RSS-URLs wenn Details unklar
+Web-Search-Option: Nutze web_search bei Bedarf für zusätzliche Kontext-Recherche
 (Fokus: False-Flag-Warnungen, Nuklearwaffen, Kriegsrhetorik, widersprüchliche Darstellungen)
 
 ═══════════════════════════════════════════════════════════

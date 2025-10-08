@@ -44,10 +44,8 @@ def format_feed_results_as_markdown(results: List[Dict[str, Any]]) -> str:
                     # Convert datetime to readable format for markdown
                     date_str = item.date.strftime("%Y-%m-%d %H:%M UTC")
                     text = item.text
-                    url = item.url
 
                     markdown_lines.append(f"{i+1}. **{date_str}** - {text}")
-                    markdown_lines.append(f"   - Link: {url}")
 
             markdown_lines.append("")  # Empty line between feeds
 
@@ -113,7 +111,7 @@ async def process_all_feeds() -> List[Dict[str, Any]]:
                 "error_message": error_message,
                 "items": [],
             })
-        else:
+        elif isinstance(result, dict):
             processed_results.append(result)
 
     return processed_results
