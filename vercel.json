@@ -6,5 +6,11 @@
     "api/*.py": {
       "maxDuration": 300
     }
+  },
+  "crons": [
+  {
+    "path": "/api/cron",
+    "schedule": "0 5 * * *"
   }
+]
 }
