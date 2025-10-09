@@ -148,6 +148,28 @@
       </div>
     </div>
 
+    <!-- Warning for old data -->
+    {% if report and report.age_days and report.age_days > 0 %}
+    <div class="alert alert-warning mb-3" role="alert">
+      <div class="d-flex align-items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon alert-icon me-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M12 9v4"/>
+          <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z"/>
+          <path d="M12 16h.01"/>
+        </svg>
+        <div>
+          <strong>Achtung:</strong>
+          {% if report.age_days == 1 %}
+          Dies sind die Daten von gestern ({{ report.date }}) – der heutige Bericht ist noch nicht verfügbar.
+          {% else %}
+          Dies sind die Daten von vor {{ report.age_days }} Tagen ({{ report.date }}) – ein aktuellerer Bericht ist noch nicht verfügbar.
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
     <div class="row g-3">
       <!-- Links: Score + Summary -->
       <div class="col-12 col-lg-8">

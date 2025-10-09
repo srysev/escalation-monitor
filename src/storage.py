@@ -1,7 +1,7 @@
 # src/storage.py
 import json
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Dict, Any, Optional
 import httpx
@@ -217,21 +217,53 @@ def _get_from_local(date_str: str) -> Optional[Dict[str, Any]]:
         return None
 
 
-def get_today_report() -> Optional[Dict[str, Any]]:
+def get_latest_report(max_days_back: int = 7) -> Optional[Dict[str, Any]]:
     """
-    Get today's escalation report.
+    Get most recent escalation report (today or up to max_days_back days ago).
+
+    Searches backwards from today up to max_days_back days for the newest available report.
+    Adds metadata to the report:
+    - is_today: bool - Whether the report is from today
+    - age_days: int - How many days old the report is (0 = today)
+
+    Args:
+        max_days_back: Maximum number of days to search backwards (default: 7)
 
     Returns:
-        Dict with report data or None if not found/error
+        Dict with report data + metadata or None if no report found
     """
     try:
-        # Get current date in UTC
-        today_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-        return get_report_by_date(today_str)
+        today = datetime.now(timezone.utc).date()
+
+        for days_back in range(max_days_back + 1):
+            check_date = today - timedelta(days=days_back)
+            date_str = check_date.strftime("%Y-%m-%d")
+
+            report = get_report_by_date(date_str)
+            if report:
+                # Add metadata about report age
+                report["is_today"] = (days_back == 0)
+                report["age_days"] = days_back
+                return report
+
+        return None
 
     except Exception as e:
-        print(f"Error reading today's report: {e}")
+        print(f"Error reading latest report: {e}")
         return None
+
+
+def get_today_report() -> Optional[Dict[str, Any]]:
+    """
+    Get today's escalation report with fallback to recent days.
+
+    If today's report is not available, falls back to reports from previous days
+    (up to 7 days back). The returned report includes metadata indicating its age.
+
+    Returns:
+        Dict with report data + metadata (is_today, age_days) or None if not found/error
+    """
+    return get_latest_report(max_days_back=7)
 
 def get_report_by_date(date: str) -> Optional[Dict[str, Any]]:
     """
