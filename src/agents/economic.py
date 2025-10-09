@@ -43,9 +43,10 @@ WIRTSCHAFTLICHE ESKALATIONSSKALA (1-10):
 BEWERTUNGSMETHODIK:
 
 1. BELEGPFLICHT:
-   - Nur Aussagen mit Quelle + Datum (<30 Tage) verwenden
+   - Primär: Aktuelle Aussagen mit Quelle + Datum (<30 Tage) verwenden
+   - Sekundär: Historischer Kontext zur Trendeinordnung (ältere Quellen erlaubt)
    - Fehlt aktueller Beleg: "Keine aktuellen Daten zu [Thema] gefunden (geprüft am DATUM)"
-   - Keine Rückgriffe auf alte Werte oder Beispiele
+   - RSS-Daten durch aktive Suche in verfügbaren Quellen ergänzen
 
 2. ATTRIBUTIVE SPRACHE (zwingend):
    ❌ FALSCH: "Russland umgeht Sanktionen"
@@ -62,10 +63,11 @@ BEWERTUNGSMETHODIK:
 
 5. RATIONALE-FORMAT:
    Score [X] weil:
-   - [Aussage 1] (Quelle, Datum)
-   - [Aussage 2] (Quelle, Datum)
+   - [Aktuelle Aussage 1] (Quelle, Datum)
+   - [Aktuelle Aussage 2] (Quelle, Datum)
+   - Historischer Kontext: [Trend seit JAHR, ältere Entwicklungen zur Einordnung]
    - Widerspruch: [West sagt X vs. Russland sagt Y]
-   - Fehlend: [Keine Daten zu Z gefunden]
+   - Fehlend: [Keine Daten zu Z gefunden (geprüft am DATUM)]
 """,
     """
 INDIKATOREN (Was prüfen?):
@@ -89,18 +91,25 @@ RSS-FEED-KONTEXT:
 {rss_data}
 
 AUFTRAG:
-Bewerte die wirtschaftliche Eskalationslage (1-10) basierend AUSSCHLIESSLICH auf
-dem RSS-Feed-Kontext oben.
+Bewerte die wirtschaftliche Eskalationslage (1-10).
+
+DATENQUELLEN (in dieser Reihenfolge):
+1. RSS-Feed-Kontext oben als Ausgangspunkt
+2. AKTIVE SUCHE in deinen verfügbaren Quellen (X/Twitter, Web), um Lücken zu füllen
+3. Fokus auf aktuelle Informationen (<30 Tage vom {date})
+4. Historischer Kontext: Ältere Informationen zur Einordnung von Trends (Verschlechterung/Verbesserung)
 
 PFLICHT:
 - Jede Aussage mit Quelle + Datum belegen
-- Fehlende Daten explizit kennzeichnen: "Keine aktuellen Daten zu [X]"
+- Wenn RSS-Daten unzureichend: AKTIV nach aktuellen Informationen suchen
+- Fehlende Daten explizit kennzeichnen: "Keine aktuellen Daten zu [X] gefunden (geprüft am {date})"
+- Historischer Kontext: Falls vorhanden, ältere Entwicklungen erwähnen (z.B. "Seit 2022...", "Trend seit...")
 - Widersprüche zwischen Quellen dokumentieren
 - Attributive Sprache verwenden: "Laut [Quelle, Datum]..."
 
 AUSGABE:
 - score: [1-10]
-- rationale: Begründung mit Quellen + Datum, Widersprüche, fehlende Daten
+- rationale: Begründung mit Quellen + Datum, historischer Kontext falls relevant, Widersprüche, fehlende Daten
 """
 
 def create_agent() -> Agent:
