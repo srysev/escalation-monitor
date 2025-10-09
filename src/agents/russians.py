@@ -104,7 +104,23 @@ AUSGABE:
 """
 
 def create_agent() -> Agent:
-    model = create_research_model()
+    # Test: Use only X search to verify if included_x_handles works
+    model = create_research_model(
+        search_results=20,
+        sources=[{"type": "x"}],  # Only X search, no web
+        x_accounts=[
+            "AuswaertigesAmt",   # DE: Auswärtiges Amt - Visa, Reisehinweise, Konsulate
+            "BMI_Bund",          # DE: Bundesinnenministerium - Aufenthaltsrecht, Migration
+            "BAMF_Dialog",       # DE: Bundesamt für Migration - Einbürgerung, Asyl
+            "MID_RF",            # RU: Russisches Außenministerium
+            "MFA_Belarus",       # BY: Belarussisches Außenministerium
+            "RusBotschaft",      # RU: Russische Botschaft in Deutschland
+            "EUCouncil",         # EU: Europäischer Rat - EU-weite Migrationspolitik
+            "Politsei",          # EE: Estnische Polizei - Grenzkontrollen, Visa
+            "Straz_Graniczna",   # PL: Polnischer Grenzschutz - Migrationsrouten
+            "hib_Nachrichten"    # DE: Humanitäres Informationsbüro - Flüchtlingshilfe
+        ]
+    )
 
     return Agent(
         model=model,
@@ -113,3 +129,81 @@ def create_agent() -> Agent:
         output_schema=DimensionScore,
         markdown=False,
     )
+
+
+async def main():
+    """Test the russians agent locally."""
+    import json
+    import logging
+
+    # Enable debug logging to see agent's internal operations
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+
+    # Target specific loggers
+    logging.getLogger("agno").setLevel(logging.DEBUG)
+    logging.getLogger("httpx").setLevel(logging.INFO)  # See API calls
+
+    # Mock RSS data (deliberately incomplete to trigger search)
+    mock_rss = """
+    [Test RSS Context - SEHR LIMITIERT]
+
+    Keine aktuellen RSS-Daten zu:
+    - Finanzzugang (Banken, Kontokündigungen)
+    - Diskriminierung im Alltag
+    - Reisefreiheit, Grenzkontrollen
+    - Behördliche Maßnahmen
+
+    Suche bitte aktiv nach aktuellen Informationen zu diesen Themen!
+    """
+
+    date = "2025-10-08"
+    prompt = build_prompt(date, mock_rss)
+
+    print("=" * 80)
+    print("Testing Russland-in-DE Agent")
+    print("=" * 80)
+    print(f"\nPrompt:\n{prompt}\n")
+    print("=" * 80)
+
+    agent = create_agent()
+    response = await agent.arun(prompt)
+
+    print("\nAgent Response Metadata:")
+    print("=" * 80)
+    print(f"Response Type: {type(response)}")
+    print(f"Response Attributes: {[attr for attr in dir(response) if not attr.startswith('_')]}")
+
+    # Check for common metadata fields
+    if hasattr(response, 'messages'):
+        print(f"\nMessages: {response.messages}")
+    if hasattr(response, 'usage'):
+        print(f"\nToken Usage: {response.usage}")
+    if hasattr(response, 'metrics'):
+        print(f"\nMetrics: {response.metrics}")
+    if hasattr(response, 'citations'):
+        print(f"\nCitations: {response.citations}")
+
+    print("\n" + "=" * 80)
+    print("Agent Response Content:")
+    print("=" * 80)
+
+    # Convert Pydantic model to dict for JSON serialization
+    content = response.content
+    if content is None:
+        print("Error: Agent returned None")
+    elif hasattr(content, 'model_dump'):
+        print(json.dumps(content.model_dump(), indent=2, ensure_ascii=False))
+    elif hasattr(content, 'dict'):
+        print(json.dumps(content.dict(), indent=2, ensure_ascii=False))
+    else:
+        print(json.dumps(content, indent=2, ensure_ascii=False))
+
+    print("=" * 80)
+
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())
