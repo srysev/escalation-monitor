@@ -1,6 +1,7 @@
 # api/cron.py
 from http.server import BaseHTTPRequestHandler
 import os
+import asyncio
 from src.pipeline import run_daily_pipeline
 
 class handler(BaseHTTPRequestHandler):
@@ -13,6 +14,6 @@ class handler(BaseHTTPRequestHandler):
             self.send_response(401); self.end_headers()
             self.wfile.write(b"unauthorized"); return
 
-        result = run_daily_pipeline()  # fetch -> process -> store
+        result = asyncio.run(run_daily_pipeline())  # fetch -> process -> store
         self.send_response(200); self.end_headers()
         self.wfile.write(f"ok: {result}".encode("utf-8"))
