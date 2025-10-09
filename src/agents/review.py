@@ -168,11 +168,6 @@ def create_agent() -> Agent:
         instructions=INSTRUCTIONS,
         output_schema=OverallAssessment,
         markdown=False,
-        tools=[{
-         "type": "web_search_20250305",
-         "name": "web_search",
-         "max_uses": 5
-         }],
     )
 
 
