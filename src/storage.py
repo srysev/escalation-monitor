@@ -36,15 +36,17 @@ def _save_to_blob(pathname: str, data: Dict[str, Any]) -> bool:
         content = json.dumps(data, indent=2, ensure_ascii=False)
 
         # Upload to Blob Storage
-        # addRandomSuffix=false: Use exact pathname without random hash
-        # allowOverwrite=true: Allow overwriting existing files (like local filesystem)
+        # x-add-random-suffix: 0 = Use exact pathname without random hash
+        # x-allow-overwrite: 1 = Allow overwriting existing files (like local filesystem)
         with httpx.Client() as client:
             response = client.put(
-                f"{BLOB_API_BASE}/{pathname}?addRandomSuffix=false&allowOverwrite=true",
+                f"{BLOB_API_BASE}/{pathname}",
                 content=content.encode('utf-8'),
                 headers={
                     "Authorization": f"Bearer {BLOB_TOKEN}",
                     "x-content-type": "application/json",
+                    "x-add-random-suffix": "0",
+                    "x-allow-overwrite": "1",
                 },
                 timeout=30.0
             )
