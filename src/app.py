@@ -11,6 +11,7 @@ from pydantic import BaseModel
 from src.storage import get_today_report
 from src.agents.review import ESKALATIONSSKALA
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 
 app = FastAPI(title="Escalation Monitor API")
 templates = Jinja2Templates(directory="src/templates")
@@ -168,11 +169,12 @@ def dashboard(request: Request):
     if current_level:
         scale_levels.append(current_level)
 
-    # Timestamp formatieren
+    # Timestamp formatieren (UTC -> Europa/Berlin)
     if report and "timestamp" in report:
         try:
-            dt = datetime.fromisoformat(report["timestamp"].replace('Z', '+00:00'))
-            formatted_timestamp = dt.strftime("%d.%m.%Y, %H:%M Uhr")
+            dt_utc = datetime.fromisoformat(report["timestamp"].replace('Z', '+00:00'))
+            dt_berlin = dt_utc.astimezone(ZoneInfo("Europe/Berlin"))
+            formatted_timestamp = dt_berlin.strftime("%d.%m.%Y, %H:%M Uhr")
         except:
             formatted_timestamp = "Unbekannt"
     else:
