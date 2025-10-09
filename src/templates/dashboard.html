@@ -63,27 +63,22 @@
     /* Card-Titel konsistent mit Summary-Styling */
     .card-title{ font-size: 16px; font-weight: 600; color: #111827; }
 
-    /* Dimensions Badges */
-    .dimensions-line{
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid #e5e7eb;
+    /* Trend Section */
+    .trend-section{ border-color: #e5e7eb; }
+    .trend-label{
       font-size: 13px;
-      color: #374151;
-      line-height: 1.6;
-    }
-    .dimensions-line .dim-item{
-      white-space: nowrap;
-      color: #374151;
-    }
-    .dimensions-line .dim-name{
-      color: #111827;
       font-weight: 600;
+      color: #6b7280;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
-    .dimensions-line .sep{ color: #d1d5db; margin: 0 2px; }
+    .trend-text{
+      color: #374151;
+      font-size: 14px;
+      line-height: 1.6;
+      font-weight: 500;
+    }
 
     /* Dimensions Accordion */
     .dimensions-accordion{ margin-top: 16px; }
@@ -178,13 +173,11 @@
               </div>
             </div>
 
-            <!-- Dimensions Badges -->
-            {% if report and report.escalation_result and report.escalation_result.escalation_score and report.escalation_result.escalation_score.dimensions %}
-            <div class="dimensions-line">
-              {% for dim in report.escalation_result.escalation_score.dimensions %}
-              {% set short_name = dim.name.replace('Militärisch', 'Militär').replace('Diplomatisch', 'Diplo').replace('Wirtschaftlich', 'Wirtschaft').replace('Gesellschaftlich', 'Gesellschaft') %}
-              <span class="dim-item"><span class="dim-name">{{ short_name }}</span> {{ dim.score }}/10</span>{% if not loop.last %}<span class="sep">|</span>{% endif %}
-              {% endfor %}
+            <!-- Trend Assessment -->
+            {% if report and report.escalation_result and report.escalation_result.escalation_score and report.escalation_result.escalation_score.trend_assessment %}
+            <div class="trend-section mt-3 pt-3 border-top">
+              <div class="trend-label">Trend</div>
+              <div class="trend-text">{{ report.escalation_result.escalation_score.trend_assessment }}</div>
             </div>
             {% endif %}
 

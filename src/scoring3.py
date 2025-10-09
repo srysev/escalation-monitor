@@ -138,23 +138,23 @@ async def run_agent_async(agent, input_text: str):
 
 def get_escalation_level(score: float) -> str:
     """Convert numerical score to level name"""
-    if score < 1.5:
+    if score < 2.0:
         return "BASELINE"
-    elif score < 2.5:
+    elif score < 3.0:
         return "FRICTION"
-    elif score < 3.5:
+    elif score < 4.0:
         return "TENSION"
-    elif score < 4.5:
+    elif score < 5.0:
         return "ALERT"
-    elif score < 5.5:
+    elif score < 6.0:
         return "ELEVATED"
-    elif score < 6.5:
+    elif score < 7.0:
         return "HIGH"
-    elif score < 7.5:
+    elif score < 8.0:
         return "SEVERE"
-    elif score < 8.5:
+    elif score < 9.0:
         return "CRITICAL"
-    elif score < 9.5:
+    elif score < 10.0:
         return "EMERGENCY"
     else:
         return "WARTIME"
