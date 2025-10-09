@@ -177,7 +177,8 @@
             {% if report and report.escalation_result and report.escalation_result.escalation_score and report.escalation_result.escalation_score.trend_assessment %}
             <div class="trend-section mt-3 pt-3 border-top">
               <div class="trend-label">Trend</div>
-              <div class="trend-text">{{ report.escalation_result.escalation_score.trend_assessment }}</div>
+              <div class="trend-text" id="trendContent"></div>
+              <script id="trendData" type="application/json">{{ report.escalation_result.escalation_score.trend_assessment|tojson }}</script>
             </div>
             {% endif %}
 
@@ -224,8 +225,8 @@
                     <polyline points="6 9 12 15 18 9"></polyline>
                   </svg>
                 </div>
-                <div class="dim-accordion-body">
-                  {{ dim.rationale }}
+                <div class="dim-accordion-body" data-rationale-md="{{ dim.rationale|tojson|forceescape }}">
+                  <!-- Content wird via JavaScript gerendert -->
                 </div>
               </div>
               {% endfor %}
@@ -292,12 +293,32 @@
   document.getElementById("scoreBig").style.color = '#94a3b8';
   {% endif %}
 
+  // Helper: Strip HTML tags from LLM output
+  function stripHtmlTags(text) {
+    return text.replace(/<[^>]*>/g, '');
+  }
+
+  // Render Trend Markdown (strip HTML tags from LLM)
+  const trendDataEl = document.getElementById('trendData');
+  if (trendDataEl) {
+    const trendRaw = JSON.parse(trendDataEl.textContent);
+    const trendClean = stripHtmlTags(trendRaw);
+    document.getElementById('trendContent').innerHTML = marked.parse(trendClean);
+  }
+
   // Render Summary Markdown (nach marked.js geladen ist)
   const summaryDataEl = document.getElementById('summaryData');
   if (summaryDataEl) {
     const summaryMarkdown = JSON.parse(summaryDataEl.textContent);
     document.getElementById('summaryContent').innerHTML = marked.parse(summaryMarkdown);
   }
+
+  // Render Dimension Rationales (strip HTML tags + Markdown)
+  document.querySelectorAll('.dim-accordion-body[data-rationale-md]').forEach(body => {
+    const rationaleRaw = JSON.parse(body.dataset.rationaleMd);
+    const rationaleClean = stripHtmlTags(rationaleRaw);
+    body.innerHTML = marked.parse(rationaleClean);
+  });
 </script>
 </body>
 </html>
