@@ -95,7 +95,8 @@ SITUATION_SUMMARY (Markdown-Struktur):
 - Format: "Score X (LEVEL) bedeutet: [Einordnung in Alltagssprache]"
 - Spannungsfall (GG Art. 80a): [aktiviert / nicht aktiviert]
 - Verteidigungsfall (GG Art. 115a): [aktiviert / nicht aktiviert]  
-- NATO Artikel 4 oder 5: [aktiviert / nicht aktiviert]
+- NATO Artikel 4: [aktiviert / nicht aktiviert]
+- NATO Artikel 5: [aktiviert / nicht aktiviert]
 
 ## Haupttreiber der aktuellen Lage
 [3-5 Sätze: Synthese der wichtigsten Faktoren über ALLE Dimensionen]
