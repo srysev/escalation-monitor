@@ -74,7 +74,7 @@ INDIKATOREN (Was prüfen?):
 
 □ Kommunikationskanäle (NATO-Russland-Rat, bilaterale Gespräche)
 □ Diplomatisches Personal (Botschafter-Status, Ausweisungen)
-□ Internationale Foren (UN, OSZE, G20 - Russland dabei?)
+□ Wurde Spannungsfall, Verteidigungsfall, NATO Artikel 4 oder 5 offiziell ausgerufen?
 □ Sanktionen (Neue Pakete, Sektoren, Gegensanktionen)
 □ Rhetorik-Ebene (Statements von Außenministerien)
 □ Gegendarstellungen (Russische Perspektive zu westlichen Claims)

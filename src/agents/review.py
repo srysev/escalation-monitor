@@ -91,10 +91,11 @@ TON: Nüchtern-präzise. Keine Dramatisierung, keine Verharmlosung.
 SITUATION_SUMMARY (Markdown-Struktur):
 
 ## Gesamtlage und Score-Einordnung
-[2-3 Sätze: Score + Bedeutung + Milestones]
-- Format: "Score X (LEVEL) bedeutet: [Einordnung]"
-- Milestones: Spannungsfall (GG Art. 80a), Verteidigungsfall (GG Art. 115a), NATO Artikel 4/5
-- Kurzer Überblick über Hauptfaktoren
+[2-3 Sätze: Score-Bedeutung + aktueller Stand wichtiger Indikatoren]
+- Format: "Score X (LEVEL) bedeutet: [Einordnung in Alltagssprache]"
+- Spannungsfall (GG Art. 80a): [aktiviert / nicht aktiviert]
+- Verteidigungsfall (GG Art. 115a): [aktiviert / nicht aktiviert]  
+- NATO Artikel 4 oder 5: [aktiviert / nicht aktiviert]
 
 ## Haupttreiber der aktuellen Lage
 [3-5 Sätze: Synthese der wichtigsten Faktoren über ALLE Dimensionen]

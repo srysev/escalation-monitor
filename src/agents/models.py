@@ -7,7 +7,7 @@ from agno.models.anthropic import Claude
 
 
 def create_research_model(
-    search_results: int = 10,
+    search_results: int = 15,
     sources: list[dict] | None = None,
     x_accounts: list[str] | None = None
 ) -> xAI:
@@ -15,7 +15,7 @@ def create_research_model(
     Create xAI model for dimension agents with search capabilities.
 
     Args:
-        search_results: Number of search results (default: 10, optimized for speed)
+        search_results: Number of search results (default: 15, optimized for speed)
         sources: Search sources (default: [{"type": "web"}, {"type": "x"}])
         x_accounts: Optional list of X accounts to focus search on (e.g., ["@AuswaertigesAmt"])
 
