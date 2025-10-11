@@ -92,7 +92,7 @@ SITUATION_SUMMARY (Markdown-Struktur):
 
 ## Gesamtlage und Score-Einordnung
 [2-3 Sätze: Score-Bedeutung + aktueller Stand wichtiger Indikatoren]
-- Format: "Score X (LEVEL) bedeutet: [Einordnung in Alltagssprache]"
+- Format: "Score X bedeutet: [Einordnung in Alltagssprache]"
 - Spannungsfall (GG Art. 80a): [aktiviert / nicht aktiviert]
 - Verteidigungsfall (GG Art. 115a): [aktiviert / nicht aktiviert]  
 - NATO Artikel 4: [aktiviert / nicht aktiviert]
