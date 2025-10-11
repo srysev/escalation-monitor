@@ -1,6 +1,7 @@
 # src/feeds/__init__.py
 from .base import FeedSource
 from .bundeswehr import BundeswehrFeed
+from .bmvg import BMVgFeed
 from .nato import NatoFeed
 from .auswaertiges_amt import AuswaertigesAmtFeed
 from .aftershock import AftershockFeed
@@ -16,4 +17,4 @@ from .tagesschau_inland import TagesschauInlandFeed
 from .tagesschau_wirtschaft import TagesschauWirtschaftFeed
 from .bundestag_aktuelle_themen import BundestagAktuelleThemenFeed
 
-__all__ = ["FeedSource", "BundeswehrFeed", "NatoFeed", "AuswaertigesAmtFeed", "AftershockFeed", "RussianEmbassyFeed", "RBCPoliticsFeed", "JungeWeltFeed", "FrontexFeed", "KommersantFeed", "IRUFeed", "RajaFeed", "TagesschauAuslandFeed", "TagesschauInlandFeed", "TagesschauWirtschaftFeed", "BundestagAktuelleThemenFeed"]
+__all__ = ["FeedSource", "BundeswehrFeed", "BMVgFeed", "NatoFeed", "AuswaertigesAmtFeed", "AftershockFeed", "RussianEmbassyFeed", "RBCPoliticsFeed", "JungeWeltFeed", "FrontexFeed", "KommersantFeed", "IRUFeed", "RajaFeed", "TagesschauAuslandFeed", "TagesschauInlandFeed", "TagesschauWirtschaftFeed", "BundestagAktuelleThemenFeed"]
