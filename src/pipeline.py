@@ -7,13 +7,13 @@ try:
     from .feeds import BundeswehrFeed, BMVgFeed, NatoFeed, AuswaertigesAmtFeed, AftershockFeed, RussianEmbassyFeed, RBCPoliticsFeed, JungeWeltFeed, FrontexFeed, KommersantFeed, RajaFeed, TagesschauAuslandFeed, TagesschauInlandFeed, TagesschauWirtschaftFeed, BundestagAktuelleThemenFeed, IRUFeed
     from .feeds.base import FeedSource, to_iso_utc
     from .scoring3 import calculate_escalation_score
-    from .storage import save_escalation_report
+    from .storage import save_escalation_report, save_feed_markdown
 except ImportError:
     # For direct execution
     from feeds import BundeswehrFeed, BMVgFeed, NatoFeed, AuswaertigesAmtFeed, AftershockFeed, RussianEmbassyFeed, RBCPoliticsFeed, JungeWeltFeed, FrontexFeed, KommersantFeed, RajaFeed, TagesschauAuslandFeed, TagesschauInlandFeed, TagesschauWirtschaftFeed, BundestagAktuelleThemenFeed, IRUFeed
     from feeds.base import FeedSource, to_iso_utc
     from scoring3 import calculate_escalation_score
-    from storage import save_escalation_report
+    from storage import save_escalation_report, save_feed_markdown
 
 
 def format_feed_results_as_markdown(results: List[Dict[str, Any]]) -> str:
@@ -133,6 +133,13 @@ async def run_daily_pipeline():
     print("Formatting feed data for escalation analysis...")
     markdown_data = format_feed_results_as_markdown(feed_results)
     print(f"Markdown Data:\n\n{markdown_data}")
+
+    # Save feed markdown
+    print("Saving feed markdown...")
+    if save_feed_markdown(markdown_data):
+        print("Feed markdown saved successfully")
+    else:
+        print("Failed to save feed markdown")
 
     # Calculate escalation score using the markdown data
     print("Calculating escalation score...")

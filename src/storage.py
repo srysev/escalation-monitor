@@ -12,6 +12,7 @@ BLOB_TOKEN = os.getenv("BLOB_READ_WRITE_TOKEN")
 
 # Reports directory path (for local storage)
 REPORTS_DIR = Path(__file__).parent / "reports"
+FEEDS_MARKDOWN_DIR = Path(__file__).parent / "feeds-markdown"
 
 # Vercel Blob API configuration
 BLOB_API_BASE = "https://blob.vercel-storage.com"
@@ -296,3 +297,108 @@ def get_report_by_date(date: str) -> Optional[Dict[str, Any]]:
     except Exception as e:
         print(f"Error reading report for date {date}: {e}")
         return None
+
+
+def _save_markdown_to_blob(pathname: str, content: str) -> bool:
+    """
+    Save markdown content to Vercel Blob Storage.
+
+    Args:
+        pathname: Path in blob storage (e.g. "feeds/2025-01-15.md")
+        content: Markdown content as string
+
+    Returns:
+        bool: True if successful, False otherwise
+    """
+    try:
+        if not BLOB_TOKEN:
+            print("BLOB_READ_WRITE_TOKEN not found, falling back to local storage")
+            return False
+
+        # Upload to Blob Storage as plain text
+        # x-add-random-suffix: 0 = Use exact pathname without random hash
+        # x-allow-overwrite: 1 = Allow overwriting existing files
+        with httpx.Client() as client:
+            response = client.put(
+                f"{BLOB_API_BASE}/{pathname}",
+                content=content.encode('utf-8'),
+                headers={
+                    "Authorization": f"Bearer {BLOB_TOKEN}",
+                    "x-content-type": "text/plain",
+                    "x-add-random-suffix": "0",
+                    "x-allow-overwrite": "1",
+                },
+                timeout=30.0
+            )
+            response.raise_for_status()
+
+        return True
+
+    except Exception as e:
+        print(f"Error saving markdown to Blob Storage: {e}")
+        return False
+
+
+def _save_markdown_to_local(date_str: str, content: str) -> bool:
+    """
+    Save markdown content to local filesystem.
+
+    Args:
+        date_str: Date string (YYYY-MM-DD)
+        content: Markdown content as string
+
+    Returns:
+        bool: True if successful, False otherwise
+    """
+    try:
+        # Ensure feeds-markdown directory exists
+        FEEDS_MARKDOWN_DIR.mkdir(exist_ok=True)
+
+        # Save to file
+        file_path = FEEDS_MARKDOWN_DIR / f"{date_str}.md"
+        with open(file_path, 'w', encoding='utf-8') as f:
+            f.write(content)
+
+        return True
+
+    except Exception as e:
+        print(f"Error saving markdown to local storage: {e}")
+        return False
+
+
+def save_feed_markdown(markdown_content: str) -> bool:
+    """
+    Save feed markdown to file with format YYYY-MM-DD.md.
+    Storage backend determined by ENVIRONMENT variable:
+    - "local" (or unset): Local filesystem
+    - "dev" or "prod": Vercel Blob Storage with fallback to local
+
+    Args:
+        markdown_content: Markdown content as string
+
+    Returns:
+        bool: True if successful, False otherwise
+    """
+    try:
+        # Get current date in UTC
+        now_utc = datetime.now(timezone.utc)
+        date_str = now_utc.strftime("%Y-%m-%d")
+
+        # Determine storage backend
+        if ENVIRONMENT in ["dev", "prod"]:
+            pathname = f"feeds/{date_str}.md"
+            success = _save_markdown_to_blob(pathname, markdown_content)
+
+            # Fallback to local if blob fails
+            if not success:
+                print(f"Blob storage failed, falling back to local storage")
+                return _save_markdown_to_local(date_str, markdown_content)
+
+            return True
+        else:
+            # Local storage
+            return _save_markdown_to_local(date_str, markdown_content)
+
+    except Exception as e:
+        print(f"Error saving feed markdown: {e}")
+        return False

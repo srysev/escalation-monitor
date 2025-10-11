@@ -68,6 +68,7 @@ Thumbs.db
 
 # Local reports (will be migrated to Vercel Blob later)
 src/reports/
+src/feeds-markdown/
 rss-markdown.md
 rss-markdown2.md
 .env.local.example
