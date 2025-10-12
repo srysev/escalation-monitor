@@ -225,7 +225,7 @@
           <div class="card-body">
             <div class="scale-text" id="scaleText">
               {% for level in scale_levels %}
-              <p {% if report and report.escalation_result and report.escalation_result.escalation_score and level.number == (report.escalation_result.escalation_score.score|round|int) %}class="is-current"{% endif %}>
+              <p {% if report and report.escalation_result and report.escalation_result.escalation_score and level.number == (report.escalation_result.escalation_score.score|int) %}class="is-current"{% endif %}>
                 <span class="level-label">{{ level.number }} {{ level.label }}</span><span class="muted"> — {{ level.description }}</span>
               </p>
               {% endfor %}
