@@ -24,8 +24,7 @@ FOKUS: Sanktionen, Energiewaffen, Finanzrestriktionen, Handelsblockaden,
 Währungskrieg, wirtschaftliche Resilienz beider Seiten.
 """
 
-INSTRUCTIONS = [
-    """
+SCALE = """
 WIRTSCHAFTLICHE ESKALATIONSSKALA (1-10):
 
 1 = Normaler Handel: Keine Sanktionen
@@ -38,7 +37,10 @@ WIRTSCHAFTLICHE ESKALATIONSSKALA (1-10):
 8 = Finanzkrieg: Währungsattacken
 9 = Wirtschaftskollaps-Gefahr: Versorgungsengpässe
 10 = Totaler Wirtschaftskrieg: Komplette Isolation
-""",
+"""
+
+INSTRUCTIONS = [
+    SCALE,
     """
 BEWERTUNGSMETHODIK:
 

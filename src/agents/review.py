@@ -5,9 +5,19 @@ from agno.agent import Agent
 try:
     from ..schemas import OverallAssessment
     from .models import create_review_model
+    from .military import SCALE as MILITARY_SCALE
+    from .diplomatic import SCALE as DIPLOMATIC_SCALE
+    from .economic import SCALE as ECONOMIC_SCALE
+    from .societal import SCALE as SOCIETAL_SCALE
+    from .russians import SCALE as RUSSIANS_SCALE
 except ImportError:
     from schemas import OverallAssessment
     from models import create_review_model
+    from military import SCALE as MILITARY_SCALE
+    from diplomatic import SCALE as DIPLOMATIC_SCALE
+    from economic import SCALE as ECONOMIC_SCALE
+    from societal import SCALE as SOCIETAL_SCALE
+    from russians import SCALE as RUSSIANS_SCALE
 
 DESCRIPTION = """
 Du bist Meta-Analyst für NATO-Russland-Eskalationslage.
@@ -190,19 +200,48 @@ Web-Search-Option: Nutze web_search bei Bedarf für zusätzliche Kontext-Recherc
 ═══════════════════════════════════════════════════════════
 DIMENSIONS-ERGEBNISSE (zur Validierung & Neutralitäts-Korrektur)
 ═══════════════════════════════════════════════════════════
+
 **Militärisch:** {dim_results['military']['score']}
+
+Skala:
+{MILITARY_SCALE}
+
 Rationale: {dim_results['military']['rationale']}
 
+---
+
 **Diplomatisch:** {dim_results['diplomatic']['score']}
+
+Skala:
+{DIPLOMATIC_SCALE}
+
 Rationale: {dim_results['diplomatic']['rationale']}
 
+---
+
 **Wirtschaftlich:** {dim_results['economic']['score']}
+
+Skala:
+{ECONOMIC_SCALE}
+
 Rationale: {dim_results['economic']['rationale']}
 
+---
+
 **Gesellschaftlich:** {dim_results['societal']['score']}
+
+Skala:
+{SOCIETAL_SCALE}
+
 Rationale: {dim_results['societal']['rationale']}
 
+---
+
 **Russen in DE:** {dim_results['russians']['score']}
+
+Skala:
+{RUSSIANS_SCALE}
+
 Rationale: {dim_results['russians']['rationale']}
 
 BERECHNETER BASELINE-SCORE: {calculated_score:.2f}

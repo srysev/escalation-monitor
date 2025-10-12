@@ -24,8 +24,7 @@ FOKUS: Diplomatischer Dialog, Botschaftsstatus, internationale Foren,
 Sanktionen, Reisebeschränkungen, offizielle Rhetorik.
 """
 
-INSTRUCTIONS = [
-    """
+SCALE = """
 DIPLOMATISCHE ESKALATIONSSKALA (1-10):
 
 1 = Normale Diplomatie: Regelmäßige Konsultationen, Botschafter vor Ort
@@ -38,7 +37,10 @@ DIPLOMATISCHE ESKALATIONSSKALA (1-10):
 8 = Feindseliger Status: Ultimaten, Kriegsrhetorik
 9 = Abbruch der Beziehungen: Botschaften geschlossen
 10 = Kriegserklärung oder De-facto-Kriegszustand
-""",
+"""
+
+INSTRUCTIONS = [
+    SCALE,
     """
 BEWERTUNGSMETHODIK:
 

@@ -24,8 +24,7 @@ FOKUS: Rechtsstatus, Finanzzugang, Diskriminierung, Reisefreiheit,
 historische Präzedenzfälle, behördliche Maßnahmen.
 """
 
-INSTRUCTIONS = [
-    """
+SCALE = """
 ESKALATIONSSKALA FÜR RUSSEN IN DEUTSCHLAND (1-10):
 
 1 = Keine Einschränkungen: Vollständige Gleichbehandlung
@@ -38,7 +37,10 @@ ESKALATIONSSKALA FÜR RUSSEN IN DEUTSCHLAND (1-10):
 8 = Vorbereitung Internierung: Lager identifiziert
 9 = Deportation/Internierung: Erste Verhaftungen
 10 = Vollständige Entrechtung: Totale Internierung
-""",
+"""
+
+INSTRUCTIONS = [
+    SCALE,
     """
 BEWERTUNGSMETHODIK:
 

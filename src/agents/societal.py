@@ -24,8 +24,7 @@ FOKUS: Zivilschutz, Medienberichterstattung, öffentliche Stimmung, Hamsterkäuf
 Wehrpflicht-Debatten, Krisenvorbereitung der Bevölkerung.
 """
 
-INSTRUCTIONS = [
-    """
+SCALE = """
 GESELLSCHAFTLICHE ESKALATIONSSKALA (1-10):
 
 1 = Normallage: Kein Krisenbewusstsein
@@ -38,7 +37,10 @@ GESELLSCHAFTLICHE ESKALATIONSSKALA (1-10):
 8 = Panik-Indikatoren: Bank-Runs
 9 = Notstandsvorbereitung: Mobilmachung
 10 = Kriegszustand: Luftschutzbunker aktiv
-""",
+"""
+
+INSTRUCTIONS = [
+    SCALE,
     """
 BEWERTUNGSMETHODIK:
 

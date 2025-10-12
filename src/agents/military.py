@@ -24,8 +24,7 @@ FOKUS: Truppenstärke, Militärübungen, Grenzaktivitäten, Waffensysteme,
 Mobilmachungsindikatoren, direkte militärische Konfrontationen.
 """
 
-INSTRUCTIONS = [
-    """
+SCALE = """
 MILITÄRISCHE ESKALATIONSSKALA (1-10):
 
 1 = Friedenszeit-Normal: Routine-Übungen, normale Truppenpräsenz
@@ -38,7 +37,10 @@ MILITÄRISCHE ESKALATIONSSKALA (1-10):
 8 = Direkte Konfrontation: Erste Schusswechsel
 9 = Kampfhandlungen: Artilleriebeschuss, Luftangriffe
 10 = Offener Krieg: Großoffensiven, strategische Bombardierung
-""",
+"""
+
+INSTRUCTIONS = [
+    SCALE,
     """
 BEWERTUNGSMETHODIK:
 
