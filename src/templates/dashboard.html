@@ -299,7 +299,7 @@
   document.getElementById("scoreBig").style.color = colorNow;
 
   // Current level markieren - gesamten Text einfärben
-  const currentLevel = Math.round(score);
+  const currentLevel = Math.floor(score);
   const scaleElements = document.querySelectorAll('.scale-text .is-current');
   scaleElements.forEach(el => {
     el.style.color = colorNow;
