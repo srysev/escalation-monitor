@@ -66,6 +66,8 @@ class RBCPoliticsFeed(FeedSource):
         clean_text = clean_text.replace('&quot;', '"')
         clean_text = clean_text.replace('&mdash;', '—')
         clean_text = clean_text.replace('&ndash;', '–')
+        clean_text = clean_text.replace('&laquo;', '«')
+        clean_text = clean_text.replace('&raquo;', '»')
 
         # Clean up extra whitespace
         clean_text = ' '.join(clean_text.split())
