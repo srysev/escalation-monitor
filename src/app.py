@@ -45,7 +45,16 @@ def get_authenticated_user(request: Request):
 
     try:
         resp = stytch_client.sessions.authenticate_jwt(session_jwt=session_jwt)
-        return resp.session.user_id, resp.session
+
+        # Extract email from authentication_factors
+        email = None
+        if hasattr(resp.session, 'authentication_factors') and resp.session.authentication_factors:
+            for factor in resp.session.authentication_factors:
+                if hasattr(factor, 'email_factor') and factor.email_factor:
+                    email = factor.email_factor.email_address
+                    break
+
+        return resp.session.user_id, resp.session, email
     except StytchError:
         return None
 
@@ -182,8 +191,8 @@ def dashboard(request: Request):
     # This avoids a second authenticate_jwt() API call
     user_info = getattr(request.state, 'user_info', None)
     user_email = None
-    # TODO: Implement user email display later if needed
-    # For now, just check if user is authenticated (user_info is not None)
+    if user_info and len(user_info) >= 3:
+        user_email = user_info[2]  # Extract email from tuple (user_id, session, email)
 
     # Heutigen Report laden
     report = get_today_report()
