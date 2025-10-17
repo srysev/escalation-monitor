@@ -115,10 +115,55 @@
       height: 16px;
     }
     .dim-accordion-header.active .dim-accordion-chevron{ transform: rotate(180deg); }
+
+    /* User Header */
+    .user-header{
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 12px 0;
+      margin-bottom: 16px;
+    }
+    .user-info{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .user-email{
+      color: #6b7280;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .logout-btn{
+      padding: 6px 16px;
+      background: #f3f4f6;
+      color: #374151;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .logout-btn:hover{
+      background: #e5e7eb;
+      color: #111827;
+    }
   </style>
 </head>
 <body>
 <div class="page">
+  <!-- User Header -->
+  {% if user_email %}
+  <div class="user-header">
+    <div class="container-narrow">
+      <div class="user-info">
+        <span class="user-email">{{ user_email }}</span>
+        <a href="/logout" class="logout-btn">Abmelden</a>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
   <div class="container-narrow py-4">
 
     <!-- Disclaimer -->

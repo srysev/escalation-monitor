@@ -9,3 +9,4 @@ python-multipart
 newspaper3k
 lxml_html_clean
 python-dotenv
+stytch

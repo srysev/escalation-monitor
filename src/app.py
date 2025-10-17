@@ -1,7 +1,6 @@
 # src/app.py
 import os
-import hashlib
-import secrets
+import sys
 from urllib.parse import quote
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse, HTMLResponse, RedirectResponse
@@ -12,45 +11,54 @@ from src.storage import get_today_report
 from src.agents.review import ESKALATIONSSKALA
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
+import stytch
+from stytch.core.response_base import StytchError
 
 app = FastAPI(title="Escalation Monitor API")
 templates = Jinja2Templates(directory="src/templates")
 
-# --- Auth Configuration ---
-EXPECTED_TOKEN = None
-COOKIE_SECRET = None
+# --- Stytch Configuration ---
+STYTCH_PROJECT_ID = os.getenv("STYTCH_PROJECT_ID")
+STYTCH_SECRET = os.getenv("STYTCH_SECRET")
+STYTCH_ENVIRONMENT = os.getenv("STYTCH_ENVIRONMENT", "test")
 
-def get_cookie_secret():
-    global COOKIE_SECRET
-    if COOKIE_SECRET is None:
-        COOKIE_SECRET = os.getenv("COOKIE_SECRET", secrets.token_hex(32))
-    return COOKIE_SECRET
+# Initialize Stytch client
+stytch_client = None
+if STYTCH_PROJECT_ID and STYTCH_SECRET:
+    stytch_client = stytch.Client(
+        project_id=STYTCH_PROJECT_ID,
+        secret=STYTCH_SECRET,
+        environment=STYTCH_ENVIRONMENT,
+    )
+else:
+    print("WARNING: Stytch credentials not configured. Authentication will be disabled.", file=sys.stderr)
 
-def create_secure_token(password: str) -> str:
-    secret = get_cookie_secret()
-    return hashlib.sha256(f"{password}:{secret}".encode()).hexdigest()
+# --- Helper: Get authenticated user ---
+def get_authenticated_user(request: Request):
+    """Validate JWT session and return Stytch user or None."""
+    if not stytch_client:
+        return None
 
-def get_expected_token():
-    global EXPECTED_TOKEN
-    if EXPECTED_TOKEN is None:
-        password = os.getenv("DASHBOARD_PASSWORD")
-        if password:
-            EXPECTED_TOKEN = create_secure_token(password)
-    return EXPECTED_TOKEN
+    session_jwt = request.cookies.get("stytch_session_jwt")
+    if not session_jwt:
+        return None
+
+    try:
+        resp = stytch_client.sessions.authenticate_jwt(session_jwt=session_jwt)
+        return resp.session.user_id, resp.session
+    except StytchError:
+        return None
 
 # --- Auth Middleware ---
 @app.middleware("http")
 async def auth_middleware(request: Request, call_next):
-    # Check if authentication is enabled
-    dashboard_password = os.getenv("DASHBOARD_PASSWORD")
-
-    # If no DASHBOARD_PASSWORD is set, skip authentication
-    if not dashboard_password:
+    # If Stytch is not configured, skip authentication
+    if not stytch_client:
         response = await call_next(request)
         return response
 
     # Define public paths that don't require authentication
-    public_paths = ["/login", "/auth/login"]
+    public_paths = ["/login", "/auth/send-magic-link", "/authenticate"]
     public_static_extensions = [".css", ".js", ".png", ".ico", ".svg", ".html"]
 
     # Check if current path is public
@@ -61,17 +69,17 @@ async def auth_middleware(request: Request, call_next):
         response = await call_next(request)
         return response
 
-    # Check web authentication (cookies)
-    auth_token = request.cookies.get("auth_token")
-    expected_token = get_expected_token()
-    web_auth_valid = auth_token and expected_token and auth_token == expected_token
-
-    if not web_auth_valid:
+    # Check JWT authentication
+    user = get_authenticated_user(request)
+    if not user:
         # Redirect to login page with return URL
         return RedirectResponse(
-            url=f"/login?redirect={request.url.path}",
+            url=f"/login?redirect={quote(request.url.path)}",
             status_code=302
         )
+
+    # Store authenticated user in request.state for reuse in route handlers
+    request.state.user_info = user
 
     # Authentication successful, proceed with request
     response = await call_next(request)
@@ -80,9 +88,9 @@ async def auth_middleware(request: Request, call_next):
 # deactivated because Vercel says: app.mount("/public", ...) is not needed and should not be used. ---Mount static files for serving login.html
 #app.mount("/public", StaticFiles(directory="public"), name="public")
 
-# --- Login Routes ---
-class LoginRequest(BaseModel):
-    password: str
+# --- Authentication Routes ---
+class MagicLinkRequest(BaseModel):
+    email: str
     redirect: str = "/"
 
 @app.get("/login")
@@ -94,42 +102,89 @@ async def login_page(request: Request):
         return RedirectResponse(f"/login.html?redirect={safe_target}", status_code=307)
     return RedirectResponse("/login.html", status_code=307)
 
-@app.post("/auth/login")
-async def login(request: LoginRequest):
-    """Authenticate user and set secure cookie."""
-    dashboard_password = os.getenv("DASHBOARD_PASSWORD")
-
-    if not dashboard_password:
+@app.post("/auth/send-magic-link")
+async def send_magic_link(request: MagicLinkRequest):
+    """Send magic link to existing user's email."""
+    if not stytch_client:
         raise HTTPException(status_code=503, detail="Authentication not configured")
 
-    if request.password != dashboard_password:
-        raise HTTPException(status_code=401, detail="Invalid password")
+    try:
+        # Use send() instead of login_or_create() to only allow existing users
+        resp = stytch_client.magic_links.email.send(
+            email=request.email
+        )
 
-    # Create secure token and set cookie
-    secure_token = create_secure_token(dashboard_password)
+        if resp.status_code != 200:
+            raise HTTPException(status_code=500, detail="Failed to send magic link")
 
-    # Determine if running in production (Vercel)
-    is_production = os.getenv("VERCEL_ENV") == "production"
+        return JSONResponse({"message": "Magic link sent! Check your inbox."})
 
-    # Return JSON response with redirect URL
-    redirect_url = request.redirect if request.redirect else "/"
-    response = JSONResponse({"redirect": redirect_url})
+    except StytchError as e:
+        # Stytch returns 404 with error_type="user_not_found" if user doesn't exist
+        error_str = str(e).lower()
+        if "user_not_found" in error_str or "404" in error_str:
+            raise HTTPException(
+                status_code=403,
+                detail="Diese E-Mail-Adresse ist nicht registriert. Bitte kontaktieren Sie den Administrator."
+            )
+        raise HTTPException(status_code=500, detail=str(e))
 
-    # Set secure cookie (12 months = 31536000 seconds)
-    response.set_cookie(
-        key="auth_token",
-        value=secure_token,
-        max_age=31536000,  # 12 months
-        httponly=True,
-        secure=is_production,  # True in production with HTTPS
-        samesite="lax"
-    )
+@app.get("/authenticate")
+async def authenticate(request: Request):
+    """Authenticate magic link token and set JWT cookie."""
+    if not stytch_client:
+        raise HTTPException(status_code=503, detail="Authentication not configured")
 
+    token = request.query_params.get("token")
+    if not token:
+        raise HTTPException(status_code=400, detail="Missing token")
+
+    try:
+        # Authenticate magic link with 60 days session duration
+        resp = stytch_client.magic_links.authenticate(
+            token=token,
+            session_duration_minutes=87600  # 60 days (2 months)
+        )
+
+        if resp.status_code != 200:
+            raise HTTPException(status_code=401, detail="Invalid or expired token")
+
+        # Determine if running in production
+        is_production = os.getenv("VERCEL_ENV") == "production"
+
+        # Create response and set JWT cookie
+        response = RedirectResponse(url="/", status_code=302)
+        response.set_cookie(
+            key="stytch_session_jwt",
+            value=resp.session_jwt,
+            max_age=87600 * 60,  # 60 days in seconds
+            httponly=True,
+            secure=is_production,
+            samesite="lax"  # Allow cookie on top-level navigation (e.g., from magic link)
+        )
+
+        return response
+
+    except StytchError as e:
+        raise HTTPException(status_code=401, detail=f"Authentication failed: {str(e)}")
+
+@app.get("/logout")
+async def logout():
+    """Logout user by clearing session cookie."""
+    response = RedirectResponse(url="/login", status_code=302)
+    response.delete_cookie(key="stytch_session_jwt")
     return response
 
 @app.get("/", response_class=HTMLResponse)
 def dashboard(request: Request):
     """Server-rendered dashboard with current escalation data."""
+    # Get authenticated user info from request.state (set by middleware)
+    # This avoids a second authenticate_jwt() API call
+    user_info = getattr(request.state, 'user_info', None)
+    user_email = None
+    # TODO: Implement user email display later if needed
+    # For now, just check if user is authenticated (user_info is not None)
+
     # Heutigen Report laden
     report = get_today_report()
 
@@ -186,6 +241,7 @@ def dashboard(request: Request):
             "request": request,
             "report": report,
             "scale_levels": scale_levels,
-            "formatted_timestamp": formatted_timestamp
+            "formatted_timestamp": formatted_timestamp,
+            "user_email": user_email
         }
     )

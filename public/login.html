@@ -108,35 +108,51 @@
         .error.show {
             display: block;
         }
+
+        .success {
+            background: #efe;
+            color: #3a3;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .success.show {
+            display: block;
+        }
     </style>
 </head>
 <body>
     <div class="login-container">
         <h1>🔒 Escalation Monitor</h1>
-        <p class="subtitle">Bitte melden Sie sich an, um fortzufahren</p>
+        <p class="subtitle">Bitte geben Sie Ihre E-Mail-Adresse ein</p>
 
         <div id="error" class="error"></div>
+        <div id="success" class="success"></div>
 
         <form id="loginForm">
             <div class="form-group">
-                <label for="password">Passwort</label>
+                <label for="email">E-Mail-Adresse</label>
                 <input
-                    type="password"
-                    id="password"
-                    name="password"
+                    type="email"
+                    id="email"
+                    name="email"
                     required
                     autofocus
-                    placeholder="Passwort eingeben"
+                    placeholder="ihre@email.de"
                 >
             </div>
 
-            <button type="submit" id="submitBtn">Anmelden</button>
+            <button type="submit" id="submitBtn">Magic Link senden</button>
         </form>
     </div>
 
     <script>
         const form = document.getElementById('loginForm');
         const errorDiv = document.getElementById('error');
+        const successDiv = document.getElementById('success');
         const submitBtn = document.getElementById('submitBtn');
 
         // Get redirect URL from query params
@@ -146,19 +162,20 @@
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const password = document.getElementById('password').value;
+            const email = document.getElementById('email').value;
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Anmeldung läuft...';
+            submitBtn.textContent = 'Wird gesendet...';
             errorDiv.classList.remove('show');
+            successDiv.classList.remove('show');
 
             try {
-                const response = await fetch('/auth/login', {
+                const response = await fetch('/auth/send-magic-link', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        password: password,
+                        email: email,
                         redirect: redirectUrl
                     })
                 });
@@ -166,10 +183,12 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    // Login successful, redirect to destination
-                    window.location.href = data.redirect || '/';
+                    // Magic link sent successfully
+                    successDiv.textContent = data.message || 'Magic Link gesendet! Prüfen Sie Ihr Postfach.';
+                    successDiv.classList.add('show');
+                    form.reset();
                 } else {
-                    errorDiv.textContent = data.detail || 'Falsches Passwort';
+                    errorDiv.textContent = data.detail || 'Fehler beim Senden des Magic Links';
                     errorDiv.classList.add('show');
                 }
             } catch (error) {
@@ -177,7 +196,7 @@
                 errorDiv.classList.add('show');
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Anmelden';
+                submitBtn.textContent = 'Magic Link senden';
             }
         });
     </script>
