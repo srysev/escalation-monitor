@@ -46,13 +46,81 @@ GESAMTESKALATIONSSKALA (1-10):
 5 = ELEVATED: Systematische Konfrontation
 6 = HIGH: Vor-Konflikt-Stadium
 7 = SEVERE: Unmittelbare Kriegsgefahr
-8 = CRITICAL: Erste Kampfhandlungen
-9 = EMERGENCY: Krieg unvermeidbar/begonnen
-10 = WARTIME: Offener NATO-Russland-Krieg
+8 = CRITICAL: Kriegsvorbereitungen in Umsetzung
+9 = EMERGENCY: Kriegsbereitschaft hergestellt
+10 = WARTIME: Krieg auf deutschem Boden
+"""
+
+DETAILLIERTE_STUFEN_7_10 = """
+═══════════════════════════════════════════════════════════
+WICHTIG: DETAILLIERTE DEFINITIONEN FÜR STUFEN 7-10
+═══════════════════════════════════════════════════════════
+
+WARUM DIESE STUFEN BESONDERE AUFMERKSAMKEIT BRAUCHEN:
+
+Stufen 1-6 beschreiben graduelle Verschlechterungen, die sich über
+Monate/Jahre entwickeln können. Die Grenzen sind fließend.
+
+Stufen 7-10 sind QUALITATIVE SPRÜNGE mit konkreten Zeitfenstern und
+weitreichenden Konsequenzen für Deutschland. Hier ist präzise
+Einschätzung entscheidend, da jede Stufe unterschiedliche
+Handlungsimperative bedeutet.
+
+KERN-UNTERSCHEIDUNG:
+- Stufe 7: Pläne werden gemacht, Rhetorik verschärft, aber noch abstrakt
+- Stufe 8: Pläne werden UMGESETZT, konkrete messbare Aktionen laufen
+- Stufe 9: Alles ist bereit, nur noch Angriffsbefehl fehlt
+- Stufe 10: Krieg auf deutschem Boden ausgebrochen
+
+---
+
+7 = SEVERE: Unmittelbare Kriegsgefahr
+   Zeitfenster: 2-4 Monate bis möglicher Kriegsausbruch
+   Status: Noch umkehrbar durch diplomatische/politische Intervention
+   Charakteristik: Kriegsvorbereitungen werden GEPLANT und ANGEKÜNDIGT,
+   aber noch nicht in großem Maßstab umgesetzt.
+   Typische Indikatoren: Spannungsfall (GG Art. 80a) aktiviert,
+   NATO Artikel 4 konsultiert, Ultimaten ausgesprochen, große Manöver
+   an Grenzen, Kriegsrhetorik auf höchster Ebene.
+
+8 = CRITICAL: Kriegsvorbereitungen in Umsetzung
+   Zeitfenster: 1-2 Monate bis möglicher Kriegsausbruch
+   Status: Schwer umkehrbar (massive Ressourcen investiert, Momentum)
+   Charakteristik: Von langfristiger Planung zu konkreter Umsetzung
+   übergegangen. Messbare militärische Bewegungen. Gesellschaft wird
+   aktiv vorbereitet.
+   Typische Indikatoren: NATO Artikel 5 aktiviert (kontextabhängig),
+   Verteidigungsfall (ab 8.5), massive Truppenverlegungen, Zivilschutz
+   aktiviert, Reservisten einberufen, Grenzkontrollen verschärft.
+   Unterschied zu Stufe 7: Nicht mehr nur Ankündigungen, sondern
+   konkrete Handlungen mit hohen Kosten/Risiken.
+
+9 = EMERGENCY: Kriegsbereitschaft hergestellt
+   Zeitfenster: 1-4 Wochen bis wahrscheinlicher Kriegsausbruch
+   Status: Wunder nötig zur Deeskalation
+   Charakteristik: Deutschland hat sich auf unmittelbare Kriegsteilnahme
+   vorbereitet. Truppen in Bereitschaft, operationelle Vorbereitung
+   abgeschlossen, nur noch Einsatzbefehl fehlt.
+   Typische Indikatoren: Deutsche Streitkräfte mobilisiert und einsatzbereit,
+   Bevölkerung auf unmittelbaren Krieg vorbereitet, Kommunikationskanäle
+   abgebrochen, Evakuierungen laufen.
+   Wichtig: Kampfhandlungen im Ausland (z.B. Osteuropa) ohne deutsche
+   Kriegsbereitschaft = noch Stufe 8-9 Übergang, nicht automatisch 10.
+
+10 = WARTIME: Krieg auf deutschem Boden
+   Kriegshandlungen finden auf deutschem Territorium statt.
+   Charakteristik: Deutschland ist aktive Kriegspartei mit Kampfhandlungen
+   im Inland. Sperrstunden, militärische Kontrollen, Infrastruktur-Ausfälle
+   durch Kriegseinwirkung, aktive Rekrutierung, eingeschränkte
+   Bewegungsfreiheit, Grenzen faktisch geschlossen.
+   Typische Indikatoren: Militärische Operationen auf deutschem Boden,
+   Raketen-/Luftangriffe auf deutsche Städte/Infrastruktur,
+   totale Mobilmachung, Kriegswirtschaft aktiv, Rationierungen.
 """
 
 INSTRUCTIONS = [
     ESKALATIONSSKALA,
+    DETAILLIERTE_STUFEN_7_10,
     """
 ═══════════════════════════════════════════════════════════
 BLOCK 1: NEUTRALITÄTS-PROTOKOLL
@@ -136,16 +204,13 @@ VERSTÄNDLICHKEITS-REGELN:
 SCORE-BERECHNUNG:
 
 1. Baseline: Mil*0.30 + Dip*0.20 + Eco*0.20 + Soc*0.15 + Rus*0.15
-2. Kritische Schwellen prüfen (siehe unten)
-3. Maximale Anpassung: ±1.0 (mit Begründung)
+2. Prüfe Kontext gegen detaillierte Definitionen (siehe oben Stufen 7-10)
+3. Anpassung ±1.0 möglich wenn Baseline nicht zur Gesamtlage passt
+   (Begründung in score_rationale pflicht)
 
-KRITISCHE SCHWELLEN (erzwingen Minimum-Scores):
-- Nuklearfähige Waffen für Ukraine: ≥5.5
-- NATO Artikel 4 aktiviert: ≥5.0
-- Spannungsfall (GG Art. 80a): ≥6.0
-- Verteidigungsfall (GG Art. 115a): ≥7.5
-- NATO Artikel 5 aktiviert: ≥8.0
-- Direkter militärischer Kontakt: ≥8.0
+WICHTIG: Ereignisse wie "Spannungsfall aktiviert", "NATO Artikel 5" oder
+"Verteidigungsfall" sind INDIKATOREN, keine automatischen Score-Vorgaben.
+Bewerte sie im Gesamtkontext der Situation (siehe detaillierte Definitionen).
 """,
     """
 ═══════════════════════════════════════════════════════════
