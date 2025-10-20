@@ -128,7 +128,10 @@ async def calculate_escalation_score(rss_markdown: str) -> Dict[str, Any]:
                     "contradictions": assessment_data["contradictions"],
                     "neutrality_corrections": assessment_data["neutrality_corrections"],
                     "methodology": {
-                        "dimension_scores": dimension_results,
+                        "dimension_scores": {
+                            key: {"score": dimension_results[key]['score']}
+                            for key in ['military', 'diplomatic', 'economic', 'societal', 'russians']
+                        },
                         "weights": weights,
                         "calculated_score": calculated_score,
                         "final_score": assessment_data["overall_score"],
