@@ -97,6 +97,24 @@ async def calculate_escalation_score(rss_markdown: str) -> Dict[str, Any]:
         if hasattr(final_response, 'content') and isinstance(final_response.content, OverallAssessment):
             assessment_data = final_response.content.model_dump()
 
+            # Build dimensions array from original Phase 1 results (not from review agent)
+            dimension_names = {
+                'military': 'Militärisch',
+                'diplomatic': 'Diplomatisch',
+                'economic': 'Wirtschaftlich',
+                'societal': 'Gesellschaftlich',
+                'russians': 'Russen in DE'
+            }
+
+            dimensions = [
+                {
+                    "name": dimension_names[key],
+                    "score": dimension_results[key]['score'],
+                    "rationale": dimension_results[key]['rationale']
+                }
+                for key in ['military', 'diplomatic', 'economic', 'societal', 'russians']
+            ]
+
             return {
                 "result": "ok",
                 "timestamp": to_iso_utc(None),
@@ -104,7 +122,7 @@ async def calculate_escalation_score(rss_markdown: str) -> Dict[str, Any]:
                     "score": assessment_data["overall_score"],
                     "level": get_escalation_level(assessment_data["overall_score"]),
                     "summary": assessment_data["situation_summary"],
-                    "dimensions": assessment_data["dimensions"],
+                    "dimensions": dimensions,
                     "trend_assessment": assessment_data["trend_assessment"],
                     "blind_spots": assessment_data["blind_spots"],
                     "contradictions": assessment_data["contradictions"],
