@@ -193,11 +193,6 @@ STRUKTUR (Markdown):
 [2-3 Sätze: Was unklar, wo fehlen Gegendarstellungen]
 
 ---
-
-VERSTÄNDLICHKEITS-REGELN:
-1. Abkürzungen erklären
-2. Score mit Milestones kontextualisieren
-3. Zahlen in Kontext setzen
 """,
     """
 ═══════════════════════════════════════════════════════════
@@ -207,8 +202,11 @@ SCORE-BERECHNUNG (overall_score)
 Du erhältst einen BASELINE-SCORE (gewichteter Durchschnitt der 5 Dimensionen).
 
 DEINE AUFGABE:
-1. Prüfe, ob Baseline zur Gesamtlage passt (siehe detaillierte Definitionen Stufen 7-10)
-2. Anpassung von ±1.0 möglich, wenn Kontext es erfordert
+1. Prüfe, ob Baseline zur Gesamtlage passt
+2. Anpassung von 0 bis +1.0 möglich, wenn kritische Gefahren übersehen wurden
+   WICHTIG: Nur ERHÖHEN bei konkreten Hinweisen auf zusätzliche Risiken,
+   die in den Dimensions-Scores nicht berücksichtigt wurden.
+   Die Baseline ist bereits eine fundierte Expertenschätzung.
 3. Begründe Anpassung in trend_assessment
 
 WICHTIG:
