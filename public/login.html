@@ -1,153 +1,115 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Escalation Monitor</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login · Escalation Monitor</title>
     <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet" />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: #f8fafc;
+        }
+        .page {
+            display: flex;
+            flex-direction: column;
             min-height: 100vh;
+        }
+        .page-single {
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
-        }
-
-        .login-container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 40px;
-            width: 100%;
-            max-width: 400px;
-        }
-
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 28px;
-        }
-
-        .subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: 500;
-            font-size: 14px;
-        }
-
-        input[type="password"] {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e1e4e8;
-            border-radius: 6px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-
-        input[type="password"]:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .error {
-            background: #fee;
-            color: #c33;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            display: none;
-        }
-
-        .error.show {
-            display: block;
-        }
-
-        .success {
-            background: #efe;
-            color: #3a3;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            display: none;
-        }
-
-        .success.show {
-            display: block;
+            padding: 2rem 0;
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <h1>🔒 Escalation Monitor</h1>
-        <p class="subtitle">Bitte geben Sie Ihre E-Mail-Adresse ein</p>
-
-        <div id="error" class="error"></div>
-        <div id="success" class="success"></div>
-
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="email">E-Mail-Adresse</label>
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    required
-                    autofocus
-                    placeholder="ihre@email.de"
-                >
+<div class="page">
+    <div class="page-single">
+        <div class="container-tight py-4">
+            <!-- Logo/Title -->
+            <div class="text-center mb-4">
+                <h1 class="navbar-brand navbar-brand-autodark d-inline-flex">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler me-2" width="32" height="32" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                        <path d="M12 7v5l3 3" />
+                    </svg>
+                    Escalation Monitor
+                </h1>
             </div>
 
-            <button type="submit" id="submitBtn">Magic Link senden</button>
-        </form>
+            <!-- Login Card -->
+            <div class="card card-md">
+                <div class="card-body">
+                    <h2 class="h2 text-center mb-4">Login mit Magic Link</h2>
+
+                    <!-- Error Alert -->
+                    <div id="error" class="alert alert-danger d-none" role="alert">
+                        <div class="d-flex">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon alert-icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+                                    <path d="M12 8v4" />
+                                    <path d="M12 16h.01" />
+                                </svg>
+                            </div>
+                            <div id="errorText"></div>
+                        </div>
+                    </div>
+
+                    <!-- Success Alert -->
+                    <div id="success" class="alert alert-success d-none" role="alert">
+                        <div class="d-flex">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon alert-icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M5 12l5 5l10 -10" />
+                                </svg>
+                            </div>
+                            <div id="successText"></div>
+                        </div>
+                    </div>
+
+                    <!-- Login Form -->
+                    <form id="loginForm" autocomplete="off">
+                        <div class="mb-3">
+                            <label class="form-label">E-Mail-Adresse</label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                class="form-control"
+                                placeholder="ihre@email.de"
+                                autocomplete="email"
+                                required
+                                autofocus
+                            >
+                        </div>
+
+                        <div class="form-footer">
+                            <button type="submit" id="submitBtn" class="btn btn-primary w-100">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon me-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" />
+                                    <path d="M3 7l9 6l9 -6" />
+                                </svg>
+                                Magic Link senden
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Info Text -->
+            <div class="text-center text-muted mt-3">
+                <small>
+                    Sie erhalten einen Login-Link per E-Mail.<br>
+                    Kein Passwort erforderlich.
+                </small>
+            </div>
+        </div>
     </div>
 
     <!-- Footer Placeholder -->
@@ -159,8 +121,11 @@
     <script>
         const form = document.getElementById('loginForm');
         const errorDiv = document.getElementById('error');
+        const errorText = document.getElementById('errorText');
         const successDiv = document.getElementById('success');
+        const successText = document.getElementById('successText');
         const submitBtn = document.getElementById('submitBtn');
+        const submitBtnOriginalHTML = submitBtn.innerHTML;
 
         // Get redirect URL from query params
         const urlParams = new URLSearchParams(window.location.search);
@@ -171,9 +136,9 @@
 
             const email = document.getElementById('email').value;
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Wird gesendet...';
-            errorDiv.classList.remove('show');
-            successDiv.classList.remove('show');
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Wird gesendet...';
+            errorDiv.classList.add('d-none');
+            successDiv.classList.add('d-none');
 
             try {
                 const response = await fetch('/auth/send-magic-link', {
@@ -191,19 +156,19 @@
 
                 if (response.ok) {
                     // Magic link sent successfully
-                    successDiv.textContent = data.message || 'Magic Link gesendet! Prüfen Sie Ihr Postfach.';
-                    successDiv.classList.add('show');
+                    successText.textContent = data.message || 'Magic Link gesendet! Prüfen Sie Ihr Postfach.';
+                    successDiv.classList.remove('d-none');
                     form.reset();
                 } else {
-                    errorDiv.textContent = data.detail || 'Fehler beim Senden des Magic Links';
-                    errorDiv.classList.add('show');
+                    errorText.textContent = data.detail || 'Fehler beim Senden des Magic Links';
+                    errorDiv.classList.remove('d-none');
                 }
             } catch (error) {
-                errorDiv.textContent = 'Verbindungsfehler. Bitte versuchen Sie es erneut.';
-                errorDiv.classList.add('show');
+                errorText.textContent = 'Verbindungsfehler. Bitte versuchen Sie es erneut.';
+                errorDiv.classList.remove('d-none');
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Magic Link senden';
+                submitBtn.innerHTML = submitBtnOriginalHTML;
             }
         });
 
