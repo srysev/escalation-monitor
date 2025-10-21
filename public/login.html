@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Escalation Monitor</title>
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet" />
     <style>
         * {
             margin: 0;
@@ -149,6 +150,12 @@
         </form>
     </div>
 
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+    <script src="/footer.js"></script>
     <script>
         const form = document.getElementById('loginForm');
         const errorDiv = document.getElementById('error');
@@ -199,6 +206,14 @@
                 submitBtn.textContent = 'Magic Link senden';
             }
         });
+
+        // Load footer
+        fetch('/footer.html')
+            .then(r => r.text())
+            .then(html => {
+                document.getElementById('footer-placeholder').innerHTML = html;
+            })
+            .catch(err => console.error('Failed to load footer:', err));
     </script>
 </body>
 </html>

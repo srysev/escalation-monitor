@@ -1,0 +1,86 @@
+<!-- Footer -->
+<footer class="footer footer-transparent d-print-none" style="border-top: 1px solid #e5e7eb; margin-top: 3rem;">
+  <div class="container-narrow">
+    <div class="row text-center">
+      <div class="col-12 col-lg-auto mt-3 mt-lg-0">
+        <ul class="list-inline list-inline-dots mb-0">
+          <li class="list-inline-item">
+            <a href="#" class="link-secondary" data-bs-toggle="modal" data-bs-target="#impressumModal" onclick="loadLegalContent('impressum')">
+              Impressum
+            </a>
+          </li>
+          <li class="list-inline-item">
+            <a href="#" class="link-secondary" data-bs-toggle="modal" data-bs-target="#datenschutzModal" onclick="loadLegalContent('datenschutz')">
+              Datenschutz
+            </a>
+          </li>
+          <li class="list-inline-item">
+            <a href="#" class="link-secondary" data-bs-toggle="modal" data-bs-target="#agbModal" onclick="loadLegalContent('agb')">
+              AGBs
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Impressum Modal -->
+<div class="modal modal-blur fade" id="impressumModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Impressum</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="impressum-content" class="markdown-body">
+          <div class="text-center text-muted py-5">
+            <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+            Lade Inhalt...
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Datenschutz Modal -->
+<div class="modal modal-blur fade" id="datenschutzModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Datenschutzerklärung</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="datenschutz-content" class="markdown-body">
+          <div class="text-center text-muted py-5">
+            <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+            Lade Inhalt...
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AGB Modal -->
+<div class="modal modal-blur fade" id="agbModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Allgemeine Geschäftsbedingungen</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="agb-content" class="markdown-body">
+          <div class="text-center text-muted py-5">
+            <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+            Lade Inhalt...
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
