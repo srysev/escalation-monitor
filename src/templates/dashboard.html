@@ -148,6 +148,19 @@
       background: #e5e7eb;
       color: #111827;
     }
+
+    /* Markdown Content Styling in Modals */
+    .markdown-body h1{ font-size: 24px; font-weight: 700; margin-top: 0; margin-bottom: 16px; color: #111827; }
+    .markdown-body h2{ font-size: 20px; font-weight: 600; margin-top: 24px; margin-bottom: 12px; color: #111827; }
+    .markdown-body h3{ font-size: 16px; font-weight: 600; margin-top: 20px; margin-bottom: 10px; color: #374151; }
+    .markdown-body p{ margin-bottom: 12px; color: #374151; line-height: 1.6; }
+    .markdown-body ul, .markdown-body ol{ margin-bottom: 12px; padding-left: 24px; }
+    .markdown-body li{ margin-bottom: 6px; color: #374151; }
+    .markdown-body strong{ font-weight: 600; color: #111827; }
+    .markdown-body a{ color: #2563eb; text-decoration: none; }
+    .markdown-body a:hover{ text-decoration: underline; }
+    .markdown-body hr{ border: 0; border-top: 1px solid #e5e7eb; margin: 24px 0; }
+    .markdown-body code{ background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
   </style>
 </head>
 <body>
@@ -305,6 +318,93 @@
     </div>
 
   </div>
+
+  <!-- Footer -->
+  <footer class="footer footer-transparent d-print-none" style="border-top: 1px solid #e5e7eb; margin-top: 3rem;">
+    <div class="container-narrow">
+      <div class="row text-center">
+        <div class="col-12 col-lg-auto mt-3 mt-lg-0">
+          <ul class="list-inline list-inline-dots mb-0">
+            <li class="list-inline-item">
+              <a href="#" class="link-secondary" data-bs-toggle="modal" data-bs-target="#impressumModal" onclick="loadLegalContent('impressum')">
+                Impressum
+              </a>
+            </li>
+            <li class="list-inline-item">
+              <a href="#" class="link-secondary" data-bs-toggle="modal" data-bs-target="#datenschutzModal" onclick="loadLegalContent('datenschutz')">
+                Datenschutz
+              </a>
+            </li>
+            <li class="list-inline-item">
+              <a href="#" class="link-secondary" data-bs-toggle="modal" data-bs-target="#agbModal" onclick="loadLegalContent('agb')">
+                AGBs
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- Impressum Modal -->
+<div class="modal modal-blur fade" id="impressumModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Impressum</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="impressum-content" class="markdown-body">
+          <div class="text-center text-muted py-5">
+            <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+            Lade Inhalt...
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Datenschutz Modal -->
+<div class="modal modal-blur fade" id="datenschutzModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Datenschutzerklärung</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="datenschutz-content" class="markdown-body">
+          <div class="text-center text-muted py-5">
+            <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+            Lade Inhalt...
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AGB Modal -->
+<div class="modal modal-blur fade" id="agbModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Allgemeine Geschäftsbedingungen</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="agb-content" class="markdown-body">
+          <div class="text-center text-muted py-5">
+            <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+            Lade Inhalt...
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
@@ -386,6 +486,42 @@
     const rationaleClean = stripHtmlTags(rationaleRaw);
     body.innerHTML = marked.parse(rationaleClean);
   });
+
+  // Legal Content Lazy Loading
+  const loadedContent = {};
+
+  async function loadLegalContent(type) {
+    // Check if already loaded
+    if (loadedContent[type]) {
+      return;
+    }
+
+    const contentEl = document.getElementById(`${type}-content`);
+
+    try {
+      // Fetch markdown file
+      const response = await fetch(`/${type}.md`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const markdown = await response.text();
+
+      // Render markdown to HTML
+      contentEl.innerHTML = marked.parse(markdown);
+
+      // Mark as loaded
+      loadedContent[type] = true;
+    } catch (error) {
+      console.error(`Failed to load ${type}:`, error);
+      contentEl.innerHTML = `
+        <div class="alert alert-danger" role="alert">
+          <h4 class="alert-title">Fehler beim Laden</h4>
+          <div class="text-secondary">Der Inhalt konnte nicht geladen werden. Bitte versuchen Sie es später erneut.</div>
+        </div>
+      `;
+    }
+  }
 </script>
 </body>
 </html>
