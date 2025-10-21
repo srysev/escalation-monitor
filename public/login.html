@@ -156,9 +156,15 @@
 
                 if (response.ok) {
                     // Magic link sent successfully
-                    successText.textContent = data.message || 'Magic Link gesendet! Prüfen Sie Ihr Postfach.';
+                    successText.innerHTML = `
+                        <strong>Magic Link wurde versendet!</strong><br>
+                        Prüfen Sie Ihr Postfach (auch im Spam-Ordner).<br><br>
+                        <a href="#" id="resendLink" class="text-muted">
+                            E-Mail nicht erhalten? Erneut senden
+                        </a>
+                    `;
                     successDiv.classList.remove('d-none');
-                    form.reset();
+                    form.classList.add('d-none');
                 } else {
                     errorText.textContent = data.detail || 'Fehler beim Senden des Magic Links';
                     errorDiv.classList.remove('d-none');
@@ -169,6 +175,21 @@
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = submitBtnOriginalHTML;
+            }
+        });
+
+        // Handle "Resend" link click (using event delegation since link is added dynamically)
+        document.addEventListener('click', (e) => {
+            if (e.target.id === 'resendLink') {
+                e.preventDefault();
+                // Show form again
+                form.classList.remove('d-none');
+                // Hide success message
+                successDiv.classList.add('d-none');
+                // Hide error message (in case it was visible)
+                errorDiv.classList.add('d-none');
+                // Focus email field
+                document.getElementById('email').focus();
             }
         });
 
