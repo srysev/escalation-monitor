@@ -157,42 +157,34 @@ GESAMTLAGE-SYNTHESE (situation_summary)
 ═══════════════════════════════════════════════════════════
 
 QUELLEN:
-1. RSS-Feeds (aktuelle Meldungen)
-2. Dimension-Scores mit Rationales (5 Bereiche)
+1. RSS-Feeds
+2. Dimension-Scores mit Rationales
 
 ZIELGRUPPE:
-Nicht-Experten (Otto Normalverbraucher, Betroffene) mit Medien-Overload und diffusen Ängsten.
+Nicht-Experten mit Medien-Overload und diffusen Ängsten.
 
-TON: Nüchtern-präzise. Keine Dramatisierung, keine Verharmlosung.
-
----
+TON: Nüchtern-präzise. Keine Dramatisierung, keine Verharmlosung. Abkürzungen erklären (außer NATO, EU, USA, UN).
 
 STRUKTUR (Markdown):
 
-## Gesamtlage und Score-Einordnung
-[2-3 Sätze: Score-Bedeutung + aktueller Stand wichtiger Indikatoren]
-- Format: "Score X bedeutet: [Einordnung in Alltagssprache]"
+## Was bedeutet die aktuelle Lage?
+[2-3 Sätze: Was bedeutet die aktuelle Eskalationslage praktisch für Deutschland und wohin entwickelt sie sich?]
+
+Status dieser Indikatoren:
 - Spannungsfall (GG Art. 80a): [aktiviert / nicht aktiviert]
 - Verteidigungsfall (GG Art. 115a): [aktiviert / nicht aktiviert]
 - NATO Artikel 4: [aktiviert / nicht aktiviert]
 - NATO Artikel 5: [aktiviert / nicht aktiviert]
 
 ## Haupttreiber der aktuellen Lage
-[3-5 Sätze: Synthese der wichtigsten Faktoren über ALLE Dimensionen]
-- NICHT Dimension-by-Dimension (die stehen separat!)
-- SONDERN intelligent kombiniert
-- Staatlich vs. Privat trennen
-- Abkürzungen erklären (außer NATO, EU, USA, UN)
+[5-10 Sätze: Synthese der wichtigsten Faktoren]
 
 ## Kritische Entwicklungen und Signale
 [2-3 Sätze: NUR wirklich kritische Signale aus RSS]
 - Nuklearwaffen, False-Flags, Artikel 4/5, Grenzschließungen
-- Alle Abkürzungen erklären
 
 ## Unsicherheiten und offene Fragen
 [2-3 Sätze: Was unklar, wo fehlen Gegendarstellungen]
-
----
 """,
     """
 ═══════════════════════════════════════════════════════════
@@ -201,21 +193,12 @@ SCORE-BERECHNUNG (overall_score)
 
 Du erhältst einen BASELINE-SCORE (gewichteter Durchschnitt der 5 Dimensionen).
 
-DEINE AUFGABE:
 1. Prüfe, ob Baseline zur Gesamtlage passt
 2. Anpassung von 0 bis +1.0 möglich, wenn kritische Gefahren übersehen wurden
    WICHTIG: Nur ERHÖHEN bei konkreten Hinweisen auf zusätzliche Risiken,
    die in den Dimensions-Scores nicht berücksichtigt wurden.
    Die Baseline ist bereits eine fundierte Expertenschätzung.
 3. Begründe Anpassung in trend_assessment
-
-WICHTIG:
-Ereignisse wie "Spannungsfall aktiviert", "NATO Artikel 5" oder "Verteidigungsfall"
-sind INDIKATOREN, keine automatischen Score-Vorgaben. Bewerte sie im Gesamtkontext
-der Situation (siehe detaillierte Definitionen).
-
-BASELINE-FORMEL (zur Information):
-Mil*0.30 + Dip*0.20 + Eco*0.20 + Soc*0.15 + Rus*0.15
 """,
     """
 ═══════════════════════════════════════════════════════════
@@ -339,7 +322,7 @@ Erstelle für {date}:
 
 2. **overall_score** (1.0-10.0)
    Baseline-Score: {calculated_score:.2f}
-   Prüfe Kontext und passe ±1.0 an, wenn nötig
+   Prüfe Kontext und passe, wenn nötig, an
 
 3. **trend_assessment** (2-3 Sätze)
    Trend-Richtung mit konkreten Belegen
