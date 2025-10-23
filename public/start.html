@@ -21,29 +21,36 @@
             justify-content: center;
             padding: 2rem 0;
         }
+        .container-narrow {
+            max-width: 1024px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
     </style>
 </head>
 <body>
 <div class="page">
     <div class="page-single">
-        <div class="container-tight py-4">
-            <!-- Logo/Title -->
+        <div class="container-narrow py-4">
+            <!-- Welcome Text -->
             <div class="text-center mb-4">
-                <h1 class="navbar-brand navbar-brand-autodark d-inline-flex">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler me-2" width="32" height="32" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                        <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-                        <path d="M12 7v5l3 3" />
-                    </svg>
-                    Escalation Monitor
-                </h1>
+                <h2 class="display-5 mb-4">Willkommen bei Escalation Monitor</h2>
+                <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#loginModal">
+                    Login
+                </button>
             </div>
+        </div>
+    </div>
 
-            <!-- Login Card -->
-            <div class="card card-md">
-                <div class="card-body">
-                    <h2 class="h2 text-center mb-4">Login mit Magic Link</h2>
-
+    <!-- Login Modal -->
+    <div class="modal modal-blur fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Login mit Magic Link</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
                     <!-- Error Alert -->
                     <div id="error" class="alert alert-danger d-none" role="alert">
                         <div class="d-flex">
@@ -84,12 +91,18 @@
                                 placeholder="ihre@email.de"
                                 autocomplete="email"
                                 required
-                                autofocus
                             >
                         </div>
 
-                        <div class="form-footer">
-                            <button type="submit" id="submitBtn" class="btn btn-primary w-100">
+                        <div class="mb-3 text-muted">
+                            <small>
+                                Sie erhalten einen Login-Link per E-Mail.<br>
+                                Kein Passwort erforderlich.
+                            </small>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" id="submitBtn" class="btn btn-primary">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon me-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                     <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" />
@@ -100,14 +113,6 @@
                         </div>
                     </form>
                 </div>
-            </div>
-
-            <!-- Info Text -->
-            <div class="text-center text-muted mt-3">
-                <small>
-                    Sie erhalten einen Login-Link per E-Mail.<br>
-                    Kein Passwort erforderlich.
-                </small>
             </div>
         </div>
     </div>
