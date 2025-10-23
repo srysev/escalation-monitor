@@ -32,12 +32,65 @@
 <div class="page">
     <div class="page-single">
         <div class="container-narrow py-4">
-            <!-- Welcome Text -->
-            <div class="text-center mb-4">
-                <h2 class="display-5 mb-4">Willkommen bei Escalation Monitor</h2>
-                <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#loginModal">
-                    Login
-                </button>
+            <!-- Main Card -->
+            <div class="card" style="max-width: 720px; margin: 0 auto;">
+                <div class="card-header py-5">
+                    <h1 class="mb-0">Escalation Monitor</h1>
+                </div>
+                <div class="card-body">
+                    <p>
+                        Dieser Monitor bewertet täglich das Eskalationsrisiko zwischen NATO und Russland
+                        mit Fokus auf Deutschland. Ein Team aus einem Dutzend KI-Agenten durchsucht automatisch
+                        öffentliche Quellen aus verschiedenen Perspektiven – von offiziellen
+                        Regierungsstellen über deutsche und internationale Medien bis hin zu russischen Quellen, die in Deutschland verfügbar und nicht von Sanktionen betroffen sind.
+                    </p>
+
+                    <h4 class="mt-3 mb-2">Wie funktioniert das?</h4>
+                    <p>Die Analyse erfolgt entlang von fünf Dimensionen:</p>
+                    <ul>
+                        <li>Militärisch (Truppenbewegungen, Manöver, Grenzaktivitäten)</li>
+                        <li>Diplomatisch (Dialog, Status der Botschaften, Sanktionen)</li>
+                        <li>Wirtschaftlich (Sanktionen, Energieversorgung, Finanzrestriktionen)</li>
+                        <li>Gesellschaftlich (öffentliche Stimmung)</li>
+                        <li>Russen in Deutschland (Rechtsstatus, Diskriminierung)</li>
+                    </ul>
+                    <p>Aus den Einzelbewertungen wird ein Gesamt-Score berechnet.</p>
+
+                    <h4 class="mt-3 mb-2">Das Ergebnis</h4>
+                    <p>
+                        Das Dashboard zeigt täglich einen Score von <strong>1</strong> (normale Spannungen)
+                        bis <strong>10</strong> (Krieg auf deutschem Boden). Die Zusammenfassung ist in
+                        Alltagssprache verfasst und auch für Nicht-Experten verständlich.
+                    </p>
+
+                    <!-- Disclaimer Box -->
+                    <div class="alert alert-warning mb-0 mt-3" role="alert">
+                        <div class="d-flex">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon alert-icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M12 9v4"/>
+                                    <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z"/>
+                                    <path d="M12 16h.01"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="alert-title">Wichtiger Hinweis</h4>
+                                <div class="text-muted">
+                                    Diese Analyse wird ausschließlich von KI erstellt, ohne menschliche Validierung.
+                                    KI-Systeme können Fehler machen, Kontext missverstehen oder von Fehlinformationen
+                                    getäuscht werden. Die Nutzung erfolgt auf eigene Verantwortung.
+                                    Es wird keine Gewähr für Richtigkeit, Aktualität oder Vollständigkeit übernommen.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#loginModal">
+                        Login
+                    </button>
+                </div>
             </div>
         </div>
     </div>
