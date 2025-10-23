@@ -108,8 +108,8 @@ async def login_page(request: Request):
     redirect_target = request.query_params.get("redirect")
     if redirect_target:
         safe_target = quote(redirect_target, safe="/")
-        return RedirectResponse(f"/login.html?redirect={safe_target}", status_code=307)
-    return RedirectResponse("/login.html", status_code=307)
+        return RedirectResponse(f"/start.html?redirect={safe_target}", status_code=307)
+    return RedirectResponse("/start.html", status_code=307)
 
 @app.post("/auth/send-magic-link")
 async def send_magic_link(request: MagicLinkRequest):
