@@ -1,124 +1,53 @@
-# Allgemeine Geschäftsbedingungen (AGB)
+# AGB – Escalation Monitor (Abo)
 
-## 1. Geltungsbereich
+## 1. Leistung
 
-Diese Allgemeinen Geschäftsbedingungen (nachfolgend "AGB") gelten für die Nutzung der Escalation Monitor Plattform (nachfolgend "Dienst"), die von [PLATZHALTER: Firmenname] (nachfolgend "Anbieter") bereitgestellt wird.
+Zugang zu einem täglich aktualisierten **Scoring-Dashboard** („Escalation Monitor“) mit einem Risiko-Score **1–10** zum Eskalationsrisiko zwischen NATO und Russland (Fokus: Deutschland). Die Inhalte werden automatisiert aus **öffentlichen Quellen** durch ein **KI-Agenten-System** aufbereitet; **keine Beratung** und **keine Garantie** für Richtigkeit oder Vollständigkeit.
 
-## 2. Vertragsschluss und Registrierung
+**Warnhinweis:**
 
-### 2.1 Zugang zum Dienst
+Diese Analyse wird ausschließlich von KI erstellt, ohne menschliche Validierung. KI-Systeme können Fehler machen, Kontext missverstehen oder von Fehlinformationen getäuscht werden. Die Nutzung erfolgt auf eigene Verantwortung. Es wird keine Gewähr für Richtigkeit, Aktualität oder Vollständigkeit übernommen.
 
-Der Zugang zum Dienst erfolgt ausschließlich auf Einladung durch den Anbieter. Eine eigenständige Registrierung ist nicht möglich.
+## 2. Preis, Laufzeit, Kündigung
 
-### 2.2 Authentifizierung
+Abo: **10 € pro Monat**, Abrechnung **monatlich im Voraus**.
 
-Die Anmeldung erfolgt mittels passwortloser Authentifizierung (Magic Link) per E-Mail. Mit der ersten Anmeldung akzeptiert der Nutzer diese AGB.
+Laufzeit: **unbefristet**, Verlängerung **monatsweise**.
 
-### 2.3 Nutzerkreis
+**Kündigung:** jederzeit zum **Ende des bereits bezahlten Monats** (per E-Mail oder über den **Kündigungsbutton** im Nutzerkonto). **Keine anteilige Erstattung** des laufenden Monats.
 
-Der Dienst richtet sich ausschließlich an [PLATZHALTER: Unternehmen/Behörden/Organisationen] und ist nicht für Verbraucher im Sinne des § 13 BGB bestimmt.
+## 3. Sofortstart & Widerruf (Verbraucher)
 
-## 3. Leistungsumfang
+Die Leistung beginnt **sofort** nach Vertragsschluss. Beim Checkout werden Sie **ausdrücklich** darum gebeten,
 
-### 3.1 Bereitstellung
+* dem **sofortigen Beginn** der Ausführung zuzustimmen und
 
-Der Anbieter stellt ein KI-gestütztes Dashboard zur Verfügung, das öffentlich verfügbare Informationen automatisch analysiert und einen Eskalations-Score berechnet.
+* zu **bestätigen**, dass Ihr **Widerrufsrecht mit Beginn der Ausführung erlischt**.
 
-### 3.2 Keine Gewährleistung für Richtigkeit
+  Diese Bestätigungen erhalten Sie auf einem **dauerhaften Datenträger** (z. B. per E-Mail).
 
-Die bereitgestellten Analysen und Scores werden vollautomatisch durch KI-Systeme erstellt. Der Anbieter übernimmt keine Gewähr für die Richtigkeit, Vollständigkeit oder Aktualität der Informationen.
+## 4. Änderungen & Verfügbarkeit
 
-### 3.3 Verfügbarkeit
+Weiterentwicklungen (Inhalte, Funktionen, Quellen) sind möglich. Eine **angemessene Verfügbarkeit** wird angestrebt; Wartungen, Updates oder Störungen können den Zugriff vorübergehend beeinträchtigen.
 
-Der Anbieter bemüht sich um eine hohe Verfügbarkeit des Dienstes, garantiert jedoch keine bestimmte Verfügbarkeit. Wartungsarbeiten können zu vorübergehenden Ausfällen führen.
+## 5. Einstellung des Dienstes
 
-## 4. Nutzungsrechte und Pflichten
-
-### 4.1 Nutzungsrecht
-
-Der Nutzer erhält ein nicht-exklusives, nicht übertragbares Recht zur Nutzung des Dienstes für die Dauer der Vertragslaufzeit.
-
-### 4.2 Verbotene Nutzung
-
-Der Nutzer verpflichtet sich, den Dienst nicht für folgende Zwecke zu nutzen:
-- Rechtswidrige Aktivitäten
-- Reverse Engineering oder Dekompilierung
-- Automatisierte Abfragen (Scraping, Bots)
-- Weitergabe von Zugangsdaten an Dritte
-
-### 4.3 Verantwortung für Zugangsdaten
-
-Der Nutzer ist verantwortlich für die Geheimhaltung seiner E-Mail-Adresse und für alle Aktivitäten, die unter seinem Account durchgeführt werden.
-
-## 5. Datenschutz
-
-Die Verarbeitung personenbezogener Daten erfolgt gemäß der Datenschutzerklärung, die integraler Bestandteil dieser AGB ist.
+Der Dienst kann mit **Wirkung zum Ende des bereits bezahlten Monats** eingestellt werden (Hinweis im Dashboard oder per E-Mail genügt).
 
 ## 6. Haftung
 
-### 6.1 Haftungsbeschränkung
+Ich hafte auf Schadensersatz – **gleich aus welchem Rechtsgrund** –
 
-Der Anbieter haftet nur für Vorsatz und grobe Fahrlässigkeit. Eine Haftung für leicht fahrlässige Pflichtverletzungen besteht nur bei Verletzung wesentlicher Vertragspflichten (Kardinalpflichten).
+a) **unbeschränkt** bei **Vorsatz** und **grober Fahrlässigkeit** sowie bei Schäden aus **Verletzung von Leben, Körper oder Gesundheit**;
 
-### 6.2 KI-generierte Inhalte
+b) bei **einfacher Fahrlässigkeit** **nur** für **wesentliche Vertragspflichten** (Pflichten, deren Erfüllung die ordnungsgemäße Durchführung des Vertrags überhaupt erst ermöglicht und auf deren Einhaltung Sie regelmäßig vertrauen dürfen – hier insbesondere: **Zugang** zum Dashboard und dessen **grundsätzliche Funktionsfähigkeit**). In diesem Fall ist die Haftung **beschränkt auf den vertragstypischen, vorhersehbaren Schaden**;
 
-Die Nutzung der bereitgestellten Analysen erfolgt auf eigenes Risiko. Der Anbieter haftet nicht für Entscheidungen, die auf Basis der KI-generierten Informationen getroffen werden.
+c) **im Übrigen ausgeschlossen**.
 
-### 6.3 Datenverlust
+**Keine Haftung** für **mittelbare Schäden** und **entgangenen Gewinn**, **soweit gesetzlich zulässig**.
 
-Der Anbieter haftet nicht für Datenverlust, der durch technische Störungen, höhere Gewalt oder Fehler Dritter (Hosting-Provider, Authentifizierungsdienste) verursacht wird.
+## 7. Rechte & Nutzung
 
-## 7. Vertragslaufzeit und Kündigung
+Einfaches, **nicht übertragbares** Nutzungsrecht für die Vertragsdauer. **Keine Weitergabe** oder **gewerbliche Weiterverwertung** der Inhalte.
 
-### 7.1 Laufzeit
-
-Der Vertrag wird auf unbestimmte Zeit geschlossen.
-
-### 7.2 Ordentliche Kündigung
-
-Beide Parteien können den Vertrag jederzeit mit einer Frist von [PLATZHALTER: 30 Tagen] zum Monatsende kündigen.
-
-### 7.3 Außerordentliche Kündigung
-
-Das Recht zur außerordentlichen Kündigung aus wichtigem Grund bleibt unberührt. Ein wichtiger Grund liegt insbesondere vor bei:
-- Verstoß gegen diese AGB
-- Missbrauch des Dienstes
-- Zahlungsverzug (falls kostenpflichtig)
-
-### 7.4 Folgen der Kündigung
-
-Mit Beendigung des Vertrags wird der Zugang zum Dienst gesperrt. Der Nutzer hat keinen Anspruch auf Herausgabe von Daten.
-
-## 8. Vergütung
-
-[PLATZHALTER: Kostenlos / Preismodell einfügen]
-
-Der Dienst wird derzeit kostenfrei zur Verfügung gestellt. Der Anbieter behält sich vor, zukünftig eine Vergütung zu erheben. Nutzer werden mindestens [PLATZHALTER: 3 Monate] im Voraus informiert.
-
-## 9. Änderungen der AGB
-
-### 9.1 Änderungsvorbehalt
-
-Der Anbieter behält sich vor, diese AGB mit einer Ankündigungsfrist von [PLATZHALTER: 30 Tagen] zu ändern.
-
-### 9.2 Widerspruchsrecht
-
-Widerspricht der Nutzer den geänderten AGB nicht innerhalb der Ankündigungsfrist, gelten die geänderten AGB als akzeptiert. Der Anbieter wird den Nutzer bei Ankündigung auf das Widerspruchsrecht hinweisen.
-
-## 10. Schlussbestimmungen
-
-### 10.1 Anwendbares Recht
-
-Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts.
-
-### 10.2 Gerichtsstand
-
-Gerichtsstand ist [PLATZHALTER: Ort], soweit der Nutzer Kaufmann, juristische Person des öffentlichen Rechts oder öffentlich-rechtliches Sondervermögen ist.
-
-### 10.3 Salvatorische Klausel
-
-Sollten einzelne Bestimmungen dieser AGB unwirksam sein oder werden, bleibt die Wirksamkeit der übrigen Bestimmungen hiervon unberührt.
-
----
-
-**Stand:** [PLATZHALTER: Januar 2025]
+**Stand:** [Monat Jahr]
