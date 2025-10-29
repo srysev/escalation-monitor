@@ -51,21 +51,19 @@ def create_research_model(
     )
 
 
-def create_review_model() -> Claude:
+def create_review_model() -> xAI:
     """
-    Create Claude model for review agent with thinking capabilities.
+    Create a model for review agent with thinking capabilities.
 
     Returns:
-        Configured Claude model
+        Configured review model
     """
-    model_id = os.getenv("REVIEW_MODEL_ID", "claude-sonnet-4-5")
+    model_id = os.getenv("REVIEW_MODEL_ID", "grok-4-fast-reasoning-latest")
 
-    return Claude(
+    return xAI(
         id=model_id,
         temperature=0,
-        max_tokens=15000,
-        thinking={
-            "type": "enabled",
-            "budget_tokens": 10000
-        }
+        search_parameters={
+            "mode": "off"
+        },
     )

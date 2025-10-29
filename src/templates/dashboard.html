@@ -101,15 +101,6 @@
               </div>
             </div>
 
-            <!-- Trend Assessment -->
-            {% if report and report.escalation_result and report.escalation_result.escalation_score and report.escalation_result.escalation_score.trend_assessment %}
-            <div class="trend-section mt-3 pt-3 border-top">
-              <div class="trend-label">Trend</div>
-              <div class="trend-text" id="trendContent"></div>
-              <script id="trendData" type="application/json">{{ report.escalation_result.escalation_score.trend_assessment|tojson }}</script>
-            </div>
-            {% endif %}
-
             <!-- Summary -->
             {% if report and report.escalation_result and report.escalation_result.escalation_score and report.escalation_result.escalation_score.summary %}
             <div class="summary-section mt-3 pt-3 border-top">
@@ -228,14 +219,6 @@
   // Helper: Strip HTML tags from LLM output
   function stripHtmlTags(text) {
     return text.replace(/<[^>]*>/g, '');
-  }
-
-  // Render Trend Markdown (strip HTML tags from LLM)
-  const trendDataEl = document.getElementById('trendData');
-  if (trendDataEl) {
-    const trendRaw = JSON.parse(trendDataEl.textContent);
-    const trendClean = stripHtmlTags(trendRaw);
-    document.getElementById('trendContent').innerHTML = marked.parse(trendClean);
   }
 
   // Render Summary Markdown (nach marked.js geladen ist)
