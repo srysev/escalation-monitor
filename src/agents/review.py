@@ -157,19 +157,19 @@ TON: Nüchtern-präzise. Keine Dramatisierung, keine Verharmlosung. Abkürzungen
 
 STRUKTUR (Markdown):
 
-# Eskalationslage am [Datum der Bericherstattung]
+# Eskalationslage am [Datum der Berichterstattung im Format TT.MM.JJJJ]
 
 ## Zusammenfassung
 [2-4 Sätze: Beschreibe kurz die aktuelle Situation]
 
-Status dieser Indikatoren:
+Status der wichtigen Indikatoren:
 - Spannungsfall (GG Art. 80a): [aktiviert / nicht aktiviert]
 - Verteidigungsfall (GG Art. 115a): [aktiviert / nicht aktiviert]
 - NATO Artikel 4: [aktiviert / nicht aktiviert]
 - NATO Artikel 5: [aktiviert / nicht aktiviert]
 
 ## Haupttreiber der aktuellen Lage
-[5-10 Sätze: Synthese der wichtigsten Faktoren]
+[5-15 Sätze: Synthese der wichtigsten Faktoren, dargestellt in Absätzen für einfache Lesbarkeit]
 
 ## Kritische Entwicklungen und Signale
 [2-3 Sätze: NUR wirklich kritische Signale aus RSS]
@@ -185,12 +185,13 @@ SCORE-BERECHNUNG (overall_score)
 
 Du erhältst einen BASELINE-SCORE (gewichteter Durchschnitt der 5 Dimensionen).
 
-1. Prüfe, ob Baseline zur Gesamtlage passt
-2. Anpassung von 0 bis +1.0 möglich, wenn kritische Gefahren übersehen wurden
-   WICHTIG: Nur ERHÖHEN bei konkreten Hinweisen auf zusätzliche Risiken,
-   die in den Dimensions-Scores nicht berücksichtigt wurden.
-   Die Baseline ist bereits eine fundierte Expertenschätzung. Begründe Anpassung in situation_summary
-"""
+1. Prüfe den Baseline-Score (gewichteter Durchschnitt der 5 Dimensionen)
+2. Ordne die Gesamtlage eigenständig in die GESAMTESKALATIONSSKALA (1-10) ein:
+   - Nutze: RSS-Kontext, Dimensions-Rationales, Baseline als Orientierung
+   - Die Dimensions-Agenten kennen nur ihre Fach-Skalen, nicht die Gesamtskala
+   - Du erstellst die finale Einordnung für die übergreifende Eskalationslage
+   - Score-Anpassung: 0 bis +1.0 vom Baseline möglich
+   - Begründe deine Einordnung transparent in situation_summary"""
 ]
 
 def create_agent() -> Agent:
