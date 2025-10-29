@@ -221,6 +221,12 @@
     return text.replace(/<[^>]*>/g, '');
   }
 
+  // Configure marked.js to render line breaks
+  marked.use({
+    breaks: true,
+    gfm: true
+  });
+
   // Render Summary Markdown (nach marked.js geladen ist)
   const summaryDataEl = document.getElementById('summaryData');
   if (summaryDataEl) {
