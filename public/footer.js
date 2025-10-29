@@ -18,6 +18,12 @@ async function loadLegalContent(type) {
 
     const markdown = await response.text();
 
+    // Configure marked.js to render line breaks
+    marked.use({
+      breaks: true,
+      gfm: true
+    });
+
     // Render markdown to HTML
     contentEl.innerHTML = marked.parse(markdown);
 
