@@ -169,7 +169,7 @@ Status der wichtigen Indikatoren:
 - NATO Artikel 5: [aktiviert / nicht aktiviert]
 
 ## Haupttreiber der aktuellen Lage
-[5-15 Sätze: Synthese der wichtigsten Faktoren, dargestellt in Absätzen für einfache Lesbarkeit]
+[5-10 Sätze: Synthese der wichtigsten Faktoren]
 
 ## Kritische Entwicklungen und Signale
 [2-3 Sätze: NUR wirklich kritische Signale aus RSS]
