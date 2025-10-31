@@ -8,19 +8,22 @@ from datetime import datetime
 try:
     from .feeds.base import to_iso_utc
     from .agents import AGENTS
-    from .agents.review import create_agent as create_review_agent, build_prompt
+    from .agents.review import create_agent as create_review_agent, build_prompt as build_review_prompt
+    from .agents.editor import create_agent as create_editor_agent, build_prompt as build_editor_prompt
     from .schemas import DimensionScore, OverallAssessment
 except ImportError:
     from feeds.base import to_iso_utc
     from agents import AGENTS
-    from agents.review import create_agent as create_review_agent, build_prompt
+    from agents.review import create_agent as create_review_agent, build_prompt as build_review_prompt
+    from agents.editor import create_agent as create_editor_agent, build_prompt as build_editor_prompt
     from schemas import DimensionScore, OverallAssessment
 
 async def calculate_escalation_score(rss_markdown: str) -> Dict[str, Any]:
     """
-    Calculate escalation score using 6-agent architecture:
+    Calculate escalation score using 7-agent architecture:
     - 5 parallel dimension agents (xAI/Grok)
     - 1 review agent for synthesis (Claude)
+    - 1 editor agent for quality assurance (Claude)
 
     Args:
         rss_markdown: Markdown-formatted RSS feed results
@@ -82,20 +85,42 @@ async def calculate_escalation_score(rss_markdown: str) -> Dict[str, Any]:
         print("\n=== Phase 3: Review Agent Synthesis ===")
         start_phase3 = time.perf_counter()
         review_agent = create_review_agent()
-        review_input = build_prompt(current_date, rss_markdown, dimension_results, calculated_score)
-        final_response = await review_agent.arun(review_input)
+        review_input = build_review_prompt(current_date, rss_markdown, dimension_results, calculated_score)
+        review_response = await review_agent.arun(review_input)
 
         duration_phase3 = time.perf_counter() - start_phase3
         print(f"Phase 3 completed in {duration_phase3:.3f}s")
+
+        if not (hasattr(review_response, 'content') and isinstance(review_response.content, OverallAssessment)):
+            return {
+                "result": "error",
+                "timestamp": to_iso_utc(None),
+                "error_message": f"Review agent failed to return proper OverallAssessment. Content type: {type(review_response.content) if hasattr(review_response, 'content') else 'no content'}"
+            }
+
+        review_data = review_response.content.model_dump()
+
+        # Phase 4: Editor agent quality assurance
+        print("\n=== Phase 4: Editor Agent Quality Assurance ===")
+        start_phase4 = time.perf_counter()
+        editor_agent = create_editor_agent()
+        editor_input = build_editor_prompt(current_date, review_data, rss_markdown, dimension_results)
+        final_response = await editor_agent.arun(editor_input)
+
+        duration_phase4 = time.perf_counter() - start_phase4
+        print(f"Phase 4 completed in {duration_phase4:.3f}s")
 
         duration_total = time.perf_counter() - start_total
         print(f"\n=== Total Duration: {duration_total:.3f}s ===")
         print(f"  Phase 1 (Dimensions):      {duration_phase1:7.3f}s ({duration_phase1/duration_total*100:5.1f}%)")
         print(f"  Phase 2 (Calculation):     {duration_phase2:7.3f}s ({duration_phase2/duration_total*100:5.1f}%)")
         print(f"  Phase 3 (Review):          {duration_phase3:7.3f}s ({duration_phase3/duration_total*100:5.1f}%)")
+        print(f"  Phase 4 (Editor):          {duration_phase4:7.3f}s ({duration_phase4/duration_total*100:5.1f}%)")
 
         if hasattr(final_response, 'content') and isinstance(final_response.content, OverallAssessment):
-            assessment_data = final_response.content.model_dump()
+            # Use score from Phase 3 (Review), text from Phase 4 (Editor)
+            final_score = review_data["overall_score"]
+            final_summary = final_response.content.situation_summary
 
             # Build dimensions array from original Phase 1 results (not from review agent)
             dimension_names = {
@@ -119,9 +144,9 @@ async def calculate_escalation_score(rss_markdown: str) -> Dict[str, Any]:
                 "result": "ok",
                 "timestamp": to_iso_utc(None),
                 "escalation_score": {
-                    "score": assessment_data["overall_score"],
-                    "level": get_escalation_level(assessment_data["overall_score"]),
-                    "summary": assessment_data["situation_summary"],
+                    "score": final_score,
+                    "level": get_escalation_level(final_score),
+                    "summary": final_summary,
                     "dimensions": dimensions,
                     "methodology": {
                         "dimension_scores": {
@@ -130,8 +155,9 @@ async def calculate_escalation_score(rss_markdown: str) -> Dict[str, Any]:
                         },
                         "weights": weights,
                         "calculated_score": calculated_score,
-                        "final_score": assessment_data["overall_score"],
-                        "adjustment": assessment_data["overall_score"] - calculated_score
+                        "final_score": final_score,
+                        "adjustment": final_score - calculated_score,
+                        "review_summary": review_data["situation_summary"]
                     }
                 }
             }
@@ -139,7 +165,7 @@ async def calculate_escalation_score(rss_markdown: str) -> Dict[str, Any]:
             return {
                 "result": "error",
                 "timestamp": to_iso_utc(None),
-                "error_message": f"Review agent failed to return proper OverallAssessment. Content type: {type(final_response.content) if hasattr(final_response, 'content') else 'no content'}"
+                "error_message": f"Editor agent failed to return proper OverallAssessment. Content type: {type(final_response.content) if hasattr(final_response, 'content') else 'no content'}"
             }
 
     except Exception as e:
